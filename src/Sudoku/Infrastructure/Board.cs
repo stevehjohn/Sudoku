@@ -21,7 +21,7 @@ namespace Sudoku.Infrastructure
         {
             if (! Logic.IsLegalMove(this, x, y, value))
             {
-                throw new BoardException("This move is not allowed.");
+                throw new BoardException("This move is not valid.");
             }
         }
     }
