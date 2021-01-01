@@ -1,5 +1,4 @@
-﻿using System;
-using Sudoku.Infrastructure;
+﻿using Sudoku.Infrastructure;
 
 namespace Sudoku.Engine
 {

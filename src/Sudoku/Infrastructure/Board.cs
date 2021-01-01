@@ -23,6 +23,8 @@ namespace Sudoku.Infrastructure
             {
                 throw new BoardException("This move is not valid.");
             }
+
+            _board[x + y * Constants.BoardSize] = value;
         }
     }
 }
