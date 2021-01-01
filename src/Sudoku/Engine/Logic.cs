@@ -38,7 +38,9 @@ namespace Sudoku.Engine
 
         private static bool CheckSector()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+
+            return true;
         }
     }
 }
