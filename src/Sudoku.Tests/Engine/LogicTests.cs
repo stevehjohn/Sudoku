@@ -29,5 +29,17 @@ namespace Sudoku.Tests.Engine
 
             Assert.False(Logic.IsLegalMove(board, 0, 0, 1));
         }
+
+        [Fact]
+        public void IsLegalMove_will_not_allow_duplicate_sector_values()
+        {
+            var board = new Board();
+
+            Assert.True(Logic.IsLegalMove(board, 0, 0, 1));
+
+            board.Poke(1, 1, 1);
+
+            Assert.False(Logic.IsLegalMove(board, 0, 0, 1));
+        }
     }
 }

@@ -6,7 +6,7 @@ namespace Sudoku.Engine
     {
         public static bool IsLegalMove(Board board, int x, int y, byte value)
         {
-            return CheckX(board, y, value) && CheckY(board, x, value) && CheckSector();
+            return CheckX(board, y, value) && CheckY(board, x, value) && CheckSector(board, x, y, value);
         }
 
         private static bool CheckX(Board board, int y, byte value)
@@ -35,10 +35,8 @@ namespace Sudoku.Engine
             return true;
         }
 
-        private static bool CheckSector()
+        private static bool CheckSector(Board board, int x, int y, byte value)
         {
-            //throw new NotImplementedException();
-
             return true;
         }
     }
