@@ -1,4 +1,5 @@
-﻿using Sudoku.Engine;
+﻿using System;
+using Sudoku.Engine;
 using Sudoku.Exceptions;
 
 namespace Sudoku.Infrastructure
@@ -25,6 +26,20 @@ namespace Sudoku.Infrastructure
             }
 
             _board[x + y * Constants.BoardSize] = value;
+        }
+
+        public void LoadState(byte[] board)
+        {
+            Buffer.BlockCopy(board, 0, _board, 0, _board.Length);
+        }
+
+        public byte[] SaveState()
+        {
+            var state = new byte[_board.Length];
+
+            Buffer.BlockCopy(_board, 0, state, 0, _board.Length);
+
+            return state;
         }
     }
 }

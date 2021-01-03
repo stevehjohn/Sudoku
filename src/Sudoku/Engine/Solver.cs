@@ -1,13 +1,11 @@
-﻿using System;
-using Sudoku.Infrastructure;
+﻿using Sudoku.Infrastructure;
 
 namespace Sudoku.Engine
 {
     public class Solver
     {
-        public Board Solve(Board input)
+        public void Solve(Board input)
         {
-            throw new NotImplementedException();
         }
     }
 }
