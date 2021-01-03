@@ -6,8 +6,17 @@ namespace Sudoku.Tests.Engine
 {
     public class LogicTests
     {
-        [Fact]
-        public void IsLegalMove_will_not_allow_duplicate_X_values()
+        [Theory]
+        [InlineData(0, false)]
+        [InlineData(1, true)]
+        [InlineData(2, true)]
+        [InlineData(3, true)]
+        [InlineData(4, true)]
+        [InlineData(5, true)]
+        [InlineData(6, true)]
+        [InlineData(7, true)]
+        [InlineData(8, true)]
+        public void IsLegalMove_will_not_allow_duplicate_X_values(int y, bool legal)
         {
             var board = new Board();
 
@@ -15,11 +24,11 @@ namespace Sudoku.Tests.Engine
 
             board.Poke(4, 0, 1);
 
-            Assert.False(Logic.IsLegalMove(board, 0, 0, 1));
+            Assert.Equal(legal, Logic.IsLegalMove(board, 0, y, 1));
         }
 
         [Fact]
-        public void IsLegalMove_will_not_allow_duplicate_Y_values()
+        public void IsLegalMove_will_not_allow_duplicate_Y_values(int x, bool legal)
         {
             var board = new Board();
 
@@ -27,7 +36,7 @@ namespace Sudoku.Tests.Engine
 
             board.Poke(0, 4, 1);
 
-            Assert.False(Logic.IsLegalMove(board, 0, 0, 1));
+            Assert.Equal(legal, Logic.IsLegalMove(board, x, 0, 1));
         }
 
         [Theory]
@@ -55,7 +64,7 @@ namespace Sudoku.Tests.Engine
 
             board.Poke(1, 1, 1);
 
-            Assert.Equal(Logic.IsLegalMove(board, x, y, 1), legal);
+            Assert.Equal(legal, Logic.IsLegalMove(board, x, y, 1));
         }
     }
 }
