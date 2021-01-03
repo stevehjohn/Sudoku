@@ -27,7 +27,16 @@ namespace Sudoku.Tests.Engine
             Assert.Equal(legal, Logic.IsLegalMove(board, 0, y, 1));
         }
 
-        [Fact]
+        [Theory]
+        [InlineData(0, false)]
+        [InlineData(1, true)]
+        [InlineData(2, true)]
+        [InlineData(3, true)]
+        [InlineData(4, true)]
+        [InlineData(5, true)]
+        [InlineData(6, true)]
+        [InlineData(7, true)]
+        [InlineData(8, true)]
         public void IsLegalMove_will_not_allow_duplicate_Y_values(int x, bool legal)
         {
             var board = new Board();
