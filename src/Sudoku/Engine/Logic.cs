@@ -37,6 +37,20 @@ namespace Sudoku.Engine
 
         private static bool CheckSector(Board board, int x, int y, byte value)
         {
+            var sectorX = x / Constants.SectorSize;
+            var sectorY = y / Constants.SectorSize;
+
+            for (var ix = sectorX * Constants.SectorSize; ix < (sectorX + 1) * Constants.SectorSize; ix++)
+            {
+                for (var iy = sectorY * Constants.SectorSize; iy < (sectorY + 1) * Constants.SectorSize; iy++)
+                {
+                    if (board.Peek(ix, iy) == value)
+                    {
+                        return false;
+                    }
+                }
+            }
+
             return true;
         }
     }
