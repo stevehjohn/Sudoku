@@ -44,6 +44,15 @@ public class ConsoleApplication
                     return;
                 }
 
+                if (response == "e")
+                {
+                    Out();
+                    
+                    Out("Sorry, this is not yet implemented. Keep an eye on the repo, should be soon.\n");
+                    
+                    continue;
+                }
+
                 if (int.TryParse(response, out var id))
                 {
                     if (id > _files.Count)
