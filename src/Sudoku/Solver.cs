@@ -8,7 +8,7 @@ public class Solver
 {
     private readonly ArrayPool<int> _pool = ArrayPool<int>.Shared;
     
-    private (int[] Solution, int Steps, double Microseconds) Solve(int id, int[] sudoku)
+    private (int[] Solution, int Steps, double Microseconds) Solve(int[] sudoku)
     {
         var stack = new Stack<int[]>();
 
