@@ -56,7 +56,7 @@ public class ConsoleApplication
 
                     System.Console.ReadKey();
 
-                    continue;
+                    break;
                 }
 
                 if (int.TryParse(response, out var id))
