@@ -48,12 +48,14 @@ public class ConsoleApplication
 
                 if (response == "e")
                 {
-                    GetUserPuzzle();
-                    
+                    SolveUserPuzzle();
+
                     Out();
-                    
-                    Out("Sorry, this is not yet implemented. Keep an eye on the repo, should be soon.\n");
-                    
+
+                    Out("Press any key to continue.");
+
+                    System.Console.ReadKey();
+
                     continue;
                 }
 
@@ -86,7 +88,7 @@ public class ConsoleApplication
         }
     }
 
-    private int[] GetUserPuzzle()
+    private void SolveUserPuzzle()
     {
         Out();
         
@@ -128,7 +130,13 @@ public class ConsoleApplication
             }
         }
 
-        return puzzle;
+        var puzzles = new int[1][];
+
+        puzzles[0] = puzzle;
+
+        var solver = new BulkSolver(puzzles);
+        
+        solver.Solve();
     }
 
     private void SolvePuzzles(int fileId)
