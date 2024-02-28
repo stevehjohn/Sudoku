@@ -146,11 +146,11 @@ public class BulkSolver
 
             if (Math.Floor(percent) > 0 && (int) Math.Floor(percent) % 2 == 1)
             {
-                _output.AppendLine($" {new string('\u2588', line)}\u258c{new string('⁃', 49 - line)}\u258f\n");
+                _output.AppendLine($" {new string('\u2588', line)}\u258c{new string('⁃', 49 - line)}-\n");
             }
             else
             {
-                _output.AppendLine($" {new string('\u2588', line)}{new string('⁃', 50 - line)}\u258f\n");
+                _output.AppendLine($" {new string('\u2588', line)}{new string('⁃', 50 - line)}-\n");
             }
 
             System.Console.CursorTop = 1;
