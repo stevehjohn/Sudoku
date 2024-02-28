@@ -4,7 +4,9 @@ A fast Sudoku solver written in C#.
 
 ## Usage
 
-Clone this repository somewhere, then from a terminal in the root of the repo `./run.sh` for macOS or `run.bat` for Windows. Then just follow the on screen prompts.
+Clone this repository as usual, then do `git lfs pull` to get the puzzle data. You'll need Git LFS installed, see [here](https://git-lfs.com/).
+
+From a terminal in the root of the repository `./run.sh` for macOS or `run.bat` for Windows. Then just follow the on screen prompts.
 
 What to expect: https://youtu.be/pvAZ--dLYH4
 
