@@ -179,11 +179,11 @@ public class BulkSolver
 
             if (step > -1)
             {
-                _output.AppendLine($"\n Steps: {step:N0}    Stack size: {stack}");
+                _output.AppendLine($"\n Steps: {step:N0}    Stack size: {stack}    ");
 
                 _maxFilled = Math.Max(_maxFilled, filled);
                 
-                _output.AppendLine($"\n Most filled: {_maxFilled}    Filled: {filled}\n");
+                _output.AppendLine($"\n Most filled: {_maxFilled}    Filled: {filled}    \n");
             }
 
             System.Console.CursorTop = 1;
