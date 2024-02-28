@@ -120,7 +120,7 @@ public class ConsoleApplication
                     puzzle[y * 9 + x] = line[x] - '0';
                 }
             }
-            catch (Exception e)
+            catch
             {
                 Out("");
                 
