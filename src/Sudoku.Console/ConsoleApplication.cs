@@ -1,5 +1,3 @@
-using Exception = System.Exception;
-
 namespace Sudoku.Console;
 
 public class ConsoleApplication
@@ -88,7 +86,7 @@ public class ConsoleApplication
         }
     }
 
-    private void SolveUserPuzzle()
+    private static void SolveUserPuzzle()
     {
         Out();
         
@@ -154,7 +152,7 @@ public class ConsoleApplication
         solver.Solve();
     }
 
-    private int[][] ParseData(string[] data)
+    private static int[][] ParseData(string[] data)
     {
         var puzzles = new int[data.Length][];
 
