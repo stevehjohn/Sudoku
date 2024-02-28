@@ -159,7 +159,7 @@ public class BulkSolver
                 
                 var eta = TimeSpan.FromSeconds((_puzzles.Length - solved) * meanTime);
                 
-                _output.AppendLine($" Elapsed time: {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}    Estimated remaining: {eta.Minutes:N0}:{eta.Seconds:D2}          \n");
+                _output.AppendLine($" Elapsed time: {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}    Estimated remaining: {eta.Hours:N0}:{eta.Minutes:N0}:{eta.Seconds:D2}          \n");
                 
                 var percent = 100 - (_puzzleCount - solved) * 100d / _puzzleCount;
 
