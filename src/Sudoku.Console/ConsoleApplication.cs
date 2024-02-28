@@ -1,3 +1,5 @@
+using Exception = System.Exception;
+
 namespace Sudoku.Console;
 
 public class ConsoleApplication
@@ -46,6 +48,8 @@ public class ConsoleApplication
 
                 if (response == "e")
                 {
+                    GetUserPuzzle();
+                    
                     Out();
                     
                     Out("Sorry, this is not yet implemented. Keep an eye on the repo, should be soon.\n");
@@ -80,6 +84,51 @@ public class ConsoleApplication
                 Out("Unknown command, please try again.\n");
             }
         }
+    }
+
+    private int[] GetUserPuzzle()
+    {
+        Out();
+        
+        Out("Please enter each line of the puzzle without spaces,\n using dots (.) for empty cells");
+        
+        Out();
+        
+        Out("E.g. ...1.9..4\n");
+
+        var puzzle = new int[81];
+        
+        for (var y = 0; y < 9; y++)
+        {
+            retry:
+            System.Console.Write($" Line {y + 1}: ");
+
+            var line = System.Console.ReadLine();
+
+            try
+            {
+                for (var x = 0; x < 9; x++)
+                {
+                    // ReSharper disable once PossibleNullReferenceException
+                    if (line[x] == '.')
+                    {
+                        continue;
+                    }
+
+                    puzzle[y * 9 + x] = line[x] - '0';
+                }
+            }
+            catch (Exception e)
+            {
+                Out("");
+                
+                Out("That appears to be an invalid line. Please try again.\n");
+                
+                goto retry;
+            }
+        }
+
+        return puzzle;
     }
 
     private void SolvePuzzles(int fileId)
