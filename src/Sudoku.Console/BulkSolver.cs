@@ -91,7 +91,10 @@ public class BulkSolver
                     solved++;
                 }
 
-                Dump(_puzzles[i], solution.Solution, solved);
+                if (_puzzles.Length > 1)
+                {
+                    Dump(_puzzles[i], solution.Solution, solved);
+                }
             });
 
         _stopwatch.Stop();
