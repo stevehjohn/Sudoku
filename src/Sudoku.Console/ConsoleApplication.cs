@@ -84,6 +84,8 @@ public class ConsoleApplication
         var puzzles = ParseData(data);
         
         var solver = new BulkSolver(puzzles);
+        
+        solver.Solve();
     }
 
     private int[][] ParseData(string[] data)
