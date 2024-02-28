@@ -44,6 +44,11 @@ public class BulkSolver
 
         var solver = new Solver.Solver();
 
+        if (_puzzles.Length == 1)
+        {
+            solver.StepHook = (state, step, stack) => Dump(_puzzles[0], state, 0, step, stack);
+        }
+
         Parallel.For(
             0, 
             _puzzles.Length,
@@ -94,7 +99,7 @@ public class BulkSolver
         System.Console.CursorVisible = true;
     }
 
-    private void Dump(Span<int> left, Span<int> right, int solved)
+    private void Dump(int[] left, int[] right, int solved, int step = -1, int stack = -1)
     {
         lock (_consoleLock)
         {
@@ -118,39 +123,54 @@ public class BulkSolver
                 
                 for (var x = 0; x < 9; x++)
                 {
-                    _output.Append($" {right[x + y * 9]}");
+                    if (right[x + y * 9] == 0)
+                    {
+                        _output.Append("  ");
+                    }
+                    else
+                    {
+                        _output.Append($" {right[x + y * 9]}");
+                    }
                 }
                 
                 _output.AppendLine();
             }
 
-            _output.AppendLine($"\n Solved: {solved:N0}/{_puzzleCount:N0} puzzles ({solved / _stopwatch.Elapsed.TotalSeconds:N0} puzzles/sec).       \n");
-
-            var mean = _elapsed.Total / solved;
-
-            _output.AppendLine($" Timings...\n  Minimum: {_elapsed.Minimum:N0}μs          \n  Mean:    {mean:N0}μs          \n  Maximum: {_elapsed.Maximum:N0}μs (Puzzle #{_maxTimePuzzleNumber:N0})         \n");
-            
-            _output.AppendLine($" Combinations...\n  Minimum: {_steps.Minimum:N0}          \n  Mean:    {_steps.Total / solved:N0}          \n  Maximum: {_steps.Maximum:N0} (Puzzle #{_maxStepsPuzzleNumber:N0})           \n");
-
-            var meanTime = _stopwatch.Elapsed.TotalSeconds / solved;
-            
-            var eta = TimeSpan.FromSeconds((_puzzles.Length - solved) * meanTime);
-            
-            _output.AppendLine($" Elapsed time: {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}    Estimated remaining: {eta.Minutes:N0}:{eta.Seconds:D2}          \n");
-            
-            var percent = 100 - (_puzzleCount - solved) * 100d / _puzzleCount;
-
-            _output.AppendLine($" Solved: {Math.Floor(percent):N0}%\n");
-
-            var line = (int) Math.Floor(percent / 2);
-
-            if (Math.Floor(percent) > 0 && (int) Math.Floor(percent) % 2 == 1)
+            if (solved > 0)
             {
-                _output.AppendLine($" {new string('\u2588', line)}\u258c{new string('-', 49 - line)}\n");
+                _output.AppendLine($"\n Solved: {solved:N0}/{_puzzleCount:N0} puzzles ({solved / _stopwatch.Elapsed.TotalSeconds:N0} puzzles/sec).       \n");
+
+                var mean = _elapsed.Total / solved;
+
+                _output.AppendLine($" Timings...\n  Minimum: {_elapsed.Minimum:N0}μs          \n  Mean:    {mean:N0}μs          \n  Maximum: {_elapsed.Maximum:N0}μs (Puzzle #{_maxTimePuzzleNumber:N0})         \n");
+                
+                _output.AppendLine($" Combinations...\n  Minimum: {_steps.Minimum:N0}          \n  Mean:    {_steps.Total / solved:N0}          \n  Maximum: {_steps.Maximum:N0} (Puzzle #{_maxStepsPuzzleNumber:N0})           \n");
+
+                var meanTime = _stopwatch.Elapsed.TotalSeconds / solved;
+                
+                var eta = TimeSpan.FromSeconds((_puzzles.Length - solved) * meanTime);
+                
+                _output.AppendLine($" Elapsed time: {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}    Estimated remaining: {eta.Minutes:N0}:{eta.Seconds:D2}          \n");
+                
+                var percent = 100 - (_puzzleCount - solved) * 100d / _puzzleCount;
+
+                _output.AppendLine($" Solved: {Math.Floor(percent):N0}%\n");
+
+                var line = (int) Math.Floor(percent / 2);
+
+                if (Math.Floor(percent) > 0 && (int) Math.Floor(percent) % 2 == 1)
+                {
+                    _output.AppendLine($" {new string('\u2588', line)}\u258c{new string('-', 49 - line)}\n");
+                }
+                else
+                {
+                    _output.AppendLine($" {new string('\u2588', line)}{new string('-', 50 - line)}\n");
+                }
             }
-            else
+
+            if (step > -1)
             {
-                _output.AppendLine($" {new string('\u2588', line)}{new string('-', 50 - line)}\n");
+                _output.AppendLine($"\n Steps: {step}    Stack size: {stack}");
             }
 
             System.Console.CursorTop = 1;
