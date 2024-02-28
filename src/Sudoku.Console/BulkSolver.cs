@@ -25,6 +25,8 @@ public class BulkSolver
 
     private readonly object _consoleLock = new();
 
+    private int _maxFilled = int.MaxValue;
+    
     public BulkSolver(int[][] puzzles)
     {
         _puzzles = puzzles;
@@ -101,6 +103,8 @@ public class BulkSolver
 
     private void Dump(int[] left, int[] right, int solved, int step = -1, int stack = -1)
     {
+        var filled = 0;
+        
         lock (_consoleLock)
         {
             _output.Clear();
@@ -130,13 +134,15 @@ public class BulkSolver
                     else
                     {
                         _output.Append($" {right[x + y * 9]}");
+
+                        filled++;
                     }
                 }
                 
                 _output.AppendLine();
             }
-
-            if (solved > 0)
+            
+            if (solved > 0 && _puzzles.Length > 1)
             {
                 _output.AppendLine($"\n Solved: {solved:N0}/{_puzzleCount:N0} puzzles ({solved / _stopwatch.Elapsed.TotalSeconds:N0} puzzles/sec).       \n");
 
@@ -170,7 +176,11 @@ public class BulkSolver
 
             if (step > -1)
             {
-                _output.AppendLine($"\n Steps: {step}    Stack size: {stack}");
+                _output.AppendLine($"\n Steps: {step:N0}    Stack size: {stack}");
+
+                _maxFilled = Math.Max(_maxFilled, filled);
+                
+                _output.AppendLine($"\n Most filled: {_maxFilled}    Filled: {filled}\n");
             }
 
             System.Console.CursorTop = 1;
