@@ -25,7 +25,7 @@ public class BulkSolver
 
     private readonly object _consoleLock = new();
 
-    private int _maxFilled = int.MaxValue;
+    private int _maxFilled;
     
     public BulkSolver(int[][] puzzles)
     {
