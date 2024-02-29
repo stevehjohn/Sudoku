@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Text;
+using Sudoku.Solver;
 
 namespace Sudoku.Console;
 
@@ -87,6 +88,11 @@ public class BulkSolver
                 }
 
                 Dump(_puzzles[i], solution.Solution, solved);
+
+                if (record)
+                {
+                    DumpHistory(_puzzles[i], solution.History);
+                }
             });
 
         _stopwatch.Stop();
@@ -94,6 +100,24 @@ public class BulkSolver
         System.Console.WriteLine($"\n All puzzles solved in: {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}.");
         
         System.Console.CursorVisible = true;
+    }
+
+    private void DumpHistory(int[] puzzle, List<Move> solution)
+    {
+        for (var y = 0; y < 9; y++)
+        {
+            System.Console.CursorTop = y + 1;
+
+            System.Console.CursorLeft = 23;
+            
+            System.Console.Write("X");
+            
+            for (var x = 0; x < 9; x++)
+            {
+            }
+        }
+
+        System.Console.CursorTop = 28;
     }
 
     private void Dump(int[] left, int[] right, int solved)
@@ -133,7 +157,7 @@ public class BulkSolver
                 _output.AppendLine();
             }
             
-            if (solved > 0 && _puzzles.Length > 1)
+            if (solved > 0)
             {
                 _output.AppendLine($"\n Solved: {solved:N0}/{_puzzleCount:N0} puzzles ({solved / _stopwatch.Elapsed.TotalSeconds:N0} puzzles/sec).       \n");
 
