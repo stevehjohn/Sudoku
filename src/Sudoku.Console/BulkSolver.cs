@@ -24,8 +24,6 @@ public class BulkSolver
     private readonly object _statsLock = new();
 
     private readonly object _consoleLock = new();
-
-    private int _maxFilled;
     
     public BulkSolver(int[][] puzzles)
     {
@@ -45,11 +43,6 @@ public class BulkSolver
         _stopwatch = Stopwatch.StartNew();
 
         var solver = new Solver.Solver();
-
-        if (_puzzles.Length == 1)
-        {
-            solver.StepHook = (state, step, stack) => Dump(_puzzles[0], state, 0, step, stack);
-        }
 
         Parallel.For(
             0, 
@@ -91,23 +84,18 @@ public class BulkSolver
                     solved++;
                 }
 
-                if (_puzzles.Length > 1)
-                {
-                    Dump(_puzzles[i], solution.Solution, solved);
-                }
+                Dump(_puzzles[i], solution.Solution, solved);
             });
 
         _stopwatch.Stop();
 
-        System.Console.WriteLine($" All puzzles solved in: {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}.");
+        System.Console.WriteLine($"\n All puzzles solved in: {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}.");
         
         System.Console.CursorVisible = true;
     }
 
-    private void Dump(int[] left, int[] right, int solved, int step = -1, int stack = -1)
+    private void Dump(int[] left, int[] right, int solved)
     {
-        var filled = 0;
-        
         lock (_consoleLock)
         {
             _output.Clear();
@@ -137,8 +125,6 @@ public class BulkSolver
                     else
                     {
                         _output.Append($" {right[x + y * 9]}");
-
-                        filled++;
                     }
                 }
                 
@@ -169,21 +155,12 @@ public class BulkSolver
 
                 if (Math.Floor(percent) > 0 && (int) Math.Floor(percent) % 2 == 1)
                 {
-                    _output.AppendLine($" {new string('\u2588', line)}\u258c{new string('-', 49 - line)}\n");
+                    _output.AppendLine($" {new string('\u2588', line)}\u258c{new string('-', 49 - line)}");
                 }
                 else
                 {
-                    _output.AppendLine($" {new string('\u2588', line)}{new string('-', 50 - line)}\n");
+                    _output.AppendLine($" {new string('\u2588', line)}{new string('-', 50 - line)}");
                 }
-            }
-
-            if (step > -1)
-            {
-                _output.AppendLine($"\n Steps: {step:N0}    Stack size: {stack}    ");
-
-                _maxFilled = Math.Max(_maxFilled, filled);
-                
-                _output.AppendLine($"\n Most filled: {_maxFilled}    Filled: {filled}    \n");
             }
 
             System.Console.CursorTop = 1;

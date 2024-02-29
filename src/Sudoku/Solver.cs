@@ -8,8 +8,6 @@ public class Solver
 {
     private readonly ArrayPool<int> _pool = ArrayPool<int>.Shared;
     
-    public Action<int[], int, int> StepHook { get; set; }
-    
     public (int[] Solution, int Steps, double Microseconds) Solve(int[] sudoku)
     {
         var stack = new Stack<int[]>();
@@ -22,8 +20,6 @@ public class Solver
         
         while (stack.TryPop(out var puzzle))
         {
-            StepHook?.Invoke(puzzle, steps, stack.Count);
-            
             steps++;
 
             var solutions = SolveStep(puzzle);
@@ -37,8 +33,6 @@ public class Solver
             {
                 if (solution.Solved)
                 {
-                    StepHook?.Invoke(solution.Sudoku, steps, stack.Count);
-            
                     stopwatch.Stop();
                     
                     while (stack.TryPop(out puzzle))
