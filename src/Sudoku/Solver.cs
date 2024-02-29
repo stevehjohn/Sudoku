@@ -14,8 +14,6 @@ public class Solver
     
     private readonly int[] _boxCandidates = new int[9];
 
-    private readonly List<(int[] Sudoku, bool Solved, List<Move> History)> _stepSolutions = [];
-
     public (int[] Solution, int Steps, double Microseconds, List<Move> History) Solve(int[] sudoku, bool record = false)
     {
         var stack = new Stack<(int[] Puzzle, List<Move> History)>();
@@ -30,14 +28,14 @@ public class Solver
         {
             steps++;
 
-            SolveStep(item.Puzzle, item.History);
+            var solutions = SolveStep(item.Puzzle, item.History);
 
             if (steps > 1)
             {
                 _pool.Return(item.Puzzle);
             }
 
-            foreach (var solution in _stepSolutions)
+            foreach (var solution in solutions)
             {
                 if (solution.Solved)
                 {
@@ -60,7 +58,7 @@ public class Solver
         return (null, steps, stopwatch.Elapsed.TotalMicroseconds, null);
     }
 
-    private void SolveStep(int[] sudoku, List<Move> history)
+    private List<(int[] Sudoku, bool Solved, List<Move> History)> SolveStep(int[] sudoku, List<Move> history)
     {
         for (var y = 0; y < 9; y++)
         {
@@ -146,8 +144,8 @@ public class Solver
             }
         }
 
-        _stepSolutions.Clear();
-        
+        var solutions = new List<(int[] Sudoku, bool Solved, List<Move> History)>();
+
         for (var i = 1; i < 10; i++)
         {
             if ((values & (1 << i)) == 0)
@@ -182,14 +180,16 @@ public class Solver
 
             if (score == 0)
             {
-                _stepSolutions.Clear();
+                solutions.Clear();
 
-                _stepSolutions.Add((copy, true, newHistory));
+                solutions.Add((copy, true, newHistory));
 
                 break;
             }
 
-            _stepSolutions.Add((copy, true, newHistory));
+            solutions.Add((copy, false, newHistory));
         }
+
+        return solutions;
     }
 }
