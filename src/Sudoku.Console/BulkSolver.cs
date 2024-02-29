@@ -43,8 +43,6 @@ public class BulkSolver
         
         _stopwatch = Stopwatch.StartNew();
 
-        var solver = new Solver.Solver();
-
         var record = _puzzles.Length == 1;
         
         Parallel.For(
@@ -54,7 +52,8 @@ public class BulkSolver
             {
                 MaxDegreeOfParallelism = Environment.ProcessorCount - 1
             },
-            i => 
+            () => new Solver.Solver(),
+            (i, _, solver) => 
             {
                 var solution = solver.Solve(_puzzles[i], record);
 
@@ -93,7 +92,10 @@ public class BulkSolver
                 {
                     DumpHistory(_puzzles[i], solution.History);
                 }
-            });
+
+                return solver;
+            },
+            _ => { });
 
         _stopwatch.Stop();
 

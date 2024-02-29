@@ -8,6 +8,12 @@ public class Solver
 {
     private readonly ArrayPool<int> _pool = ArrayPool<int>.Shared;
     
+    private readonly int[] _rowCandidates = new int[9];
+    
+    private readonly int[] _columnCandidates = new int[9];
+    
+    private readonly int[] _boxCandidates = new int[9];
+
     public (int[] Solution, int Steps, double Microseconds, List<Move> History) Solve(int[] sudoku, bool record = false)
     {
         var stack = new Stack<(int[] Puzzle, List<Move> History)>();
@@ -54,33 +60,27 @@ public class Solver
 
     private List<(int[] Sudoku, bool Solved, List<Move> History)> SolveStep(int[] sudoku, List<Move> history)
     {
-        var rowCandidates = new int[9];
-
-        var columnCandidates = new int[9];
-
         for (var y = 0; y < 9; y++)
         {
-            rowCandidates[y] = 0b11_1111_1111;
+            _rowCandidates[y] = 0b11_1111_1111;
 
-            columnCandidates[y] = 0b11_1111_1111;
+            _columnCandidates[y] = 0b11_1111_1111;
 
             var y9 = y * 9;
 
             for (var x = 0; x < 9; x++)
             {
-                rowCandidates[y] &= ~(1 << sudoku[x + y9]);
+                _rowCandidates[y] &= ~(1 << sudoku[x + y9]);
 
-                columnCandidates[y] &= ~(1 << sudoku[y + x * 9]);
+                _columnCandidates[y] &= ~(1 << sudoku[y + x * 9]);
             }
         }
-
-        var boxCandidates = new int[9];
 
         for (var y = 0; y < 9; y += 3)
         {
             for (var x = 0; x < 3; x++)
             {
-                boxCandidates[y + x] = 0b11_1111_1111;
+                _boxCandidates[y + x] = 0b11_1111_1111;
 
                 var x3 = x * 3;
 
@@ -90,7 +90,7 @@ public class Solver
 
                     for (var x1 = 0; x1 < 3; x1++)
                     {
-                        boxCandidates[y + x] &= ~(1 << sudoku[x3 + x1 + yy1 * 9]);
+                        _boxCandidates[y + x] &= ~(1 << sudoku[x3 + x1 + yy1 * 9]);
                     }
                 }
             }
@@ -104,7 +104,7 @@ public class Solver
 
         for (var y = 0; y < 9; y++)
         {
-            var row = rowCandidates[y];
+            var row = _rowCandidates[y];
 
             if (row == 1)
             {
@@ -120,9 +120,9 @@ public class Solver
                     continue;
                 }
 
-                var column = columnCandidates[x];
+                var column = _columnCandidates[x];
 
-                var box = boxCandidates[y / 3 * 3 + x / 3];
+                var box = _boxCandidates[y / 3 * 3 + x / 3];
 
                 var common = row & column & box;
 
