@@ -1,6 +1,6 @@
 namespace Sudoku.Solver;
 
-public class Move
+public struct Move
 {
     public int X { get; }
     
