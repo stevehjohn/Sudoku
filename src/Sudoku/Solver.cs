@@ -8,25 +8,25 @@ public class Solver
 {
     private readonly ArrayPool<int> _pool = ArrayPool<int>.Shared;
     
-    public (int[] Solution, int Steps, double Microseconds) Solve(int[] sudoku)
+    public (int[] Solution, int Steps, double Microseconds) Solve(int[] sudoku, bool record = false)
     {
-        var stack = new Stack<int[]>();
+        var stack = new Stack<(int[] Puzzle, List<Move> History)>();
 
-        stack.Push(sudoku);
+        stack.Push((sudoku, record ? [] : null));
 
         var steps = 0;
 
         var stopwatch = Stopwatch.StartNew();
         
-        while (stack.TryPop(out var puzzle))
+        while (stack.TryPop(out var item))
         {
             steps++;
 
-            var solutions = SolveStep(puzzle);
+            var solutions = SolveStep(item.Puzzle, item.History);
 
             if (steps > 1)
             {
-                _pool.Return(puzzle);
+                _pool.Return(item.Puzzle);
             }
 
             foreach (var solution in solutions)
@@ -35,15 +35,15 @@ public class Solver
                 {
                     stopwatch.Stop();
                     
-                    while (stack.TryPop(out puzzle))
+                    while (stack.TryPop(out item))
                     {
-                        _pool.Return(puzzle);
+                        _pool.Return(item.Puzzle);
                     }
 
                     return (solution.Sudoku, steps, stopwatch.Elapsed.TotalMicroseconds);
                 }
 
-                stack.Push(solution.Sudoku);
+                stack.Push((solution.Sudoku, solution.History));
             }
         }
 
@@ -52,7 +52,7 @@ public class Solver
         return (null, steps, stopwatch.Elapsed.TotalMicroseconds);
     }
 
-    private List<(int[] Sudoku, bool Solved)> SolveStep(int[] sudoku)
+    private List<(int[] Sudoku, bool Solved, List<Move> History)> SolveStep(int[] sudoku, List<Move> history)
     {
         var rowCandidates = new int[9];
 
@@ -144,7 +144,7 @@ public class Solver
             }
         }
 
-        var solutions = new List<(int[] Sudoku, bool Solved)>();
+        var solutions = new List<(int[] Sudoku, bool Solved, List<Move> History)>();
 
         for (var i = 1; i < 10; i++)
         {
@@ -171,16 +171,23 @@ public class Solver
                 }
             }
 
+            List<Move> newHistory = null;
+
+            if (history != null)
+            {
+                newHistory = [..history, new Move(position.X, position.Y, i)];
+            }
+
             if (score == 0)
             {
                 solutions.Clear();
 
-                solutions.Add((copy, true));
+                solutions.Add((copy, true, newHistory));
 
                 break;
             }
 
-            solutions.Add((copy, false));
+            solutions.Add((copy, false, newHistory));
         }
 
         return solutions;
