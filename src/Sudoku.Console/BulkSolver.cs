@@ -110,11 +110,40 @@ public class BulkSolver
 
             System.Console.CursorLeft = 23;
             
-            System.Console.Write("X");
-            
             for (var x = 0; x < 9; x++)
             {
+                if (puzzle[x + y * 9] == 0)
+                {
+                    System.Console.Write("  ");
+                }
+                else
+                {
+                    System.Console.Write($"{puzzle[x + y * 9]} ");
+                }
             }
+        }
+
+        var color = System.Console.ForegroundColor;
+        
+        foreach (var move in solution)
+        {
+            System.Console.ForegroundColor = ConsoleColor.Magenta;
+
+            System.Console.CursorTop = 1 + move.Y;
+
+            System.Console.CursorLeft = 23 + move.X * 2;
+            
+            System.Console.Write(move.Value);
+
+            Thread.Sleep(500);
+
+            System.Console.ForegroundColor = color;
+
+            System.Console.CursorTop = 1 + move.Y;
+
+            System.Console.CursorLeft = 23 + move.X * 2;
+            
+            System.Console.Write(move.Value);
         }
 
         System.Console.CursorTop = 28;
