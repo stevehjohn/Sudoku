@@ -99,7 +99,7 @@ public class BulkSolver
 
         System.Console.Write($"\n All puzzles solved in: {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}. ");
         
-        System.Console.WriteLine($"{solved / _stopwatch.Elapsed.TotalSeconds} puzzles/sec.");
+        System.Console.WriteLine($"{solved / _stopwatch.Elapsed.TotalSeconds:N0} puzzles/sec.");
         
         System.Console.CursorVisible = true;
     }
