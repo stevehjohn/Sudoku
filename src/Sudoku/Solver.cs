@@ -8,7 +8,7 @@ public class Solver
 {
     private readonly ArrayPool<int> _pool = ArrayPool<int>.Shared;
     
-    public (int[] Solution, int Steps, double Microseconds) Solve(int[] sudoku, bool record = false)
+    public (int[] Solution, int Steps, double Microseconds, List<Move> History) Solve(int[] sudoku, bool record = false)
     {
         var stack = new Stack<(int[] Puzzle, List<Move> History)>();
 
@@ -40,7 +40,7 @@ public class Solver
                         _pool.Return(item.Puzzle);
                     }
 
-                    return (solution.Sudoku, steps, stopwatch.Elapsed.TotalMicroseconds);
+                    return (solution.Sudoku, steps, stopwatch.Elapsed.TotalMicroseconds, solution.History);
                 }
 
                 stack.Push((solution.Sudoku, solution.History));
@@ -49,7 +49,7 @@ public class Solver
 
         stopwatch.Stop();
         
-        return (null, steps, stopwatch.Elapsed.TotalMicroseconds);
+        return (null, steps, stopwatch.Elapsed.TotalMicroseconds, null);
     }
 
     private List<(int[] Sudoku, bool Solved, List<Move> History)> SolveStep(int[] sudoku, List<Move> history)
