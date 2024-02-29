@@ -124,9 +124,18 @@ public class BulkSolver
         }
 
         var color = System.Console.ForegroundColor;
+
+        var sleep = true;
         
         foreach (var move in solution)
         {
+            if (System.Console.KeyAvailable)
+            {
+                sleep = false;
+
+                System.Console.ReadKey();
+            }
+
             System.Console.ForegroundColor = ConsoleColor.Magenta;
 
             System.Console.CursorTop = 1 + move.Y;
@@ -135,7 +144,10 @@ public class BulkSolver
             
             System.Console.Write(move.Value);
 
-            Thread.Sleep(500);
+            if (sleep)
+            {
+                Thread.Sleep(500);
+            }
 
             System.Console.ForegroundColor = color;
 
