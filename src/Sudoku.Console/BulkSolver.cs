@@ -136,17 +136,32 @@ public class BulkSolver
                 System.Console.ReadKey();
             }
 
-            System.Console.ForegroundColor = ConsoleColor.Magenta;
+            for (var i = 0; i < 5; i++)
+            {
+                System.Console.ForegroundColor = ConsoleColor.Magenta;
 
-            System.Console.CursorTop = 1 + move.Y;
+                System.Console.CursorTop = 1 + move.Y;
 
-            System.Console.CursorLeft = 23 + move.X * 2;
-            
-            System.Console.Write(move.Value);
+                System.Console.CursorLeft = 23 + move.X * 2;
+
+                if (i % 2 == 0)
+                {
+                    System.Console.Write(move.Value);
+                }
+                else
+                {
+                    System.Console.Write(" ");
+                }
+
+                if (sleep)
+                {
+                    Thread.Sleep(100);
+                }
+            }
 
             if (sleep)
             {
-                Thread.Sleep(500);
+                Thread.Sleep(250);
             }
 
             System.Console.ForegroundColor = color;
