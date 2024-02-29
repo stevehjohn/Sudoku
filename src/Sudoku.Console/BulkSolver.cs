@@ -44,6 +44,8 @@ public class BulkSolver
 
         var solver = new Solver.Solver();
 
+        var record = _puzzles.Length == 1;
+        
         Parallel.For(
             0, 
             _puzzles.Length,
@@ -53,7 +55,7 @@ public class BulkSolver
             },
             i => 
             {
-                var solution = solver.Solve(_puzzles[i]);
+                var solution = solver.Solve(_puzzles[i], record);
 
                 lock (_statsLock)
                 {
