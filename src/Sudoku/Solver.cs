@@ -54,9 +54,9 @@ public class Solver
 
     private List<(int[] Sudoku, bool Solved, List<Move> History)> SolveStep(int[] sudoku, List<Move> history)
     {
-        var rowCandidates = _pool.Rent(9);
+        var rowCandidates = new int[9];
 
-        var columnCandidates = _pool.Rent(9);
+        var columnCandidates = new int[9];
 
         for (var y = 0; y < 9; y++)
         {
@@ -74,7 +74,7 @@ public class Solver
             }
         }
 
-        var boxCandidates = _pool.Rent(9);
+        var boxCandidates = new int[9];
 
         for (var y = 0; y < 9; y += 3)
         {
@@ -189,12 +189,6 @@ public class Solver
 
             solutions.Add((copy, false, newHistory));
         }
-        
-        _pool.Return(rowCandidates);
-        
-        _pool.Return(columnCandidates);
-        
-        _pool.Return(boxCandidates);
 
         return solutions;
     }
