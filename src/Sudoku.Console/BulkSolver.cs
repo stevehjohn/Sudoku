@@ -104,7 +104,7 @@ public class BulkSolver
         System.Console.CursorVisible = true;
     }
 
-    private void DumpHistory(int[] puzzle, List<Move> solution)
+    private static void DumpHistory(int[] puzzle, List<Move> solution)
     {
         for (var y = 0; y < 9; y++)
         {
