@@ -161,7 +161,7 @@ public class BulkSolver
 
             if (sleep)
             {
-                Thread.Sleep(250);
+                Thread.Sleep(500);
             }
 
             System.Console.ForegroundColor = color;
