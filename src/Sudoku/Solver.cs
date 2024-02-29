@@ -16,17 +16,19 @@ public class Solver
 
     private readonly List<(int[] Sudoku, bool Solved, List<Move> History)> _stepSolutions = [];
 
+    private readonly Stack<(int[] Puzzle, List<Move> History)> _stack = [];
+
     public (int[] Solution, int Steps, double Microseconds, List<Move> History) Solve(int[] sudoku, bool record = false)
     {
-        var stack = new Stack<(int[] Puzzle, List<Move> History)>();
-
-        stack.Push((sudoku, record ? [] : null));
+        _stack.Clear();
+        
+        _stack.Push((sudoku, record ? [] : null));
 
         var steps = 0;
 
         var stopwatch = Stopwatch.StartNew();
         
-        while (stack.TryPop(out var item))
+        while (_stack.TryPop(out var item))
         {
             steps++;
 
@@ -43,7 +45,7 @@ public class Solver
                 {
                     stopwatch.Stop();
                     
-                    while (stack.TryPop(out item))
+                    while (_stack.TryPop(out item))
                     {
                         _pool.Return(item.Puzzle);
                     }
@@ -51,7 +53,7 @@ public class Solver
                     return (solution.Sudoku, steps, stopwatch.Elapsed.TotalMicroseconds, solution.History);
                 }
 
-                stack.Push((solution.Sudoku, solution.History));
+                _stack.Push((solution.Sudoku, solution.History));
             }
         }
 
