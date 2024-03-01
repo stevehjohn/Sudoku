@@ -14,17 +14,17 @@ public class Solver
     
     private readonly int[] _boxCandidates = new int[9];
 
-    private readonly List<(int[] Sudoku, bool Solved, List<Move> History)> _stepSolutions = new();
+    private readonly List<(int[] Puzzle, bool Solved, List<Move> History)> _stepSolutions = new();
 
     private readonly Stack<(int[] Puzzle, List<Move> History)> _stack = [];
     
-    public (int[] Solution, int Steps, double Microseconds, List<Move> History) Solve(int[] sudoku, bool record = false)
+    public (int[] Solution, int Steps, double Microseconds, List<Move> History) Solve(int[] puzzle, bool record = false)
     {
         _stepSolutions.Clear();
         
         _stack.Clear();
         
-        _stack.Push((sudoku, record ? [] : null));
+        _stack.Push((puzzle, record ? [] : null));
 
         var steps = 0;
 
@@ -52,10 +52,10 @@ public class Solver
                         _pool.Return(item.Puzzle);
                     }
 
-                    return (solution.Sudoku, steps, stopwatch.Elapsed.TotalMicroseconds, solution.History);
+                    return (solution.Puzzle, steps, stopwatch.Elapsed.TotalMicroseconds, solution.History);
                 }
 
-                _stack.Push((solution.Sudoku, solution.History));
+                _stack.Push((solution.Puzzle, solution.History));
             }
         }
 
@@ -64,7 +64,7 @@ public class Solver
         return (null, steps, stopwatch.Elapsed.TotalMicroseconds, null);
     }
     
-    private void SolveStep(int[] sudoku, List<Move> history)
+    private void SolveStep(int[] puzzle, List<Move> history)
     {
         for (var y = 0; y < 9; y++)
         {
@@ -76,9 +76,9 @@ public class Solver
 
             for (var x = 0; x < 9; x++)
             {
-                _rowCandidates[y] &= ~(1 << sudoku[x + y9]);
+                _rowCandidates[y] &= ~(1 << puzzle[x + y9]);
 
-                _columnCandidates[y] &= ~(1 << sudoku[y + x * 9]);
+                _columnCandidates[y] &= ~(1 << puzzle[y + x * 9]);
             }
         }
 
@@ -96,7 +96,7 @@ public class Solver
 
                     for (var x1 = 0; x1 < 3; x1++)
                     {
-                        _boxCandidates[y + x] &= ~(1 << sudoku[x3 + x1 + yy1 * 9]);
+                        _boxCandidates[y + x] &= ~(1 << puzzle[x3 + x1 + yy1 * 9]);
                     }
                 }
             }
@@ -123,7 +123,7 @@ public class Solver
 
             for (var x = 0; x < 9; x++)
             {
-                if (sudoku[x + y9] != 0)
+                if (puzzle[x + y9] != 0)
                 {
                     continue;
                 }
@@ -161,7 +161,7 @@ public class Solver
                 continue;
             }
 
-            sudoku[position.X + position.Y * 9] = i;
+            puzzle[position.X + position.Y * 9] = i;
 
             var copy = _pool.Rent(81);
 
@@ -169,7 +169,7 @@ public class Solver
 
             for (var j = 0; j < 81; j++)
             {
-                var value = sudoku[j];
+                var value = puzzle[j];
 
                 copy[j] = value;
 
