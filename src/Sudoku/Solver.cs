@@ -204,7 +204,26 @@ public class Solver
 
             var pointer = Lookup(i);
 
-            var candidates = _rowCandidates[pointer.Row] & _columnCandidates[pointer.Column] & _boxCandidates[pointer.Box];
+            var row = _rowCandidates[pointer.Row];
+
+            if (row == 1)
+            {
+                continue;
+            }
+
+            var column = _columnCandidates[pointer.Column];
+
+            if (column == 1)
+            {
+                continue;
+            }
+
+            var candidates = row & column & _boxCandidates[pointer.Box];
+
+            if (candidates == 1)
+            {
+                continue;
+            }
 
             var count = BitOperations.PopCount((uint) candidates);
 
