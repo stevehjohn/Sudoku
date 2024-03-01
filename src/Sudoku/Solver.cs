@@ -4,7 +4,7 @@ using System.Numerics;
 
 namespace Sudoku.Solver;
 
-public unsafe class Solver
+public class Solver
 {
     private readonly ArrayPool<int> _pool = ArrayPool<int>.Shared;
     
@@ -17,45 +17,6 @@ public unsafe class Solver
     private readonly PriorityQueue<(int[] Sudoku, bool Solved, List<Move> History), int> _stepSolutions = new();
 
     private readonly Stack<(int[] Puzzle, List<Move> History)> _stack = [];
-
-    private static readonly int[] ColumnIndex =
-    [
-        0, 1, 2, 3, 4, 5, 6, 7, 8,
-        0, 1, 2, 3, 4, 5, 6, 7, 8,
-        0, 1, 2, 3, 4, 5, 6, 7, 8,
-        0, 1, 2, 3, 4, 5, 6, 7, 8,
-        0, 1, 2, 3, 4, 5, 6, 7, 8,
-        0, 1, 2, 3, 4, 5, 6, 7, 8,
-        0, 1, 2, 3, 4, 5, 6, 7, 8,
-        0, 1, 2, 3, 4, 5, 6, 7, 8,
-        0, 1, 2, 3, 4, 5, 6, 7, 8,
-    ];
-
-    private static readonly int[] RowIndex =
-    [
-        0, 0, 0, 0, 0, 0, 0, 0, 0,
-        1, 1, 1, 1, 1, 1, 1, 1, 1,
-        2, 2, 2, 2, 2, 2, 2, 2, 2,
-        3, 3, 3, 3, 3, 3, 3, 3, 3,
-        4, 4, 4, 4, 4, 4, 4, 4, 4,
-        5, 5, 5, 5, 5, 5, 5, 5, 5,
-        6, 6, 6, 6, 6, 6, 6, 6, 6,
-        7, 7, 7, 7, 7, 7, 7, 7, 7,
-        8, 8, 8, 8, 8, 8, 8, 8, 8,
-    ];
-    
-    private static readonly int[] BoxIndex =
-    [
-        0, 0, 0, 1, 1, 1, 2, 2, 2,
-        0, 0, 0, 1, 1, 1, 2, 2, 2,
-        0, 0, 0, 1, 1, 1, 2, 2, 2,
-        3, 3, 3, 4, 4, 4, 5, 5, 5,
-        3, 3, 3, 4, 4, 4, 5, 5, 5,
-        3, 3, 3, 4, 4, 4, 5, 5, 5,
-        6, 6, 6, 7, 7, 7, 8, 8, 8,
-        6, 6, 6, 7, 7, 7, 8, 8, 8,
-        6, 6, 6, 7, 7, 7, 8, 8, 8
-    ];
     
     public (int[] Solution, int Steps, double Microseconds, List<Move> History) Solve(int[] sudoku, bool record = false)
     {
