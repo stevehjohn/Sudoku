@@ -161,11 +161,9 @@ public class Solver
                 continue;
             }
 
-            puzzle[position.X + position.Y * 9] = i;
-
             var copy = _pool.Rent(81);
 
-            var score = 81;
+            var score = 80;
 
             for (var j = 0; j < 81; j++)
             {
@@ -178,6 +176,8 @@ public class Solver
                     score--;
                 }
             }
+
+            copy[position.X + position.Y * 9] = i;
 
             List<Move> newHistory = null;
 
