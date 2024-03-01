@@ -4,7 +4,7 @@ using System.Numerics;
 
 namespace Sudoku.Solver;
 
-public class Solver
+public unsafe class Solver
 {
     private readonly ArrayPool<int> _pool = ArrayPool<int>.Shared;
     
@@ -17,7 +17,7 @@ public class Solver
     private readonly PriorityQueue<(int[] Sudoku, bool Solved, List<Move> History), int> _stepSolutions = new();
 
     private readonly Stack<(int[] Puzzle, List<Move> History)> _stack = [];
-    
+
     private static readonly int[] ColumnIndex =
     [
         0, 1, 2, 3, 4, 5, 6, 7, 8,
@@ -44,7 +44,7 @@ public class Solver
         8, 8, 8, 8, 8, 8, 8, 8, 8,
     ];
     
-    private static readonly int[] Boxes =
+    private static readonly int[] BoxIndex =
     [
         0, 0, 0, 1, 1, 1, 2, 2, 2,
         0, 0, 0, 1, 1, 1, 2, 2, 2,
@@ -105,24 +105,33 @@ public class Solver
     
     private void SolveStep(int[] sudoku, List<Move> history)
     {
-        for (var i = 0; i < 9; i++)
+        fixed (int* columnIndex = &ColumnIndex[0])
         {
-            _rowCandidates[i] = 0b11_1111_1111;
+            fixed (int* rowIndex = &RowIndex[0])
+            {
+                fixed (int* boxIndex = &BoxIndex[0])
+                {
+                    for (var i = 0; i < 9; i++)
+                    {
+                        _rowCandidates[i] = 0b11_1111_1111;
 
-            _columnCandidates[i] = 0b11_1111_1111;
+                        _columnCandidates[i] = 0b11_1111_1111;
 
-            _boxCandidates[i] = 0b11_1111_1111;
-        }
+                        _boxCandidates[i] = 0b11_1111_1111;
+                    }
 
-        for (var i = 0; i < 81; i++)
-        {
-            var value = ~(1 << sudoku[i]);
+                    for (var i = 0; i < 81; i++)
+                    {
+                        var value = ~(1 << sudoku[i]);
 
-            _rowCandidates[RowIndex[i]] &= value;
+                        _rowCandidates[*(rowIndex + i)] &= value;
 
-            _columnCandidates[ColumnIndex[i]] &= value;
+                        _columnCandidates[*(columnIndex + i)] &= value;
 
-            _boxCandidates[Boxes[i]] &= value;
+                        _boxCandidates[*(boxIndex + i)] &= value;
+                    }
+                }
+            }
         }
 
         var position = (X: -1, Y: -1);
