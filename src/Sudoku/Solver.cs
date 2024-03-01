@@ -14,9 +14,9 @@ public class Solver
     
     private readonly int[] _boxCandidates = new int[9];
 
-    private readonly PriorityQueue<(int[] Sudoku, bool Solved, List<Move> History), int> _stepSolutions = new();
+    private readonly PriorityQueue<(int[] Sudoku, bool Solved, List<(int Position, int Value)> History), int> _stepSolutions = new();
 
-    private readonly Stack<(int[] Puzzle, List<Move> History)> _stack = [];
+    private readonly Stack<(int[] Puzzle, List<(int Position, int Value)> History)> _stack = [];
 
     private static readonly (int Row, int Column, int Box)[] LookupTable = 
     [
@@ -111,7 +111,7 @@ public class Solver
         (8, 8, 8)
     ];
 
-    public (int[] Solution, int Steps, double Microseconds, List<Move> History) Solve(int[] sudoku, bool record = false)
+    public (int[] Solution, int Steps, double Microseconds, List<(int Position, int Value)> History) Solve(int[] sudoku, bool record = false)
     {
         _stepSolutions.Clear();
 
@@ -157,7 +157,7 @@ public class Solver
         return (null, steps, stopwatch.Elapsed.TotalMicroseconds, null);
     }
 
-    private unsafe (int Row, int Column, int Box) Lookup(int index)
+    private static unsafe (int Row, int Column, int Box) Lookup(int index)
     {
         fixed ((int, int, int)* pointer = &LookupTable[0])
         {
@@ -165,7 +165,7 @@ public class Solver
         }
     }
 
-    private void SolveStep(int[] sudoku, List<Move> history)
+    private void SolveStep(int[] sudoku, List<(int Position, int Value)> history)
     {
         for (var i = 0; i < 9; i++)
         {
@@ -189,51 +189,32 @@ public class Solver
             _boxCandidates[pointer.Box] &= value;
         }
 
-        var position = (X: -1, Y: -1);
-
         var values = 0;
 
         var valueCount = 0b11_1111_1111;
 
-        for (var y = 0; y < 9; y++)
+        var index = 0;
+        
+        for (var i = 0; i < 81; i++)
         {
-            var row = _rowCandidates[y];
-
-            if (row == 1)
+            if (sudoku[i] != 0)
             {
                 continue;
             }
 
-            var y9 = y * 9;
+            var pointer = Lookup(i);
 
-            for (var x = 0; x < 9; x++)
+            var candidates = _rowCandidates[pointer.Row] & _columnCandidates[pointer.Column] & _boxCandidates[pointer.Box];
+
+            var count = BitOperations.PopCount((uint) candidates);
+
+            if (count < valueCount)
             {
-                if (sudoku[x + y9] != 0)
-                {
-                    continue;
-                }
+                values = candidates;
 
-                var column = _columnCandidates[x];
+                valueCount = count;
 
-                var box = _boxCandidates[y / 3 * 3 + x / 3];
-
-                var common = row & column & box;
-
-                if (common == 1)
-                {
-                    continue;
-                }
-
-                var count = BitOperations.PopCount((uint) common);
-
-                if (count < valueCount)
-                {
-                    position = (x, y);
-
-                    values = common;
-
-                    valueCount = count;
-                }
+                index = i;
             }
         }
 
@@ -244,7 +225,7 @@ public class Solver
                 continue;
             }
 
-            sudoku[position.X + position.Y * 9] = i;
+            sudoku[index] = i;
 
             var copy = _pool.Rent(81);
 
@@ -262,11 +243,11 @@ public class Solver
                 }
             }
 
-            List<Move> newHistory = null;
+            List<(int Position, int Value)> newHistory = null;
 
             if (history != null)
             {
-                newHistory = [..history, new Move(position.X, position.Y, i)];
+                newHistory = [..history, (index, i)];
             }
 
             _stepSolutions.Enqueue((copy, score == 0, newHistory), score);

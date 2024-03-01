@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using System.Text;
-using Sudoku.Solver;
 
 namespace Sudoku.Console;
 
@@ -106,7 +105,7 @@ public class BulkSolver
         System.Console.CursorVisible = true;
     }
 
-    private static void DumpHistory(int[] puzzle, List<Move> solution)
+    private static void DumpHistory(int[] puzzle, List<(int Position, int Value)> solution)
     {
         for (var y = 0; y < 9; y++)
         {
@@ -144,9 +143,9 @@ public class BulkSolver
             {
                 System.Console.ForegroundColor = ConsoleColor.Magenta;
 
-                System.Console.CursorTop = 1 + move.Y;
+                System.Console.CursorTop = 1 + move.Position / 9;
 
-                System.Console.CursorLeft = 23 + move.X * 2;
+                System.Console.CursorLeft = 23 + move.Position % 9 * 2;
 
                 if (i % 2 == 0)
                 {
@@ -170,9 +169,9 @@ public class BulkSolver
 
             System.Console.ForegroundColor = color;
 
-            System.Console.CursorTop = 1 + move.Y;
+            System.Console.CursorTop = 1 + move.Position / 9;
 
-            System.Console.CursorLeft = 23 + move.X * 2;
+            System.Console.CursorLeft = 23 + move.Position % 9 * 2;
             
             System.Console.Write(move.Value);
         }
