@@ -4,7 +4,7 @@ using System.Numerics;
 
 namespace Sudoku.Solver;
 
-public class Solver
+public unsafe class Solver
 {
     private readonly ArrayPool<int> _pool = ArrayPool<int>.Shared;
     
@@ -110,54 +110,57 @@ public class Solver
         (8, 7, 8),
         (8, 8, 8)
     ];
-    
+
     public (int[] Solution, int Steps, double Microseconds, List<Move> History) Solve(int[] sudoku, bool record = false)
     {
         _stepSolutions.Clear();
-        
+
         _stack.Clear();
-        
+
         _stack.Push((sudoku, record ? [] : null));
 
         var steps = 0;
 
         var stopwatch = Stopwatch.StartNew();
-        
-        while (_stack.TryPop(out var item))
+
+        fixed ((int, int, int)* lookup = &Lookup[0])
         {
-            steps++;
-
-            SolveStep(item.Puzzle, item.History);
-
-            if (steps > 1)
+            while (_stack.TryPop(out var item))
             {
-                _pool.Return(item.Puzzle);
-            }
+                steps++;
 
-            while (_stepSolutions.TryDequeue(out var solution, out _))
-            {
-                if (solution.Solved)
+                SolveStep(item.Puzzle, item.History, lookup);
+
+                if (steps > 1)
                 {
-                    stopwatch.Stop();
-
-                    while (_stack.TryPop(out item))
-                    {
-                        _pool.Return(item.Puzzle);
-                    }
-
-                    return (solution.Sudoku, steps, stopwatch.Elapsed.TotalMicroseconds, solution.History);
+                    _pool.Return(item.Puzzle);
                 }
 
-                _stack.Push((solution.Sudoku, solution.History));
-            }
-        }
+                while (_stepSolutions.TryDequeue(out var solution, out _))
+                {
+                    if (solution.Solved)
+                    {
+                        stopwatch.Stop();
 
-        stopwatch.Stop();
-        
-        return (null, steps, stopwatch.Elapsed.TotalMicroseconds, null);
+                        while (_stack.TryPop(out item))
+                        {
+                            _pool.Return(item.Puzzle);
+                        }
+
+                        return (solution.Sudoku, steps, stopwatch.Elapsed.TotalMicroseconds, solution.History);
+                    }
+
+                    _stack.Push((solution.Sudoku, solution.History));
+                }
+            }
+
+            stopwatch.Stop();
+
+            return (null, steps, stopwatch.Elapsed.TotalMicroseconds, null);
+        }
     }
-    
-    private void SolveStep(int[] sudoku, List<Move> history)
+
+    private void SolveStep(int[] sudoku, List<Move> history, (int Row, int Column, int Box)* lookup)
     {
         for (var i = 0; i < 9; i++)
         {
@@ -170,15 +173,15 @@ public class Solver
 
         for (var i = 0; i < 81; i++)
         {
-            var lookup = Lookup[i];
+            var pointer = *(lookup + i);
 
             var value = ~(1 << sudoku[i]);
             
-            _rowCandidates[lookup.Row] &= value;
+            _rowCandidates[pointer.Row] &= value;
             
-            _columnCandidates[lookup.Column] &= value;
+            _columnCandidates[pointer.Column] &= value;
             
-            _boxCandidates[lookup.Box] &= value;
+            _boxCandidates[pointer.Box] &= value;
         }
 
         var position = (X: -1, Y: -1);
