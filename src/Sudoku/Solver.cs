@@ -17,7 +17,46 @@ public class Solver
     private readonly PriorityQueue<(int[] Sudoku, bool Solved, List<Move> History), int> _stepSolutions = new();
 
     private readonly Stack<(int[] Puzzle, List<Move> History)> _stack = [];
+    
+    private static readonly int[] ColumnIndex =
+    [
+        0, 1, 2, 3, 4, 5, 6, 7, 8,
+        0, 1, 2, 3, 4, 5, 6, 7, 8,
+        0, 1, 2, 3, 4, 5, 6, 7, 8,
+        0, 1, 2, 3, 4, 5, 6, 7, 8,
+        0, 1, 2, 3, 4, 5, 6, 7, 8,
+        0, 1, 2, 3, 4, 5, 6, 7, 8,
+        0, 1, 2, 3, 4, 5, 6, 7, 8,
+        0, 1, 2, 3, 4, 5, 6, 7, 8,
+        0, 1, 2, 3, 4, 5, 6, 7, 8,
+    ];
 
+    private static readonly int[] RowIndex =
+    [
+        0, 0, 0, 0, 0, 0, 0, 0, 0,
+        1, 1, 1, 1, 1, 1, 1, 1, 1,
+        2, 2, 2, 2, 2, 2, 2, 2, 2,
+        3, 3, 3, 3, 3, 3, 3, 3, 3,
+        4, 4, 4, 4, 4, 4, 4, 4, 4,
+        5, 5, 5, 5, 5, 5, 5, 5, 5,
+        6, 6, 6, 6, 6, 6, 6, 6, 6,
+        7, 7, 7, 7, 7, 7, 7, 7, 7,
+        8, 8, 8, 8, 8, 8, 8, 8, 8,
+    ];
+    
+    private static readonly int[] Boxes =
+    [
+        0, 0, 0, 1, 1, 1, 2, 2, 2,
+        0, 0, 0, 1, 1, 1, 2, 2, 2,
+        0, 0, 0, 1, 1, 1, 2, 2, 2,
+        3, 3, 3, 4, 4, 4, 5, 5, 5,
+        3, 3, 3, 4, 4, 4, 5, 5, 5,
+        3, 3, 3, 4, 4, 4, 5, 5, 5,
+        6, 6, 6, 7, 7, 7, 8, 8, 8,
+        6, 6, 6, 7, 7, 7, 8, 8, 8,
+        6, 6, 6, 7, 7, 7, 8, 8, 8
+    ];
+    
     public (int[] Solution, int Steps, double Microseconds, List<Move> History) Solve(int[] sudoku, bool record = false)
     {
         _stepSolutions.Clear();
@@ -63,43 +102,27 @@ public class Solver
         
         return (null, steps, stopwatch.Elapsed.TotalMicroseconds, null);
     }
-
+    
     private void SolveStep(int[] sudoku, List<Move> history)
     {
-        for (var y = 0; y < 9; y++)
+        for (var i = 0; i < 9; i++)
         {
-            _rowCandidates[y] = 0b11_1111_1111;
+            _rowCandidates[i] = 0b11_1111_1111;
 
-            _columnCandidates[y] = 0b11_1111_1111;
+            _columnCandidates[i] = 0b11_1111_1111;
 
-            var y9 = y * 9;
-
-            for (var x = 0; x < 9; x++)
-            {
-                _rowCandidates[y] &= ~(1 << sudoku[x + y9]);
-
-                _columnCandidates[y] &= ~(1 << sudoku[y + x * 9]);
-            }
+            _boxCandidates[i] = 0b11_1111_1111;
         }
 
-        for (var y = 0; y < 9; y += 3)
+        for (var i = 0; i < 81; i++)
         {
-            for (var x = 0; x < 3; x++)
-            {
-                _boxCandidates[y + x] = 0b11_1111_1111;
+            var value = ~(1 << sudoku[i]);
 
-                var x3 = x * 3;
+            _rowCandidates[RowIndex[i]] &= value;
 
-                for (var y1 = 0; y1 < 3; y1++)
-                {
-                    var yy1 = y + y1;
+            _columnCandidates[ColumnIndex[i]] &= value;
 
-                    for (var x1 = 0; x1 < 3; x1++)
-                    {
-                        _boxCandidates[y + x] &= ~(1 << sudoku[x3 + x1 + yy1 * 9]);
-                    }
-                }
-            }
+            _boxCandidates[Boxes[i]] &= value;
         }
 
         var position = (X: -1, Y: -1);
