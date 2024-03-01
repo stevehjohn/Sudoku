@@ -119,6 +119,8 @@ public class Solver
 
             var y9 = y * 9;
 
+            var y3 = y / 3 * 3;
+
             for (var x = 0; x < 9; x++)
             {
                 if (sudoku[x + y9] != 0)
@@ -128,7 +130,7 @@ public class Solver
 
                 var column = _columnCandidates[x];
 
-                var box = _boxCandidates[y / 3 * 3 + x / 3];
+                var box = _boxCandidates[y3 + x / 3];
 
                 var common = row & column & box;
 
