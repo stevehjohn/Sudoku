@@ -25,12 +25,19 @@ public class BulkSolver
     private readonly object _statsLock = new();
 
     private readonly object _consoleLock = new();
+
+    private readonly Stack<Solver.Solver> _solvers = new();
     
     public BulkSolver(int[][] puzzles)
     {
         _puzzles = puzzles;
 
         _puzzleCount = puzzles.Length;
+
+        for (var i = 0; i < Environment.ProcessorCount - 1; i++)
+        {
+            _solvers.Push(new Solver.Solver());
+        }
     }
 
     public void Solve()
@@ -52,7 +59,7 @@ public class BulkSolver
             {
                 MaxDegreeOfParallelism = Environment.ProcessorCount - 1
             },
-            () => new Solver.Solver(),
+            () => _solvers.Pop(),
             (i, _, solver) => 
             {
                 var solution = solver.Solve(_puzzles[i], record);
@@ -95,7 +102,7 @@ public class BulkSolver
 
                 return solver;
             },
-            _ => { });
+            solver => _solvers.Push(solver));
 
         _stopwatch.Stop();
 
