@@ -20,6 +20,8 @@ public class Solver
 
     public (int[] Solution, int Steps, double Microseconds, List<Move> History) Solve(int[] sudoku, bool record = false)
     {
+        _stepSolutions.Clear();
+        
         _stack.Clear();
         
         _stack.Push((sudoku, record ? [] : null));
@@ -148,8 +150,6 @@ public class Solver
             }
         }
 
-        _stepSolutions.Clear();
-
         for (var i = 1; i < 10; i++)
         {
             if ((values & (1 << i)) == 0)
@@ -181,15 +181,6 @@ public class Solver
             {
                 newHistory = [..history, new Move(position.X, position.Y, i)];
             }
-
-            // if (score == 0)
-            // {
-            //     _stepSolutions.Clear();
-            //
-            //     _stepSolutions.Add((copy, true, newHistory), score);
-            //
-            //     break;
-            // }
 
             _stepSolutions.Enqueue((copy, score == 0, newHistory), score);
         }
