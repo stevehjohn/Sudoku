@@ -68,33 +68,42 @@ public unsafe class Solver
         var steps = 0;
 
         var stopwatch = Stopwatch.StartNew();
-        
-        while (_stack.TryPop(out var item))
+
+        fixed (int* columnIndex = &ColumnIndex[0])
         {
-            steps++;
-
-            SolveStep(item.Puzzle, item.History);
-
-            if (steps > 1)
+            fixed (int* rowIndex = &RowIndex[0])
             {
-                _pool.Return(item.Puzzle);
-            }
-
-            while (_stepSolutions.TryDequeue(out var solution, out _))
-            {
-                if (solution.Solved)
+                fixed (int* boxIndex = &BoxIndex[0])
                 {
-                    stopwatch.Stop();
-                    
-                    while (_stack.TryPop(out item))
+                    while (_stack.TryPop(out var item))
                     {
-                        _pool.Return(item.Puzzle);
+                        steps++;
+
+                        SolveStep(item.Puzzle, item.History, rowIndex, columnIndex, boxIndex);
+
+                        if (steps > 1)
+                        {
+                            _pool.Return(item.Puzzle);
+                        }
+
+                        while (_stepSolutions.TryDequeue(out var solution, out _))
+                        {
+                            if (solution.Solved)
+                            {
+                                stopwatch.Stop();
+
+                                while (_stack.TryPop(out item))
+                                {
+                                    _pool.Return(item.Puzzle);
+                                }
+
+                                return (solution.Sudoku, steps, stopwatch.Elapsed.TotalMicroseconds, solution.History);
+                            }
+
+                            _stack.Push((solution.Sudoku, solution.History));
+                        }
                     }
-
-                    return (solution.Sudoku, steps, stopwatch.Elapsed.TotalMicroseconds, solution.History);
                 }
-
-                _stack.Push((solution.Sudoku, solution.History));
             }
         }
 
@@ -103,35 +112,26 @@ public unsafe class Solver
         return (null, steps, stopwatch.Elapsed.TotalMicroseconds, null);
     }
     
-    private void SolveStep(int[] sudoku, List<Move> history)
+    private void SolveStep(int[] sudoku, List<Move> history, int* rowIndex, int* columnIndex, int* boxIndex)
     {
-        fixed (int* columnIndex = &ColumnIndex[0])
+        for (var i = 0; i < 9; i++)
         {
-            fixed (int* rowIndex = &RowIndex[0])
-            {
-                fixed (int* boxIndex = &BoxIndex[0])
-                {
-                    for (var i = 0; i < 9; i++)
-                    {
-                        _rowCandidates[i] = 0b11_1111_1111;
+            _rowCandidates[i] = 0b11_1111_1111;
 
-                        _columnCandidates[i] = 0b11_1111_1111;
+            _columnCandidates[i] = 0b11_1111_1111;
 
-                        _boxCandidates[i] = 0b11_1111_1111;
-                    }
+            _boxCandidates[i] = 0b11_1111_1111;
+        }
 
-                    for (var i = 0; i < 81; i++)
-                    {
-                        var value = ~(1 << sudoku[i]);
+        for (var i = 0; i < 81; i++)
+        {
+            var value = ~(1 << sudoku[i]);
 
-                        _rowCandidates[*(rowIndex + i)] &= value;
+            _rowCandidates[*(rowIndex + i)] &= value;
 
-                        _columnCandidates[*(columnIndex + i)] &= value;
+            _columnCandidates[*(columnIndex + i)] &= value;
 
-                        _boxCandidates[*(boxIndex + i)] &= value;
-                    }
-                }
-            }
+            _boxCandidates[*(boxIndex + i)] &= value;
         }
 
         var position = (X: -1, Y: -1);
