@@ -18,7 +18,7 @@ public class Solver
 
     private readonly Stack<(int[] Puzzle, List<(int Position, int Value)> History)> _stack = [];
 
-    private static readonly (int Row, int Column, int Box)[] LookupTable = 
+    private static readonly (byte Row, byte Column, byte Box)[] LookupTable = 
     [
         (0, 0, 0),
         (0, 1, 0),
@@ -124,7 +124,7 @@ public class Solver
 
         var stopwatch = Stopwatch.StartNew();
 
-        fixed ((int, int, int)* lookup = &LookupTable[0])
+        fixed ((byte, byte, byte)* lookup = &LookupTable[0])
         {
             while (_stack.TryPop(out var item))
             {
@@ -161,7 +161,7 @@ public class Solver
         }
     }
 
-    private unsafe void SolveStep(int[] sudoku, List<(int Position, int Value)> history, (int Row, int Column, int Box)* lookup)
+    private unsafe void SolveStep(int[] sudoku, List<(int Position, int Value)> history, (byte Row, byte Column, byte Box)* lookup)
     {
         for (var i = 0; i < 9; i++)
         {
