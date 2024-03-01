@@ -182,9 +182,16 @@ public class BulkSolver
 
     private void Dump(int[] left, int[] right, int solved)
     {
-        if (! Monitor.TryEnter(_consoleLock))
+        if (solved != _puzzleCount)
         {
-            return;
+            if (! Monitor.TryEnter(_consoleLock))
+            {
+                return;
+            }
+        }
+        else
+        {
+            Monitor.Enter(_consoleLock);
         }
 
         _output.Clear();
