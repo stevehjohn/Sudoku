@@ -14,7 +14,7 @@ public class Solver
     
     private readonly int[] _boxCandidates = new int[9];
 
-    private readonly PriorityQueue<(int[] Sudoku, bool Solved, List<Move> History), int> _stepSolutions = new();
+    private readonly List<(int[] Sudoku, bool Solved, List<Move> History)> _stepSolutions = new();
 
     private readonly Stack<(int[] Puzzle, List<Move> History)> _stack = [];
     
@@ -41,7 +41,7 @@ public class Solver
                 _pool.Return(item.Puzzle);
             }
 
-            while (_stepSolutions.TryDequeue(out var solution, out _))
+            foreach (var solution in _stepSolutions)
             {
                 if (solution.Solved)
                 {
@@ -152,6 +152,8 @@ public class Solver
             }
         }
 
+        _stepSolutions.Clear();
+        
         for (var i = 1; i < 10; i++)
         {
             if ((values & (1 << i)) == 0)
@@ -184,7 +186,17 @@ public class Solver
                 newHistory = [..history, new Move(position.X, position.Y, i)];
             }
 
-            _stepSolutions.Enqueue((copy, score == 0, newHistory), score);
+            if (score == 0)
+            {
+                _stepSolutions.Clear();
+                
+                _stepSolutions.Add((copy, true, newHistory));
+                
+                return;
+                
+            }
+
+            _stepSolutions.Add((copy, false, newHistory));
         }
     }
 }
