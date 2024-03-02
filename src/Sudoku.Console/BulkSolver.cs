@@ -14,7 +14,7 @@ public class BulkSolver
 
     private (long Total, int Minimum, int Maximum) _steps = (0, int.MaxValue, 0);
 
-    private Dictionary<int, (int Count, double Elapsed)> _timings = new();
+    private readonly Dictionary<int, (int Count, double Elapsed)> _timings = new();
 
     private int _maxStepsPuzzleNumber;
 
