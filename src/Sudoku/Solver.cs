@@ -14,6 +14,8 @@ public class Solver
     
     private readonly int[] _boxCandidates = new int[9];
 
+    private readonly int[] _cellCandidates = new int[81];
+
     private readonly PriorityQueue<(int[] Puzzle, bool Solved, List<Move> History), int> _stepSolutions = new();
 
     private readonly Stack<(int[] Puzzle, List<Move> History)> _stack = [];
@@ -99,6 +101,14 @@ public class Solver
                         _boxCandidates[y + x] &= ~(1 << puzzle[x3 + x1 + yy1 * 9]);
                     }
                 }
+            }
+        }
+
+        for (var y = 0; y < 9; y++)
+        {
+            for (var x = 0; x < 9; x++)
+            {
+                _cellCandidates[x + y * 9] = _columnCandidates[x] & _rowCandidates[y] & _boxCandidates[y / 3 * 3 + x / 3];
             }
         }
 
