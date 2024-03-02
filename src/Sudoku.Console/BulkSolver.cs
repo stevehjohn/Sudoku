@@ -14,6 +14,8 @@ public class BulkSolver
 
     private (long Total, int Minimum, int Maximum) _steps = (0, int.MaxValue, 0);
 
+    private Dictionary<int, (int Count, double Elapsed)> _timings = new();
+
     private int _maxStepsPuzzleNumber;
 
     private int _maxTimePuzzleNumber;
@@ -60,6 +62,15 @@ public class BulkSolver
                 lock (_statsLock)
                 {
                     var totalMicroseconds = solution.Microseconds;
+
+                    var clues = _puzzles[i].Clues;
+
+                    if (! _timings.ContainsKey(clues))
+                    {
+                        _timings[clues] = (0, 0);
+                    }
+
+                    _timings[clues] = (_timings[clues].Count + 1, _timings[clues].Elapsed + solution.Microseconds);
                     
                     _elapsed.Total += totalMicroseconds;
 
