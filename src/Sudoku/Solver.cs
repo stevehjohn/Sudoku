@@ -14,7 +14,7 @@ public class Solver
     
     private readonly int[] _boxCandidates = new int[9];
 
-    private readonly List<(int[] Puzzle, bool Solved, List<Move> History)> _stepSolutions = new();
+    private readonly PriorityQueue<(int[] Puzzle, bool Solved, List<Move> History), int> _stepSolutions = new();
 
     private readonly Stack<(int[] Puzzle, List<Move> History)> _stack = [];
     
@@ -41,7 +41,7 @@ public class Solver
                 _pool.Return(item.Puzzle);
             }
 
-            foreach (var solution in _stepSolutions)
+            while (_stepSolutions.TryDequeue(out var solution, out _))
             {
                 if (solution.Solved)
                 {
@@ -190,13 +190,12 @@ public class Solver
             {
                 _stepSolutions.Clear();
                 
-                _stepSolutions.Add((copy, true, newHistory));
+                _stepSolutions.Enqueue((copy, true, newHistory), valueCount);
                 
                 return;
-                
             }
 
-            _stepSolutions.Add((copy, false, newHistory));
+            _stepSolutions.Enqueue((copy, false, newHistory), valueCount);
         }
     }
 }
