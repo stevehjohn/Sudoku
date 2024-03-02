@@ -97,6 +97,8 @@ public class ConsoleApplication
         Out("E.g. ...1.9..4\n");
 
         var puzzle = new int[81];
+
+        var clues = 0;
         
         for (var y = 0; y < 9; y++)
         {
@@ -116,6 +118,8 @@ public class ConsoleApplication
                     }
 
                     puzzle[y * 9 + x] = line[x] - '0';
+
+                    clues++;
                 }
             }
             catch
@@ -128,9 +132,11 @@ public class ConsoleApplication
             }
         }
 
-        var puzzles = new int[1][];
+        var puzzles = new (int[] Puzzle, int Clues)[1];
 
-        puzzles[0] = puzzle;
+        puzzles[0].Puzzle = puzzle;
+
+        puzzles[0].Clues = clues;
 
         var solver = new BulkSolver(puzzles);
         
@@ -152,15 +158,17 @@ public class ConsoleApplication
         solver.Solve();
     }
 
-    private static int[][] ParseData(string[] data)
+    private static (int[] Puzzle, int Clues)[] ParseData(string[] data)
     {
-        var puzzles = new int[data.Length][];
+        var puzzles = new (int[] Puzzle, int Clues)[data.Length];
 
         var count = 0;
         
         foreach (var line in data)
         {
-            puzzles[count] = new int[81];
+            var clues = 0;
+            
+            puzzles[count].Puzzle = new int[81];
 
             for (var i = 0; i < 81; i++)
             {
@@ -168,9 +176,16 @@ public class ConsoleApplication
 
                 if (character is > '0' and <= '9')
                 {
-                    puzzles[count][i] = character - '0';
+                    puzzles[count].Puzzle[i] = character - '0';
+
+                    if (character != '0')
+                    {
+                        clues++;
+                    }
                 }
             }
+
+            puzzles[count].Clues = clues;
 
             count++;
         }

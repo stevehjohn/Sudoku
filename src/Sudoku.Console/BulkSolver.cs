@@ -6,7 +6,7 @@ namespace Sudoku.Console;
 
 public class BulkSolver
 {
-    private readonly int[][] _puzzles;
+    private readonly (int[] Puzzle, int Clues)[] _puzzles;
 
     private readonly int _puzzleCount;
     
@@ -26,7 +26,7 @@ public class BulkSolver
 
     private readonly object _consoleLock = new();
     
-    public BulkSolver(int[][] puzzles)
+    public BulkSolver((int[] Puzzle, int Clues)[] puzzles)
     {
         _puzzles = puzzles;
 
@@ -55,7 +55,7 @@ public class BulkSolver
             () => new Solver.Solver(),
             (i, _, solver) => 
             {
-                var solution = solver.Solve(_puzzles[i], record);
+                var solution = solver.Solve(_puzzles[i].Puzzle, record);
 
                 lock (_statsLock)
                 {
@@ -86,11 +86,11 @@ public class BulkSolver
                     solved++;
                 }
 
-                Dump(_puzzles[i], solution.Solution, solved);
+                Dump(_puzzles[i].Puzzle, solution.Solution, solved);
 
                 if (record)
                 {
-                    DumpHistory(_puzzles[i], solution.History);
+                    DumpHistory(_puzzles[i].Puzzle, solution.History);
                 }
 
                 return solver;
