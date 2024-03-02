@@ -112,8 +112,15 @@ public class BulkSolver
 
         System.Console.Write($"\n All puzzles solved in: {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}. ");
         
-        System.Console.WriteLine($"{solved / _stopwatch.Elapsed.TotalSeconds:N0} puzzles/sec.");
+        System.Console.WriteLine($"{solved / _stopwatch.Elapsed.TotalSeconds:N0} puzzles/sec.\n");
         
+        System.Console.WriteLine(" Clues...");
+
+        foreach (var timing in _timings.OrderBy(t => t.Key))
+        {
+            System.Console.WriteLine($"  {timing.Key}: {timing.Value.Elapsed / timing.Value.Count:N0}μs");
+        }
+
         System.Console.CursorVisible = true;
     }
 
@@ -247,7 +254,7 @@ public class BulkSolver
             _output.AppendLine($" Timings...\n  Minimum: {_elapsed.Minimum:N0}μs          \n  Mean:    {mean:N0}μs          \n  Maximum: {_elapsed.Maximum:N0}μs (Puzzle #{_maxTimePuzzleNumber:N0})         \n");
             
             _output.AppendLine($" Combinations...\n  Minimum: {_steps.Minimum:N0}          \n  Mean:    {_steps.Total / solved:N0}          \n  Maximum: {_steps.Maximum:N0} (Puzzle #{_maxStepsPuzzleNumber:N0})           \n");
-
+            
             var meanTime = _stopwatch.Elapsed.TotalSeconds / solved;
             
             var eta = TimeSpan.FromSeconds((_puzzles.Length - solved) * meanTime);
