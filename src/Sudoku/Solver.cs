@@ -137,8 +137,6 @@ public class Solver
 
     private void FindHiddenSingles()
     {
-        var found = false;
-        
         for (var y = 0; y < 9; y++)
         {
             var oneMask = 0;
@@ -162,78 +160,72 @@ public class Solver
                     {
                         _cellCandidates[y * 9 + x] = once;
 
-                        found = true;
+                        return;
                     }
                 }
             }
         }
 
-        if (! found)
+        for (var x = 0; x < 9; x++)
         {
-            for (var x = 0; x < 9; x++)
+            var oneMask = 0;
+    
+            var twoMask = 0;
+    
+            for (var y = 0; y < 9; y++)
             {
-                var oneMask = 0;
-        
-                var twoMask = 0;
-        
+                twoMask |= oneMask & _cellCandidates[y * 9 + x];
+    
+                oneMask |= _cellCandidates[y * 9 + x];
+            }
+    
+            var once = oneMask & ~twoMask;
+    
+            if (once != 0)
+            {
                 for (var y = 0; y < 9; y++)
                 {
-                    twoMask |= oneMask & _cellCandidates[y * 9 + x];
-        
-                    oneMask |= _cellCandidates[y * 9 + x];
-                }
-        
-                var once = oneMask & ~twoMask;
-        
-                if (once != 0)
-                {
-                    for (var y = 0; y < 9; y++)
+                    if ((_cellCandidates[y * 9 + x] & once) > 0)
                     {
-                        if ((_cellCandidates[y * 9 + x] & once) > 0)
-                        {
-                            _cellCandidates[y * 9 + x] = once;
-        
-                            found = true;
-                        }
+                        _cellCandidates[y * 9 + x] = once;
+    
+                        return;
                     }
                 }
             }
         }
 
-        if (! found)
+        for (var yO = 0; yO < 81; yO += 27)
         {
-            for (var yO = 0; yO < 81; yO += 27)
+            for (var xO = 0; xO < 9; xO += 3)
             {
-                for (var xO = 0; xO < 9; xO += 3)
+                var oneMask = 0;
+
+                var twoMask = 0;
+
+                var start = yO + xO;
+
+                for (var y = 0; y < 3; y++)
                 {
-                    var oneMask = 0;
+                    for (var x = 0; x < 3; x++)
+                    {
+                        twoMask |= oneMask & _cellCandidates[start + y * 9 + x];
 
-                    var twoMask = 0;
+                        oneMask |= _cellCandidates[start + y * 9 + x];
+                    }
+                }
 
-                    var start = yO + xO;
+                var once = oneMask & ~twoMask;
 
+                if (once != 0)
+                {
                     for (var y = 0; y < 3; y++)
                     {
                         for (var x = 0; x < 3; x++)
                         {
-                            twoMask |= oneMask & _cellCandidates[start + y * 9 + x];
-
-                            oneMask |= _cellCandidates[start + y * 9 + x];
-                        }
-                    }
-
-                    var once = oneMask & ~twoMask;
-
-                    if (once != 0)
-                    {
-                        for (var y = 0; y < 3; y++)
-                        {
-                            for (var x = 0; x < 3; x++)
+                            if ((_cellCandidates[start + y * 9 + x] & once) > 0)
                             {
-                                if ((_cellCandidates[start + y * 9 + x] & once) > 0)
-                                {
-                                    _cellCandidates[start + y * 9 + x] = once;
-                                }
+                                _cellCandidates[start + y * 9 + x] = once;
                             }
                         }
                     }
