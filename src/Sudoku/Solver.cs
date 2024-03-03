@@ -74,51 +74,7 @@ public class Solver
 
         var move = FindLowestMove(puzzle);
 
-        _stepSolutions.Clear();
-        
-        for (var i = 1; i < 10; i++)
-        {
-            if ((move.Values & (1 << i)) == 0)
-            {
-                continue;
-            }
-
-            var copy = _pool.Rent(81);
-
-            var score = 80;
-
-            for (var j = 0; j < 81; j++)
-            {
-                var value = puzzle[j];
-
-                copy[j] = value;
-
-                if (value != 0)
-                {
-                    score--;
-                }
-            }
-
-            copy[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = i;
-
-            List<Move> newHistory = null;
-
-            if (history != null)
-            {
-                newHistory = [..history, new Move(move.Position.X, move.Position.Y, i)];
-            }
-
-            if (score == 0)
-            {
-                _stepSolutions.Clear();
-                
-                _stepSolutions.Enqueue((copy, true, newHistory), move.ValueCount);
-                
-                return;
-            }
-
-            _stepSolutions.Enqueue((copy, false, newHistory), move.ValueCount);
-        }
+        CreateNextSteps(puzzle, move, history);
     }
 
     private void GetCellCandidates(int[] puzzle)
@@ -319,5 +275,54 @@ public class Solver
         }
 
         return (position, values, valueCount);
+    }
+
+    private void CreateNextSteps(int[] puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, List<Move> history)
+    {
+        _stepSolutions.Clear();
+        
+        for (var i = 1; i < 10; i++)
+        {
+            if ((move.Values & (1 << i)) == 0)
+            {
+                continue;
+            }
+
+            var copy = _pool.Rent(81);
+
+            var score = 80;
+
+            for (var j = 0; j < 81; j++)
+            {
+                var value = puzzle[j];
+
+                copy[j] = value;
+
+                if (value != 0)
+                {
+                    score--;
+                }
+            }
+
+            copy[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = i;
+
+            List<Move> newHistory = null;
+
+            if (history != null)
+            {
+                newHistory = [..history, new Move(move.Position.X, move.Position.Y, i)];
+            }
+
+            if (score == 0)
+            {
+                _stepSolutions.Clear();
+                
+                _stepSolutions.Enqueue((copy, true, newHistory), move.ValueCount);
+                
+                return;
+            }
+
+            _stepSolutions.Enqueue((copy, false, newHistory), move.ValueCount);
+        }
     }
 }
