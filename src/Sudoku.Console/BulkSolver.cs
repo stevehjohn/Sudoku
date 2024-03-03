@@ -99,9 +99,7 @@ public class BulkSolver
 
         _stopwatch.Stop();
 
-        System.Console.Write($"\n All puzzles solved in: {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}. ");
-        
-        System.Console.WriteLine($"{solved / _stopwatch.Elapsed.TotalSeconds:N0} puzzles/sec.");
+        System.Console.WriteLine($"\n All puzzles solved in: {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}.{_stopwatch.Elapsed.Milliseconds:N0}.");
         
         System.Console.CursorVisible = true;
     }
