@@ -72,41 +72,13 @@ public class Solver
 
         FindHiddenSingles();
 
-        var position = (X: -1, Y: -1);
-
-        var values = 0;
-
-        var valueCount = 0b11_1111_1111;
-
-        for (var y = 0; y < 9; y++)
-        {
-            for (var x = 0; x < 9; x++)
-            {
-                if (puzzle[x + y * 9] != 0)
-                {
-                    continue;
-                }
-
-                var candidates = _cellCandidates[x + y * 9];
-                
-                var count = BitOperations.PopCount((uint) candidates);
-
-                if (count < valueCount)
-                {
-                    position = (x, y);
-
-                    values = candidates;
-
-                    valueCount = count;
-                }
-            }
-        }
+        var move = FindLowestMove(puzzle);
 
         _stepSolutions.Clear();
         
         for (var i = 1; i < 10; i++)
         {
-            if ((values & (1 << i)) == 0)
+            if ((move.Values & (1 << i)) == 0)
             {
                 continue;
             }
@@ -127,25 +99,25 @@ public class Solver
                 }
             }
 
-            copy[position.X + (position.Y << 3) + position.Y] = i;
+            copy[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = i;
 
             List<Move> newHistory = null;
 
             if (history != null)
             {
-                newHistory = [..history, new Move(position.X, position.Y, i)];
+                newHistory = [..history, new Move(move.Position.X, move.Position.Y, i)];
             }
 
             if (score == 0)
             {
                 _stepSolutions.Clear();
                 
-                _stepSolutions.Enqueue((copy, true, newHistory), valueCount);
+                _stepSolutions.Enqueue((copy, true, newHistory), move.ValueCount);
                 
                 return;
             }
 
-            _stepSolutions.Enqueue((copy, false, newHistory), valueCount);
+            _stepSolutions.Enqueue((copy, false, newHistory), move.ValueCount);
         }
     }
 
@@ -312,5 +284,40 @@ public class Solver
                 }
             }
         }
+    }
+
+    private ((int X, int Y) Position, int Values, int ValueCount) FindLowestMove(int[] puzzle)
+    {
+        var position = (X: -1, Y: -1);
+
+        var values = 0;
+
+        var valueCount = 0b11_1111_1111;
+
+        for (var y = 0; y < 9; y++)
+        {
+            for (var x = 0; x < 9; x++)
+            {
+                if (puzzle[x + y * 9] != 0)
+                {
+                    continue;
+                }
+
+                var candidates = _cellCandidates[x + y * 9];
+                
+                var count = BitOperations.PopCount((uint) candidates);
+
+                if (count < valueCount)
+                {
+                    position = (x, y);
+
+                    values = candidates;
+
+                    valueCount = count;
+                }
+            }
+        }
+
+        return (position, values, valueCount);
     }
 }
