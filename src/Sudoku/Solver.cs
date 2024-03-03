@@ -116,6 +116,10 @@ public class Solver
                 {
                     _cellCandidates[x + y * 9] = _columnCandidates[x] & _rowCandidates[y] & _boxCandidates[y / 3 * 3 + x / 3];
                 }
+                else
+                {
+                    _cellCandidates[x + y * 9] = 0;
+                }
             }
         }
 
