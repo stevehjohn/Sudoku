@@ -68,8 +68,6 @@ public class Solver
     
     private void SolveStep(int[] puzzle, List<Move> history)
     {
-        var rowMask = 0;
-        
         for (var y = 0; y < 9; y++)
         {
             _rowCandidates[y] = 0b11_1111_1111;
@@ -82,21 +80,7 @@ public class Solver
             {
                 _rowCandidates[y] &= ~(1 << puzzle[x + y9]);
 
-                rowMask |= _rowCandidates[y];
-
                 _columnCandidates[y] &= ~(1 << puzzle[y + x * 9]);
-            }
-        }
-
-        rowMask = ~rowMask;
-        
-        for (var i = 0; i < 9; i++)
-        {
-            if ((_rowCandidates[i] & rowMask) > 0)
-            {
-                _rowCandidates[i] &= rowMask;
-                
-                break;
             }
         }
 
