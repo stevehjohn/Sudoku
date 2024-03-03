@@ -82,22 +82,30 @@ public class Solver
             }
         }
 
-        for (var y = 0; y < 9; y += 3)
+        for (var i = 0; i < 9; i++)
         {
-            for (var x = 0; x < 3; x++)
+            var start = i switch
             {
-                _boxCandidates[y + x] = 0b11_1111_1111;
+                0 => 0,
+                1 => 3,
+                2 => 6,
+                3 => 27,
+                4 => 30,
+                5 => 33,
+                6 => 54,
+                7 => 57,
+                _ => 60
+            };
 
-                var x3 = x * 3;
+            _boxCandidates[i] = 0b11_1111_1111;
 
-                for (var y1 = 0; y1 < 3; y1++)
+            for (var y = 0; y < 3; y++)
+            {
+                var row = start + y * 9;
+                
+                for (var x = 0; x < 3; x++)
                 {
-                    var yy1 = y + y1;
-
-                    for (var x1 = 0; x1 < 3; x1++)
-                    {
-                        _boxCandidates[y + x] &= ~(1 << puzzle[x3 + x1 + yy1 * 9]);
-                    }
+                    _boxCandidates[i] &= ~(1 << puzzle[row + x]);
                 }
             }
         }
