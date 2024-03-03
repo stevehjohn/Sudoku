@@ -72,13 +72,13 @@ public class Solver
 
             _columnCandidates[y] = 0b11_1111_1111;
 
-            var y9 = y * 9;
+            var y9 = (y << 3) + y;
 
             for (var x = 0; x < 9; x++)
             {
                 _rowCandidates[y] &= ~(1 << puzzle[x + y9]);
 
-                _columnCandidates[y] &= ~(1 << puzzle[y + x * 9]);
+                _columnCandidates[y] &= ~(1 << puzzle[y + (x << 3) + x]);
             }
         }
 
@@ -94,7 +94,7 @@ public class Solver
 
                 for (var y = 0; y < 3; y++)
                 {
-                    var row = start + y * 9;
+                    var row = start + (y << 3) + y;
 
                     for (var x = 0; x < 3; x++)
                     {
@@ -121,7 +121,7 @@ public class Solver
                 continue;
             }
 
-            var y9 = y * 9;
+            var y9 = (y << 3) + y;
 
             var y3 = ((y * 683) >> 11) * 3;
 
@@ -181,7 +181,7 @@ public class Solver
                 }
             }
 
-            copy[position.X + position.Y * 9] = i;
+            copy[position.X + (position.Y << 3) + position.Y] = i;
 
             List<Move> newHistory = null;
 
