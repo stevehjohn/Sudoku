@@ -14,6 +14,8 @@ public class Solver
     
     private readonly int[] _boxCandidates = new int[9];
 
+    private readonly int[] _cellCandidates = new int[81];
+
     private readonly PriorityQueue<(int[] Puzzle, bool Solved, List<Move> History), int> _stepSolutions = new();
 
     private readonly Stack<(int[] Puzzle, List<Move> History)> _stack = [];
@@ -66,42 +68,174 @@ public class Solver
     
     private void SolveStep(int[] puzzle, List<Move> history)
     {
+        GetCellCandidates(puzzle);
+
+        FindHiddenSingles();
+
+        var move = FindLowestMove(puzzle);
+
+        CreateNextSteps(puzzle, move, history);
+    }
+
+    private void GetCellCandidates(int[] puzzle)
+    {
         for (var y = 0; y < 9; y++)
         {
             _rowCandidates[y] = 0b11_1111_1111;
 
             _columnCandidates[y] = 0b11_1111_1111;
 
-            var y9 = y * 9;
+            var y9 = (y << 3) + y;
 
             for (var x = 0; x < 9; x++)
             {
                 _rowCandidates[y] &= ~(1 << puzzle[x + y9]);
 
-                _columnCandidates[y] &= ~(1 << puzzle[y + x * 9]);
+                _columnCandidates[y] &= ~(1 << puzzle[y + (x << 3) + x]);
             }
         }
 
-        for (var y = 0; y < 9; y += 3)
+        var boxIndex = 0;
+        
+        for (var yO = 0; yO < 81; yO += 27)
         {
-            for (var x = 0; x < 3; x++)
+            for (var xO = 0; xO < 9; xO += 3)
             {
-                _boxCandidates[y + x] = 0b11_1111_1111;
+                var start = xO + yO;
 
-                var x3 = x * 3;
+                _boxCandidates[boxIndex] = 0b11_1111_1111;
 
-                for (var y1 = 0; y1 < 3; y1++)
+                for (var y = 0; y < 3; y++)
                 {
-                    var yy1 = y + y1;
+                    var row = start + (y << 3) + y;
 
-                    for (var x1 = 0; x1 < 3; x1++)
+                    for (var x = 0; x < 3; x++)
                     {
-                        _boxCandidates[y + x] &= ~(1 << puzzle[x3 + x1 + yy1 * 9]);
+                        _boxCandidates[boxIndex] &= ~(1 << puzzle[row + x]);
+                    }
+                }
+
+                boxIndex++;
+            }
+        }
+
+        for (var y = 0; y < 9; y++)
+        {
+            for (var x = 0; x < 9; x++)
+            {
+                if (puzzle[x + y * 9] == 0)
+                {
+                    _cellCandidates[x + y * 9] = _columnCandidates[x] & _rowCandidates[y] & _boxCandidates[y / 3 * 3 + x / 3];
+                }
+                else
+                {
+                    _cellCandidates[x + y * 9] = 0;
+                }
+            }
+        }
+    }
+
+    private void FindHiddenSingles()
+    {
+        for (var y = 0; y < 9; y++)
+        {
+            var oneMask = 0;
+        
+            var twoMask = 0;
+        
+            for (var x = 0; x < 9; x++)
+            {
+                twoMask |= oneMask & _cellCandidates[y * 9 + x];
+        
+                oneMask |= _cellCandidates[y * 9 + x];
+            }
+        
+            var once = oneMask & ~twoMask;
+        
+            if (BitOperations.PopCount((uint) once) == 1)
+            {
+                for (var x = 0; x < 9; x++)
+                {
+                    if ((_cellCandidates[y * 9 + x] & once) > 0)
+                    {
+                        _cellCandidates[y * 9 + x] = once;
+
+                        return;
                     }
                 }
             }
         }
 
+        for (var x = 0; x < 9; x++)
+        {
+            var oneMask = 0;
+    
+            var twoMask = 0;
+    
+            for (var y = 0; y < 9; y++)
+            {
+                twoMask |= oneMask & _cellCandidates[y * 9 + x];
+    
+                oneMask |= _cellCandidates[y * 9 + x];
+            }
+    
+            var once = oneMask & ~twoMask;
+    
+            if (BitOperations.PopCount((uint) once) == 1)
+            {
+                for (var y = 0; y < 9; y++)
+                {
+                    if ((_cellCandidates[y * 9 + x] & once) > 0)
+                    {
+                        _cellCandidates[y * 9 + x] = once;
+    
+                        return;
+                    }
+                }
+            }
+        }
+
+        for (var yO = 0; yO < 81; yO += 27)
+        {
+            for (var xO = 0; xO < 9; xO += 3)
+            {
+                var oneMask = 0;
+
+                var twoMask = 0;
+
+                var start = yO + xO;
+
+                for (var y = 0; y < 3; y++)
+                {
+                    for (var x = 0; x < 3; x++)
+                    {
+                        twoMask |= oneMask & _cellCandidates[start + y * 9 + x];
+
+                        oneMask |= _cellCandidates[start + y * 9 + x];
+                    }
+                }
+
+                var once = oneMask & ~twoMask;
+
+                if (BitOperations.PopCount((uint) once) == 1)
+                {
+                    for (var y = 0; y < 3; y++)
+                    {
+                        for (var x = 0; x < 3; x++)
+                        {
+                            if ((_cellCandidates[start + y * 9 + x] & once) > 0)
+                            {
+                                _cellCandidates[start + y * 9 + x] = once;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private ((int X, int Y) Position, int Values, int ValueCount) FindLowestMove(int[] puzzle)
+    {
         var position = (X: -1, Y: -1);
 
         var values = 0;
@@ -110,53 +244,38 @@ public class Solver
 
         for (var y = 0; y < 9; y++)
         {
-            var row = _rowCandidates[y];
-
-            if (row == 1)
-            {
-                continue;
-            }
-
-            var y9 = y * 9;
-
-            var y3 = y / 3 * 3;
-
             for (var x = 0; x < 9; x++)
             {
-                if (puzzle[x + y9] != 0)
+                if (puzzle[x + y * 9] != 0)
                 {
                     continue;
                 }
 
-                var column = _columnCandidates[x];
-
-                var box = _boxCandidates[y3 + x / 3];
-
-                var common = row & column & box;
-
-                if (common == 1)
-                {
-                    continue;
-                }
-
-                var count = BitOperations.PopCount((uint) common);
+                var candidates = _cellCandidates[x + y * 9];
+                
+                var count = BitOperations.PopCount((uint) candidates);
 
                 if (count < valueCount)
                 {
                     position = (x, y);
 
-                    values = common;
+                    values = candidates;
 
                     valueCount = count;
                 }
             }
         }
 
+        return (position, values, valueCount);
+    }
+
+    private void CreateNextSteps(int[] puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, List<Move> history)
+    {
         _stepSolutions.Clear();
         
         for (var i = 1; i < 10; i++)
         {
-            if ((values & (1 << i)) == 0)
+            if ((move.Values & (1 << i)) == 0)
             {
                 continue;
             }
@@ -177,25 +296,25 @@ public class Solver
                 }
             }
 
-            copy[position.X + position.Y * 9] = i;
+            copy[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = i;
 
             List<Move> newHistory = null;
 
             if (history != null)
             {
-                newHistory = [..history, new Move(position.X, position.Y, i)];
+                newHistory = [..history, new Move(move.Position.X, move.Position.Y, i)];
             }
 
             if (score == 0)
             {
                 _stepSolutions.Clear();
                 
-                _stepSolutions.Enqueue((copy, true, newHistory), valueCount);
+                _stepSolutions.Enqueue((copy, true, newHistory), move.ValueCount);
                 
                 return;
             }
 
-            _stepSolutions.Enqueue((copy, false, newHistory), valueCount);
+            _stepSolutions.Enqueue((copy, false, newHistory), move.ValueCount);
         }
     }
 }

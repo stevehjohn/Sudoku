@@ -221,6 +221,6 @@ public class ConsoleApplication
 
     private void EnumeratePuzzleFiles()
     {
-        _files = Directory.EnumerateFiles("Puzzles", "*.sudoku").ToList();
+        _files = Directory.EnumerateFiles("Puzzles", "*.sudoku").Order().ToList();
     }
 }
