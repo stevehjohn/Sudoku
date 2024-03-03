@@ -122,34 +122,7 @@ public class Solver
                 }
             }
         }
-
-        // for (var y = 0; y < 9; y++)
-        // {
-        //     var oneMask = 0;
-        //
-        //     var twoMask = 0;
-        //
-        //     for (var x = 0; x < 9; x++)
-        //     {
-        //         twoMask |= oneMask & _cellCandidates[y * 9 + x];
-        //
-        //         oneMask |= _cellCandidates[y * 9 + x];
-        //     }
-        //
-        //     var once = oneMask & ~twoMask;
-        //
-        //     if (once != 0)
-        //     {
-        //         for (var x = 0; x < 9; x++)
-        //         {
-        //             if ((_cellCandidates[y * 9 + x] & once) > 0)
-        //             {
-        //                 _cellCandidates[y * 9 + x] = once;
-        //             }
-        //         }
-        //     }
-        // }
-
+        
         for (var yO = 0; yO < 81; yO += 27)
         {
             for (var xO = 0; xO < 9; xO += 3)
