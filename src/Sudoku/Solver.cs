@@ -82,31 +82,27 @@ public class Solver
             }
         }
 
-        for (var i = 0; i < 9; i++)
+        var boxIndex = 0;
+        
+        for (var yO = 0; yO < 81; yO += 27)
         {
-            var start = i switch
+            for (var xO = 0; xO < 9; xO += 3)
             {
-                0 => 0,
-                1 => 3,
-                2 => 6,
-                3 => 27,
-                4 => 30,
-                5 => 33,
-                6 => 54,
-                7 => 57,
-                _ => 60
-            };
+                var start = xO + yO;
 
-            _boxCandidates[i] = 0b11_1111_1111;
+                _boxCandidates[boxIndex] = 0b11_1111_1111;
 
-            for (var y = 0; y < 3; y++)
-            {
-                var row = start + y * 9;
-                
-                for (var x = 0; x < 3; x++)
+                for (var y = 0; y < 3; y++)
                 {
-                    _boxCandidates[i] &= ~(1 << puzzle[row + x]);
+                    var row = start + y * 9;
+
+                    for (var x = 0; x < 3; x++)
+                    {
+                        _boxCandidates[boxIndex] &= ~(1 << puzzle[row + x]);
+                    }
                 }
+
+                boxIndex++;
             }
         }
 
@@ -127,7 +123,7 @@ public class Solver
 
             var y9 = y * 9;
 
-            var y3 = y / 3 * 3;
+            var y3 = ((y * 683) >> 11) * 3;
 
             for (var x = 0; x < 9; x++)
             {
@@ -138,7 +134,7 @@ public class Solver
 
                 var column = _columnCandidates[x];
 
-                var box = _boxCandidates[y3 + x / 3];
+                var box = _boxCandidates[y3 + ((x * 683) >> 11)];
 
                 var common = row & column & box;
 
