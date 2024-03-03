@@ -119,32 +119,32 @@ public class Solver
             }
         }
 
-        for (var y = 0; y < 9; y++)
-        {
-            var oneMask = 0;
-
-            var twoMask = 0;
-
-            for (var x = 0; x < 9; x++)
-            {
-                twoMask |= oneMask & _cellCandidates[y * 9 + x];
-
-                oneMask |= _cellCandidates[y * 9 + x];
-            }
-
-            var once = oneMask & ~twoMask;
-
-            if (once != 0)
-            {
-                for (var x = 0; x < 9; x++)
-                {
-                    if ((_cellCandidates[y * 9 + x] & once) > 0)
-                    {
-                        _cellCandidates[y * 9 + x] = once;
-                    }
-                }
-            }
-        }
+        // for (var y = 0; y < 9; y++)
+        // {
+        //     var oneMask = 0;
+        //
+        //     var twoMask = 0;
+        //
+        //     for (var x = 0; x < 9; x++)
+        //     {
+        //         twoMask |= oneMask & _cellCandidates[y * 9 + x];
+        //
+        //         oneMask |= _cellCandidates[y * 9 + x];
+        //     }
+        //
+        //     var once = oneMask & ~twoMask;
+        //
+        //     if (once != 0)
+        //     {
+        //         for (var x = 0; x < 9; x++)
+        //         {
+        //             if ((_cellCandidates[y * 9 + x] & once) > 0)
+        //             {
+        //                 _cellCandidates[y * 9 + x] = once;
+        //             }
+        //         }
+        //     }
+        // }
 
         for (var yO = 0; yO < 81; yO += 27)
         {
@@ -192,42 +192,22 @@ public class Solver
 
         for (var y = 0; y < 9; y++)
         {
-            var row = _rowCandidates[y];
-
-            if (row == 1)
-            {
-                continue;
-            }
-
-            var y9 = (y << 3) + y;
-
-            var y3 = ((y * 683) >> 11) * 3;
-
             for (var x = 0; x < 9; x++)
             {
-                if (puzzle[x + y9] != 0)
+                if (puzzle[x + y * 9] != 0)
                 {
                     continue;
                 }
 
-                var column = _columnCandidates[x];
-
-                var box = _boxCandidates[y3 + ((x * 683) >> 11)];
-
-                var common = row & column & box;
-
-                if (common == 1)
-                {
-                    continue;
-                }
-
-                var count = BitOperations.PopCount((uint) common);
+                var candidates = _cellCandidates[x + y * 9];
+                
+                var count = BitOperations.PopCount((uint) candidates);
 
                 if (count < valueCount)
                 {
                     position = (x, y);
 
-                    values = common;
+                    values = candidates;
 
                     valueCount = count;
                 }
