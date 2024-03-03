@@ -112,6 +112,49 @@ public class Solver
             }
         }
 
+        for (var i = 0; i < 9; i++)
+        {
+            var mask = 0;
+        
+            var start = i switch
+            {
+                0 => 0,
+                1 => 3,
+                2 => 6,
+                3 => 27,
+                4 => 30,
+                5 => 33,
+                6 => 54,
+                7 => 57,
+                _ => 60
+            };
+            
+            for (var y = 0; y < 3; y++)
+            {
+                for (var x = 0; x < 3; x++)
+                {
+                    mask |= _cellCandidates[start + y * 9 + x];
+                }
+            }
+        
+            mask = ~mask;
+            
+            for (var y = 0; y < 3; y++)
+            {
+                for (var x = 0; x < 3; x++)
+                {
+                    if ((mask & _cellCandidates[start + y * 9 + x]) > 0)
+                    {
+                        _cellCandidates[start + y * 9 + x] &= mask;
+        
+                        goto next;
+                    }
+                }
+            }
+            
+            next: ;
+        }
+
         var position = (X: -1, Y: -1);
 
         var values = 0;
