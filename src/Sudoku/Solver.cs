@@ -74,33 +74,37 @@ public class Solver
 
             _columnCandidates[y] = 0b11_1111_1111;
 
-            var y9 = y * 9;
+            var y9 = (y << 3) + y;
 
             for (var x = 0; x < 9; x++)
             {
                 _rowCandidates[y] &= ~(1 << puzzle[x + y9]);
 
-                _columnCandidates[y] &= ~(1 << puzzle[y + x * 9]);
+                _columnCandidates[y] &= ~(1 << puzzle[y + (x << 3) + x]);
             }
         }
 
-        for (var y = 0; y < 9; y += 3)
+        var boxIndex = 0;
+        
+        for (var yO = 0; yO < 81; yO += 27)
         {
-            for (var x = 0; x < 3; x++)
+            for (var xO = 0; xO < 9; xO += 3)
             {
-                _boxCandidates[y + x] = 0b11_1111_1111;
+                var start = xO + yO;
 
-                var x3 = x * 3;
+                _boxCandidates[boxIndex] = 0b11_1111_1111;
 
-                for (var y1 = 0; y1 < 3; y1++)
+                for (var y = 0; y < 3; y++)
                 {
-                    var yy1 = y + y1;
+                    var row = start + (y << 3) + y;
 
-                    for (var x1 = 0; x1 < 3; x1++)
+                    for (var x = 0; x < 3; x++)
                     {
-                        _boxCandidates[y + x] &= ~(1 << puzzle[x3 + x1 + yy1 * 9]);
+                        _boxCandidates[boxIndex] &= ~(1 << puzzle[row + x]);
                     }
                 }
+
+                boxIndex++;
             }
         }
 
@@ -108,51 +112,76 @@ public class Solver
         {
             for (var x = 0; x < 9; x++)
             {
-                _cellCandidates[x + y * 9] = _columnCandidates[x] & _rowCandidates[y] & _boxCandidates[y / 3 * 3 + x / 3];
+                if (puzzle[x + y * 9] == 0)
+                {
+                    _cellCandidates[x + y * 9] = _columnCandidates[x] & _rowCandidates[y] & _boxCandidates[y / 3 * 3 + x / 3];
+                }
             }
         }
 
-        for (var i = 0; i < 9; i++)
+        for (var y = 0; y < 9; y++)
         {
-            var mask = 0;
-        
-            var start = i switch
+            var oneMask = 0;
+
+            var twoMask = 0;
+
+            for (var x = 0; x < 9; x++)
             {
-                0 => 0,
-                1 => 3,
-                2 => 6,
-                3 => 27,
-                4 => 30,
-                5 => 33,
-                6 => 54,
-                7 => 57,
-                _ => 60
-            };
-            
-            for (var y = 0; y < 3; y++)
-            {
-                for (var x = 0; x < 3; x++)
-                {
-                    mask |= _cellCandidates[start + y * 9 + x];
-                }
+                twoMask |= oneMask & _cellCandidates[y * 9 + x];
+
+                oneMask |= _cellCandidates[y * 9 + x];
             }
-        
-            mask = ~mask;
-            
-            for (var y = 0; y < 3; y++)
+
+            var once = oneMask & ~twoMask;
+
+            if (once != 0)
             {
-                for (var x = 0; x < 3; x++)
+                for (var x = 0; x < 9; x++)
                 {
-                    if ((mask & _cellCandidates[start + y * 9 + x]) > 0)
+                    if ((_cellCandidates[y * 9 + x] & once) > 0)
                     {
-                        _cellCandidates[start + y * 9 + x] &= mask;
-        
-                        goto next;
+                        _cellCandidates[y * 9 + x] = once;
                     }
                 }
             }
-            
-            next: ;
+        }
+
+        for (var yO = 0; yO < 81; yO += 27)
+        {
+            for (var xO = 0; xO < 9; xO += 3)
+            {
+                var oneMask = 0;
+
+                var twoMask = 0;
+
+                var start = yO + xO;
+
+                for (var y = 0; y < 3; y++)
+                {
+                    for (var x = 0; x < 3; x++)
+                    {
+                        twoMask |= oneMask & _cellCandidates[start + y * 9 + x];
+
+                        oneMask |= _cellCandidates[start + y * 9 + x];
+                    }
+                }
+
+                var once = oneMask & ~twoMask;
+
+                if (once != 0)
+                {
+                    for (var y = 0; y < 3; y++)
+                    {
+                        for (var x = 0; x < 3; x++)
+                        {
+                            if ((_cellCandidates[start + y * 9 + x] & once) > 0)
+                            {
+                                _cellCandidates[start + y * 9 + x] = once;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         var position = (X: -1, Y: -1);
@@ -170,9 +199,9 @@ public class Solver
                 continue;
             }
 
-            var y9 = y * 9;
+            var y9 = (y << 3) + y;
 
-            var y3 = y / 3 * 3;
+            var y3 = ((y * 683) >> 11) * 3;
 
             for (var x = 0; x < 9; x++)
             {
@@ -183,7 +212,7 @@ public class Solver
 
                 var column = _columnCandidates[x];
 
-                var box = _boxCandidates[y3 + x / 3];
+                var box = _boxCandidates[y3 + ((x * 683) >> 11)];
 
                 var common = row & column & box;
 
@@ -230,7 +259,7 @@ public class Solver
                 }
             }
 
-            copy[position.X + position.Y * 9] = i;
+            copy[position.X + (position.Y << 3) + position.Y] = i;
 
             List<Move> newHistory = null;
 
