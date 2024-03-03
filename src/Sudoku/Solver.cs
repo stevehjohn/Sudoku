@@ -14,6 +14,8 @@ public class Solver
     
     private readonly int[] _boxCandidates = new int[9];
 
+    private readonly int[] _cellCandidates = new int[81];
+
     private readonly PriorityQueue<(int[] Puzzle, bool Solved, List<Move> History), int> _stepSolutions = new();
 
     private readonly Stack<(int[] Puzzle, List<Move> History)> _stack = [];
@@ -66,45 +68,9 @@ public class Solver
     
     private void SolveStep(int[] puzzle, List<Move> history)
     {
-        for (var y = 0; y < 9; y++)
-        {
-            _rowCandidates[y] = 0b11_1111_1111;
+        GetCellCandidates(puzzle);
 
-            _columnCandidates[y] = 0b11_1111_1111;
-
-            var y9 = (y << 3) + y;
-
-            for (var x = 0; x < 9; x++)
-            {
-                _rowCandidates[y] &= ~(1 << puzzle[x + y9]);
-
-                _columnCandidates[y] &= ~(1 << puzzle[y + (x << 3) + x]);
-            }
-        }
-
-        var boxIndex = 0;
-        
-        for (var yO = 0; yO < 81; yO += 27)
-        {
-            for (var xO = 0; xO < 9; xO += 3)
-            {
-                var start = xO + yO;
-
-                _boxCandidates[boxIndex] = 0b11_1111_1111;
-
-                for (var y = 0; y < 3; y++)
-                {
-                    var row = start + (y << 3) + y;
-
-                    for (var x = 0; x < 3; x++)
-                    {
-                        _boxCandidates[boxIndex] &= ~(1 << puzzle[row + x]);
-                    }
-                }
-
-                boxIndex++;
-            }
-        }
+        FindHiddenSingles();
 
         var position = (X: -1, Y: -1);
 
@@ -114,42 +80,22 @@ public class Solver
 
         for (var y = 0; y < 9; y++)
         {
-            var row = _rowCandidates[y];
-
-            if (row == 1)
-            {
-                continue;
-            }
-
-            var y9 = (y << 3) + y;
-
-            var y3 = ((y * 683) >> 11) * 3;
-
             for (var x = 0; x < 9; x++)
             {
-                if (puzzle[x + y9] != 0)
+                if (puzzle[x + y * 9] != 0)
                 {
                     continue;
                 }
 
-                var column = _columnCandidates[x];
-
-                var box = _boxCandidates[y3 + ((x * 683) >> 11)];
-
-                var common = row & column & box;
-
-                if (common == 1)
-                {
-                    continue;
-                }
-
-                var count = BitOperations.PopCount((uint) common);
+                var candidates = _cellCandidates[x + y * 9];
+                
+                var count = BitOperations.PopCount((uint) candidates);
 
                 if (count < valueCount)
                 {
                     position = (x, y);
 
-                    values = common;
+                    values = candidates;
 
                     valueCount = count;
                 }
@@ -200,6 +146,171 @@ public class Solver
             }
 
             _stepSolutions.Enqueue((copy, false, newHistory), valueCount);
+        }
+    }
+
+    private void GetCellCandidates(int[] puzzle)
+    {
+        for (var y = 0; y < 9; y++)
+        {
+            _rowCandidates[y] = 0b11_1111_1111;
+
+            _columnCandidates[y] = 0b11_1111_1111;
+
+            var y9 = (y << 3) + y;
+
+            for (var x = 0; x < 9; x++)
+            {
+                _rowCandidates[y] &= ~(1 << puzzle[x + y9]);
+
+                _columnCandidates[y] &= ~(1 << puzzle[y + (x << 3) + x]);
+            }
+        }
+
+        var boxIndex = 0;
+        
+        for (var yO = 0; yO < 81; yO += 27)
+        {
+            for (var xO = 0; xO < 9; xO += 3)
+            {
+                var start = xO + yO;
+
+                _boxCandidates[boxIndex] = 0b11_1111_1111;
+
+                for (var y = 0; y < 3; y++)
+                {
+                    var row = start + (y << 3) + y;
+
+                    for (var x = 0; x < 3; x++)
+                    {
+                        _boxCandidates[boxIndex] &= ~(1 << puzzle[row + x]);
+                    }
+                }
+
+                boxIndex++;
+            }
+        }
+
+        for (var y = 0; y < 9; y++)
+        {
+            for (var x = 0; x < 9; x++)
+            {
+                if (puzzle[x + y * 9] == 0)
+                {
+                    _cellCandidates[x + y * 9] = _columnCandidates[x] & _rowCandidates[y] & _boxCandidates[y / 3 * 3 + x / 3];
+                }
+                else
+                {
+                    _cellCandidates[x + y * 9] = 0;
+                }
+            }
+        }
+    }
+
+    private void FindHiddenSingles()
+    {
+        var found = false;
+        
+        for (var y = 0; y < 9; y++)
+        {
+            var oneMask = 0;
+        
+            var twoMask = 0;
+        
+            for (var x = 0; x < 9; x++)
+            {
+                twoMask |= oneMask & _cellCandidates[y * 9 + x];
+        
+                oneMask |= _cellCandidates[y * 9 + x];
+            }
+        
+            var once = oneMask & ~twoMask;
+        
+            if (once != 0)
+            {
+                for (var x = 0; x < 9; x++)
+                {
+                    if ((_cellCandidates[y * 9 + x] & once) > 0)
+                    {
+                        _cellCandidates[y * 9 + x] = once;
+
+                        found = true;
+                    }
+                }
+            }
+        }
+
+        if (! found)
+        {
+            for (var x = 0; x < 9; x++)
+            {
+                var oneMask = 0;
+        
+                var twoMask = 0;
+        
+                for (var y = 0; y < 9; y++)
+                {
+                    twoMask |= oneMask & _cellCandidates[y * 9 + x];
+        
+                    oneMask |= _cellCandidates[y * 9 + x];
+                }
+        
+                var once = oneMask & ~twoMask;
+        
+                if (once != 0)
+                {
+                    for (var y = 0; y < 9; y++)
+                    {
+                        if ((_cellCandidates[y * 9 + x] & once) > 0)
+                        {
+                            _cellCandidates[y * 9 + x] = once;
+        
+                            found = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (! found)
+        {
+            for (var yO = 0; yO < 81; yO += 27)
+            {
+                for (var xO = 0; xO < 9; xO += 3)
+                {
+                    var oneMask = 0;
+
+                    var twoMask = 0;
+
+                    var start = yO + xO;
+
+                    for (var y = 0; y < 3; y++)
+                    {
+                        for (var x = 0; x < 3; x++)
+                        {
+                            twoMask |= oneMask & _cellCandidates[start + y * 9 + x];
+
+                            oneMask |= _cellCandidates[start + y * 9 + x];
+                        }
+                    }
+
+                    var once = oneMask & ~twoMask;
+
+                    if (once != 0)
+                    {
+                        for (var y = 0; y < 3; y++)
+                        {
+                            for (var x = 0; x < 3; x++)
+                            {
+                                if ((_cellCandidates[start + y * 9 + x] & once) > 0)
+                                {
+                                    _cellCandidates[start + y * 9 + x] = once;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
