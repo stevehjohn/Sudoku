@@ -123,13 +123,13 @@ public class Solver
         {
             for (var x = 0; x < 9; x++)
             {
-                if (puzzle[x + y * 9] == 0)
+                if (puzzle[x + (y << 3) + y] == 0)
                 {
-                    _cellCandidates[x + y * 9] = _columnCandidates[x] & _rowCandidates[y] & _boxCandidates[y / 3 * 3 + x / 3];
+                    _cellCandidates[x + (y << 3) + y] = _columnCandidates[x] & _rowCandidates[y] & _boxCandidates[y / 3 * 3 + x / 3];
                 }
                 else
                 {
-                    _cellCandidates[x + y * 9] = 0;
+                    _cellCandidates[x + (y << 3) + y] = 0;
                 }
             }
         }
@@ -145,9 +145,9 @@ public class Solver
         
             for (var x = 0; x < 9; x++)
             {
-                twoMask |= oneMask & _cellCandidates[y * 9 + x];
+                twoMask |= oneMask & _cellCandidates[(y << 3) + y + x];
         
-                oneMask |= _cellCandidates[y * 9 + x];
+                oneMask |= _cellCandidates[(y << 3) + y + x];
             }
         
             var once = oneMask & ~twoMask;
@@ -156,9 +156,9 @@ public class Solver
             {
                 for (var x = 0; x < 9; x++)
                 {
-                    if ((_cellCandidates[y * 9 + x] & once) > 0)
+                    if ((_cellCandidates[(y << 3) + y + x] & once) > 0)
                     {
-                        _cellCandidates[y * 9 + x] = once;
+                        _cellCandidates[(y << 3) + y + x] = once;
 
                         return;
                     }
@@ -174,9 +174,9 @@ public class Solver
     
             for (var y = 0; y < 9; y++)
             {
-                twoMask |= oneMask & _cellCandidates[y * 9 + x];
+                twoMask |= oneMask & _cellCandidates[(y << 3) + y + x];
     
-                oneMask |= _cellCandidates[y * 9 + x];
+                oneMask |= _cellCandidates[(y << 3) + y + x];
             }
     
             var once = oneMask & ~twoMask;
@@ -185,9 +185,9 @@ public class Solver
             {
                 for (var y = 0; y < 9; y++)
                 {
-                    if ((_cellCandidates[y * 9 + x] & once) > 0)
+                    if ((_cellCandidates[(y << 3) + y + x] & once) > 0)
                     {
-                        _cellCandidates[y * 9 + x] = once;
+                        _cellCandidates[(y << 3) + y + x] = once;
     
                         return;
                     }
@@ -209,9 +209,9 @@ public class Solver
                 {
                     for (var x = 0; x < 3; x++)
                     {
-                        twoMask |= oneMask & _cellCandidates[start + y * 9 + x];
+                        twoMask |= oneMask & _cellCandidates[start + (y << 3) + y + x];
 
-                        oneMask |= _cellCandidates[start + y * 9 + x];
+                        oneMask |= _cellCandidates[start + (y << 3) + y + x];
                     }
                 }
 
@@ -223,9 +223,9 @@ public class Solver
                     {
                         for (var x = 0; x < 3; x++)
                         {
-                            if ((_cellCandidates[start + y * 9 + x] & once) > 0)
+                            if ((_cellCandidates[start + (y << 3) + y + x] & once) > 0)
                             {
-                                _cellCandidates[start + y * 9 + x] = once;
+                                _cellCandidates[start + (y << 3) + y + x] = once;
                             }
                         }
                     }
@@ -246,12 +246,12 @@ public class Solver
         {
             for (var x = 0; x < 9; x++)
             {
-                if (puzzle[x + y * 9] != 0)
+                if (puzzle[x + (y << 3) + y] != 0)
                 {
                     continue;
                 }
 
-                var candidates = _cellCandidates[x + y * 9];
+                var candidates = _cellCandidates[x + (y << 3) + y];
                 
                 var count = BitOperations.PopCount((uint) candidates);
 
