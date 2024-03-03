@@ -152,7 +152,7 @@ public class Solver
         
             var once = oneMask & ~twoMask;
         
-            if (once != 0)
+            if (BitOperations.PopCount((uint) once) == 1)
             {
                 for (var x = 0; x < 9; x++)
                 {
@@ -181,7 +181,7 @@ public class Solver
     
             var once = oneMask & ~twoMask;
     
-            if (once != 0)
+            if (BitOperations.PopCount((uint) once) == 1)
             {
                 for (var y = 0; y < 9; y++)
                 {
@@ -217,7 +217,7 @@ public class Solver
 
                 var once = oneMask & ~twoMask;
 
-                if (once != 0)
+                if (BitOperations.PopCount((uint) once) == 1)
                 {
                     for (var y = 0; y < 3; y++)
                     {
