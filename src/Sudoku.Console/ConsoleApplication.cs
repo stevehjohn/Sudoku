@@ -208,13 +208,6 @@ public class ConsoleApplication
 
     private void EnumeratePuzzleFiles()
     {
-        if (Debugger.IsAttached)
-        {
-            _files = Directory.EnumerateFiles("/Users/steve.john/Git/Sudoku/Puzzles", "*.sudoku").ToList();
-        }
-        else
-        {
-            _files = Directory.EnumerateFiles("Puzzles", "*.sudoku").ToList();
-        }
+        _files = Directory.EnumerateFiles("Puzzles", "*.sudoku").Order().ToList();
     }
 }
