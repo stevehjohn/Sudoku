@@ -16,6 +16,8 @@ public class Solver
 
     private readonly int[] _cellCandidates = new int[81];
 
+    private readonly int[] _frequencies = new int[10];
+
     private readonly PriorityQueue<(int[] Puzzle, bool Solved, List<Move> History), int> _stepSolutions = new();
 
     private readonly Stack<(int[] Puzzle, List<Move> History)> _stack = [];
@@ -92,6 +94,8 @@ public class Solver
                 _rowCandidates[y] &= ~(1 << puzzle[x + y9]);
 
                 _columnCandidates[y] &= ~(1 << puzzle[y + (x << 3) + x]);
+
+                _frequencies[puzzle[x + y9]]++;
             }
         }
 
@@ -309,12 +313,12 @@ public class Solver
             {
                 _stepSolutions.Clear();
                 
-                _stepSolutions.Enqueue((copy, true, newHistory), move.ValueCount);
+                _stepSolutions.Enqueue((copy, true, newHistory), _frequencies[i]);
                 
                 return;
             }
 
-            _stepSolutions.Enqueue((copy, false, newHistory), move.ValueCount);
+            _stepSolutions.Enqueue((copy, false, newHistory), _frequencies[i]);
         }
     }
 }
