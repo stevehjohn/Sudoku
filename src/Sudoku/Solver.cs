@@ -22,7 +22,7 @@ public class Solver
 
     private readonly Stack<(int[] Puzzle, List<Move> History)> _stack = [];
     
-    public (int[] Solution, int Steps, double Microseconds, List<Move> History) Solve(int[] puzzle, bool record = false)
+    public (int[] Solution, int Steps, int MaxStackSize, double Microseconds, List<Move> History) Solve(int[] puzzle, bool record = false)
     {
         _stepSolutions.Clear();
         
@@ -32,10 +32,14 @@ public class Solver
 
         var steps = 0;
 
+        var maxStackSize = 0;
+
         var stopwatch = Stopwatch.StartNew();
         
         while (_stack.TryPop(out var item))
         {
+            maxStackSize = Math.Max(maxStackSize, _stack.Count);
+            
             steps++;
 
             SolveStep(item.Puzzle, item.History);
@@ -56,7 +60,7 @@ public class Solver
                         _pool.Return(item.Puzzle);
                     }
 
-                    return (solution.Puzzle, steps, stopwatch.Elapsed.TotalMicroseconds, solution.History);
+                    return (solution.Puzzle, steps, maxStackSize, stopwatch.Elapsed.TotalMicroseconds, solution.History);
                 }
 
                 _stack.Push((solution.Puzzle, solution.History));
@@ -65,7 +69,7 @@ public class Solver
 
         stopwatch.Stop();
         
-        return (null, steps, stopwatch.Elapsed.TotalMicroseconds, null);
+        return (null, steps, maxStackSize, stopwatch.Elapsed.TotalMicroseconds, null);
     }
     
     private void SolveStep(int[] puzzle, List<Move> history)

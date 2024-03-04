@@ -15,6 +15,8 @@ public class BulkSolver
 
     private (long Total, int Minimum, int Maximum) _steps = (0, int.MaxValue, 0);
 
+    private int _maxStackSize;
+
     private readonly Dictionary<int, (int Count, double Elapsed)> _timings = new();
 
     private int _maxStepsPuzzleNumber;
@@ -66,6 +68,8 @@ public class BulkSolver
 
                 lock (_statsLock)
                 {
+                    _maxStackSize = Math.Max(_maxStackSize, solution.MaxStackSize);
+                    
                     var totalMicroseconds = solution.Microseconds;
 
                     var clues = _puzzles[i].Clues;
@@ -259,6 +263,8 @@ public class BulkSolver
             _output.AppendLine($" Timings...\n  Minimum: {_elapsed.Minimum:N0}μs          \n  Mean:    {mean:N0}μs          \n  Maximum: {_elapsed.Maximum:N0}μs (Puzzle #{_maxTimePuzzleNumber:N0})         \n");
             
             _output.AppendLine($" Combinations...\n  Minimum: {_steps.Minimum:N0}          \n  Mean:    {_steps.Total / solved:N0}          \n  Maximum: {_steps.Maximum:N0} (Puzzle #{_maxStepsPuzzleNumber:N0})           \n");
+
+            _output.AppendLine($" Max Stack Size: {_maxStackSize}    \n");
             
             var meanTime = _stopwatch.Elapsed.TotalSeconds / solved;
             
