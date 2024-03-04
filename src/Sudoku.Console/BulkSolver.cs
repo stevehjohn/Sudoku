@@ -70,9 +70,9 @@ public class BulkSolver
 
                 lock (_statsLock)
                 {
-                    if (solution.MaxStackSize > _maxStackSize)
+                    if (solution.MaxDepth > _maxStackSize)
                     {
-                        _maxStackSize = solution.MaxStackSize;
+                        _maxStackSize = solution.MaxDepth;
 
                         _maxStackSizePuzzleNumber = i;
                     }
@@ -276,7 +276,7 @@ public class BulkSolver
             
             _output.AppendLine($" Combinations...\n  Minimum: {_steps.Minimum:N0}          \n  Mean:    {_steps.Total / solved:N0}          \n  Maximum: {_steps.Maximum:N0} (Puzzle #{_maxStepsPuzzleNumber:N0})           \n");
 
-            _output.AppendLine($" Max Stack Size: {_maxStackSize} (Puzzle #{_maxStackSizePuzzleNumber:N0})         \n");
+            _output.AppendLine($" Max recursion depth: {_maxStackSize} (Puzzle #{_maxStackSizePuzzleNumber:N0})         \n");
             
             var meanTime = _stopwatch.Elapsed.TotalSeconds / solved;
             
