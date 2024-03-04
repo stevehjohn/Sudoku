@@ -15,15 +15,11 @@ public class BulkSolver
 
     private (long Total, int Minimum, int Maximum) _steps = (0, int.MaxValue, 0);
 
-    private int _maxStackSize;
-
     private readonly Dictionary<int, (int Count, double Elapsed)> _timings = new();
 
     private int _maxStepsPuzzleNumber;
 
     private int _maxTimePuzzleNumber;
-
-    private int _maxStackSizePuzzleNumber;
 
     private Stopwatch _stopwatch;
 
@@ -70,13 +66,6 @@ public class BulkSolver
 
                 lock (_statsLock)
                 {
-                    if (solution.MaxDepth > _maxStackSize)
-                    {
-                        _maxStackSize = solution.MaxDepth;
-
-                        _maxStackSizePuzzleNumber = i;
-                    }
-
                     var totalMicroseconds = solution.Microseconds;
 
                     var clues = _puzzles[i].Clues;
@@ -276,8 +265,6 @@ public class BulkSolver
             
             _output.AppendLine($" Combinations...\n  Minimum: {_steps.Minimum:N0}          \n  Mean:    {_steps.Total / solved:N0}          \n  Maximum: {_steps.Maximum:N0} (Puzzle #{_maxStepsPuzzleNumber:N0})           \n");
 
-            _output.AppendLine($" Max recursion depth: {_maxStackSize} (Puzzle #{_maxStackSizePuzzleNumber:N0})         \n");
-            
             var meanTime = _stopwatch.Elapsed.TotalSeconds / solved;
             
             var eta = TimeSpan.FromSeconds((_puzzles.Length - solved) * meanTime);
