@@ -147,56 +147,50 @@ public class Solver
     {
         for (var y = 0; y < 9; y++)
         {
-            var oneMask = 0;
+            var oneMaskRow = 0;
         
-            var twoMask = 0;
+            var twoMaskRow = 0;
+        
+            var oneMaskColumn = 0;
+        
+            var twoMaskColumn = 0;
         
             for (var x = 0; x < 9; x++)
             {
-                twoMask |= oneMask & _cellCandidates[(y << 3) + y + x];
+                twoMaskRow |= oneMaskRow & _cellCandidates[(y << 3) + y + x];
         
-                oneMask |= _cellCandidates[(y << 3) + y + x];
+                oneMaskRow |= _cellCandidates[(y << 3) + y + x];
+
+                twoMaskColumn |= oneMaskColumn & _cellCandidates[(x << 3) + x + y];
+        
+                oneMaskColumn |= _cellCandidates[(x << 3) + x + y];
             }
         
-            var once = oneMask & ~twoMask;
+            var onceRow = oneMaskRow & ~twoMaskRow;
         
-            if (BitOperations.PopCount((uint) once) == 1)
+            var onceColumn = oneMaskColumn & ~twoMaskColumn;
+        
+            if (BitOperations.PopCount((uint) onceRow) == 1)
             {
                 for (var x = 0; x < 9; x++)
                 {
-                    if ((_cellCandidates[(y << 3) + y + x] & once) > 0)
+                    if ((_cellCandidates[(y << 3) + y + x] & onceRow) > 0)
                     {
-                        _cellCandidates[(y << 3) + y + x] = once;
+                        _cellCandidates[(y << 3) + y + x] = onceRow;
 
                         return;
                     }
                 }
             }
-        }
-
-        for (var x = 0; x < 9; x++)
-        {
-            var oneMask = 0;
-    
-            var twoMask = 0;
-    
-            for (var y = 0; y < 9; y++)
+        
+            if (BitOperations.PopCount((uint) onceColumn) == 1)
             {
-                twoMask |= oneMask & _cellCandidates[(y << 3) + y + x];
-    
-                oneMask |= _cellCandidates[(y << 3) + y + x];
-            }
-    
-            var once = oneMask & ~twoMask;
-    
-            if (BitOperations.PopCount((uint) once) == 1)
-            {
-                for (var y = 0; y < 9; y++)
+                for (var x = 0; x < 9; x++)
                 {
-                    if ((_cellCandidates[(y << 3) + y + x] & once) > 0)
+                    if ((_cellCandidates[(x << 3) + x + y] & onceColumn) > 0)
                     {
-                        _cellCandidates[(y << 3) + y + x] = once;
-    
+                        _cellCandidates[(x << 3) + x + y] = onceColumn;
+
                         return;
                     }
                 }
