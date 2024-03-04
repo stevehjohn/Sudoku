@@ -74,7 +74,7 @@ public class BulkSolver
                     {
                         _maxStackSize = solution.MaxStackSize;
 
-                        _maxStepsPuzzleNumber = i;
+                        _maxStackSizePuzzleNumber = i;
                     }
 
                     var totalMicroseconds = solution.Microseconds;
