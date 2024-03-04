@@ -316,7 +316,7 @@ public class Solver
                 return;
             }
 
-            _stepSolutions.Enqueue((copy, false, newHistory), _frequencies[i] + 1);
+            _stepSolutions.Enqueue((copy, false, newHistory), score * 100 + _frequencies[i] + 1);
         }
     }
 }
