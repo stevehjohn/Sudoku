@@ -20,7 +20,7 @@ public class Solver
 
     private readonly PriorityQueue<(int[] Puzzle, bool Solved, List<Move> History), int> _stepSolutions = new();
 
-    private readonly Stack<(int[] Puzzle, List<Move> History)> _stack = [];
+    private readonly Stack<(int[] Puzzle, List<Move> History)> _stack = new(30);
     
     public (int[] Solution, int Steps, int MaxStackSize, double Microseconds, List<Move> History) Solve(int[] puzzle, bool record = false)
     {
@@ -320,7 +320,7 @@ public class Solver
                 return;
             }
 
-            _stepSolutions.Enqueue((copy, false, newHistory), score * 100 + _frequencies[i] + 1);
+            _stepSolutions.Enqueue((copy, false, newHistory), 10_000 - (score * 100 + _frequencies[i] + 1));
         }
     }
 }
