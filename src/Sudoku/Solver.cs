@@ -37,7 +37,7 @@ public class Solver
 
         var span = new Span<int>(workingCopy);
         
-        GetCellCandidates(puzzle);
+        GetCellCandidates(span);
 
         SolveStep(span, score, ref steps, history);
         
@@ -103,6 +103,10 @@ public class Solver
                 {
                     _cellCandidates[x + (y << 3) + y] = _columnCandidates[x] & _rowCandidates[y] & _boxCandidates[y / 3 * 3 + x / 3];
                 }
+                else
+                {
+                    _cellCandidates[x + (y << 3) + y] = 0;
+                }
             }
         }
     }
@@ -153,11 +157,23 @@ public class Solver
                 continue;
             }
 
-            var position = move.Position.X + (move.Position.Y << 3) + move.Position.Y;
-            
-            puzzle[position] = i;
+            puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = i;
 
-            _cellCandidates[position] &= ~bit;
+            var previousRowCandidates = _rowCandidates[move.Position.Y];
+
+            var previousColumnCandidates = _columnCandidates[move.Position.X];
+
+            var previousBoxCandidates = _boxCandidates[move.Position.Y / 3 * 3 + move.Position.X / 3];
+
+            var previousCellCandidates = _cellCandidates[move.Position.X + (move.Position.Y << 3) + move.Position.Y];
+
+            _rowCandidates[move.Position.Y] &= ~bit;
+
+            _columnCandidates[move.Position.X] &= ~bit;
+
+            _boxCandidates[move.Position.Y / 3 * 3 + move.Position.X / 3] &= ~bit;
+
+            _cellCandidates[move.Position.X + (move.Position.Y << 3) + move.Position.Y] &= ~bit;
 
             score--;
 
@@ -175,9 +191,15 @@ public class Solver
                 return true;
             }
 
-            puzzle[position] = 0;
+            puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = 0;
 
-            _cellCandidates[position] |= bit;
+            _rowCandidates[move.Position.Y] = previousRowCandidates;
+
+            _columnCandidates[move.Position.X] = previousColumnCandidates;
+
+            _boxCandidates[move.Position.Y / 3 * 3 + move.Position.X / 3] = previousBoxCandidates;
+
+            _cellCandidates[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = previousCellCandidates;
 
             history?.RemoveAt(history.Count - 1);
 
