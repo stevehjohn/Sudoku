@@ -34,15 +34,17 @@ public class Solver
         }
 
         var history = record ? new List<Move>() : null;
+
+        var span = new Span<int>(puzzle);
         
-        SolveStep(ref puzzle, score, history);
+        SolveStep(span, score, history);
         
         stopwatch.Stop();
         
         return (puzzle, steps, maxStackSize, stopwatch.Elapsed.TotalMicroseconds, history);
     }
     
-    private void SolveStep(ref int[] puzzle, int score, List<Move> history)
+    private void SolveStep(Span<int> puzzle, int score, List<Move> history)
     {
         GetCellCandidates(puzzle);
 
@@ -50,10 +52,10 @@ public class Solver
 
         var move = FindLowestMove(puzzle);
 
-        CreateNextSteps(ref puzzle, move, score, history);
+        CreateNextSteps(puzzle, move, score, history);
     }
 
-    private void GetCellCandidates(int[] puzzle)
+    private void GetCellCandidates(Span<int> puzzle)
     {
         for (var y = 0; y < 9; y++)
         {
@@ -206,7 +208,7 @@ public class Solver
         }
     }
 
-    private ((int X, int Y) Position, int Values, int ValueCount) FindLowestMove(int[] puzzle)
+    private ((int X, int Y) Position, int Values, int ValueCount) FindLowestMove(Span<int> puzzle)
     {
         var position = (X: -1, Y: -1);
 
@@ -241,7 +243,7 @@ public class Solver
         return (position, values, valueCount);
     }
 
-    private void CreateNextSteps(ref int[] puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, int score, List<Move> history)
+    private void CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, int score, List<Move> history)
     {
         for (var i = 1; i < 10; i++)
         {
@@ -269,7 +271,7 @@ public class Solver
                 return;
             }
             
-            SolveStep(ref puzzle, score, history);
+            SolveStep(puzzle, score, history);
 
             puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = 0;
 
