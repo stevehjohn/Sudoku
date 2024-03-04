@@ -35,44 +35,15 @@ public class Solver
         var maxStackSize = 0;
 
         var stopwatch = Stopwatch.StartNew();
+
+        SolveStep(ref puzzle, record ? [] : null);
         
-        while (_stack.TryPop(out var item))
-        {
-            maxStackSize = Math.Max(maxStackSize, _stack.Count);
-            
-            steps++;
-
-            SolveStep(item.Puzzle, item.History);
-
-            if (steps > 1)
-            {
-                _pool.Return(item.Puzzle);
-            }
-
-            while (_stepSolutions.TryDequeue(out var solution, out _))
-            {
-                if (solution.Solved)
-                {
-                    stopwatch.Stop();
-
-                    while (_stack.TryPop(out item))
-                    {
-                        _pool.Return(item.Puzzle);
-                    }
-
-                    return (solution.Puzzle, steps, maxStackSize, stopwatch.Elapsed.TotalMicroseconds, solution.History);
-                }
-
-                _stack.Push((solution.Puzzle, solution.History));
-            }
-        }
-
         stopwatch.Stop();
         
-        return (null, steps, maxStackSize, stopwatch.Elapsed.TotalMicroseconds, null);
+        return (puzzle, steps, maxStackSize, stopwatch.Elapsed.TotalMicroseconds, null);
     }
     
-    private void SolveStep(int[] puzzle, List<Move> history)
+    private void SolveStep(ref int[] puzzle, List<Move> history)
     {
         GetCellCandidates(puzzle);
 
@@ -80,7 +51,7 @@ public class Solver
 
         var move = FindLowestMove(puzzle);
 
-        CreateNextSteps(puzzle, move, history);
+        CreateNextSteps(ref puzzle, move, history);
     }
 
     private void GetCellCandidates(int[] puzzle)
@@ -271,7 +242,7 @@ public class Solver
         return (position, values, valueCount);
     }
 
-    private void CreateNextSteps(int[] puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, List<Move> history)
+    private void CreateNextSteps(ref int[] puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, List<Move> history)
     {
         _stepSolutions.Clear();
         
@@ -282,7 +253,7 @@ public class Solver
                 continue;
             }
 
-            var copy = _pool.Rent(81);
+            //var copy = _pool.Rent(81);
 
             var score = 80;
 
@@ -290,7 +261,7 @@ public class Solver
             {
                 var value = puzzle[j];
 
-                copy[j] = value;
+                //copy[j] = value;
 
                 if (value != 0)
                 {
@@ -298,7 +269,7 @@ public class Solver
                 }
             }
 
-            copy[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = i;
+            puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = i;
 
             List<Move> newHistory = null;
 
@@ -309,12 +280,12 @@ public class Solver
 
             if (score == 0)
             {
-                _stepSolutions.Enqueue((copy, true, newHistory), 0);
-                
                 return;
             }
+            
+            SolveStep(ref puzzle, newHistory);
 
-            _stepSolutions.Enqueue((copy, false, newHistory), _frequencies[i]);
+            puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = 0;
         }
     }
 }
