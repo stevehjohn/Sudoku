@@ -33,14 +33,16 @@ public class Solver
             }
         }
 
-        SolveStep(puzzle, score, record ? [] : null);
+        var history = record ? new List<Move>() : null;
+        
+        SolveStep(ref puzzle, score, history);
         
         stopwatch.Stop();
         
-        return (puzzle, steps, maxStackSize, stopwatch.Elapsed.TotalMicroseconds, null);
+        return (puzzle, steps, maxStackSize, stopwatch.Elapsed.TotalMicroseconds, history);
     }
     
-    private void SolveStep(int[] puzzle, int score, List<Move> history)
+    private void SolveStep(ref int[] puzzle, int score, List<Move> history)
     {
         GetCellCandidates(puzzle);
 
@@ -48,7 +50,7 @@ public class Solver
 
         var move = FindLowestMove(puzzle);
 
-        CreateNextSteps(puzzle, move, score, history);
+        CreateNextSteps(ref puzzle, move, score, history);
     }
 
     private void GetCellCandidates(int[] puzzle)
@@ -239,7 +241,7 @@ public class Solver
         return (position, values, valueCount);
     }
 
-    private void CreateNextSteps(int[] puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, int score, List<Move> history)
+    private void CreateNextSteps(ref int[] puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, int score, List<Move> history)
     {
         for (var i = 1; i < 10; i++)
         {
@@ -257,11 +259,9 @@ public class Solver
 
             score--;
             
-            List<Move> newHistory = null;
-
             if (history != null)
             {
-                newHistory = [..history, new Move(move.Position.X, move.Position.Y, i)];
+                history.Add(new Move(move.Position.X, move.Position.Y, i));
             }
 
             if (score == 0)
@@ -269,9 +269,14 @@ public class Solver
                 return;
             }
             
-            SolveStep(puzzle, score, newHistory);
+            SolveStep(ref puzzle, score, history);
 
             puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = 0;
+
+            if (history != null)
+            {
+                history.RemoveAt(history.Count - 1);
+            }
 
             score++;
         }
