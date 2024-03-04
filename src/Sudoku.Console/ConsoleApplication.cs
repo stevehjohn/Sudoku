@@ -226,7 +226,7 @@ public class ConsoleApplication
     {
         if (Debugger.IsAttached)
         {
-            _files = Directory.EnumerateFiles("/Users/steve.john/PersonalGit/Sudoku/Puzzles", "*.sudoku").Order().ToList();
+            _files = Directory.EnumerateFiles("/Users/steve.john/Git/Sudoku/Puzzles", "*.sudoku").Order().ToList();
         }
         else
         {
