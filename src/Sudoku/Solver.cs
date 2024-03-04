@@ -37,7 +37,7 @@ public class Solver
 
         var span = new Span<int>(workingCopy);
         
-        GetCellCandidates(span);
+        GetCellCandidates(puzzle);
 
         SolveStep(span, score, ref steps, history);
         
