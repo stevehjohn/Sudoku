@@ -23,6 +23,8 @@ public class Solver
 
         var stopwatch = Stopwatch.StartNew();
 
+        var workingCopy = new int[81];
+        
         var score = 81;
         
         for (var i = 0; i < 81; i++)
@@ -30,21 +32,23 @@ public class Solver
             if (puzzle[i] != 0)
             {
                 score--;
+
+                workingCopy[i] = puzzle[i];
             }
         }
 
         var history = record ? new List<Move>() : null;
 
-        var span = new Span<int>(puzzle);
+        var span = new Span<int>(workingCopy);
         
         SolveStep(span, score, history);
         
         stopwatch.Stop();
         
-        return (puzzle.ToArray(), steps, maxStackSize, stopwatch.Elapsed.TotalMicroseconds, history);
+        return (workingCopy, steps, maxStackSize, stopwatch.Elapsed.TotalMicroseconds, history);
     }
     
-    private void SolveStep(Span<int> puzzle, int score, List<Move> history)
+    private bool SolveStep(Span<int> puzzle, int score, List<Move> history)
     {
         GetCellCandidates(puzzle);
 
@@ -52,7 +56,7 @@ public class Solver
 
         var move = FindLowestMove(puzzle);
 
-        CreateNextSteps(puzzle, move, score, history);
+        return CreateNextSteps(puzzle, move, score, history);
     }
 
     private void GetCellCandidates(Span<int> puzzle)
@@ -243,18 +247,13 @@ public class Solver
         return (position, values, valueCount);
     }
 
-    private void CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, int score, List<Move> history)
+    private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, int score, List<Move> history)
     {
         for (var i = 1; i < 10; i++)
         {
             if ((move.Values & (1 << i)) == 0)
             {
                 continue;
-            }
-
-            if (puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] != 0)
-            {
-                return;
             }
 
             puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = i;
@@ -268,10 +267,13 @@ public class Solver
 
             if (score == 0)
             {
-                return;
+                return true;
             }
-            
-            SolveStep(puzzle, score, history);
+
+            if (SolveStep(puzzle, score, history))
+            {
+                return true;
+            }
 
             puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = 0;
 
@@ -282,5 +284,7 @@ public class Solver
 
             score++;
         }
+
+        return false;
     }
 }
