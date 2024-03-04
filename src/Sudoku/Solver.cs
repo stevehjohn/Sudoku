@@ -13,8 +13,6 @@ public class Solver
 
     private readonly int[] _cellCandidates = new int[81];
 
-    private readonly int[] _frequencies = new int[10];
-
     public (int[] Solution, int Steps, int MaxDepth, double Microseconds, List<Move> History) Solve(int[] puzzle, bool record = false)
     {
         var steps = 0;
@@ -41,6 +39,8 @@ public class Solver
 
         var span = new Span<int>(workingCopy);
         
+        GetCellCandidates(span);
+
         SolveStep(span, score, ref steps, history);
         
         stopwatch.Stop();
@@ -50,9 +50,7 @@ public class Solver
     
     private bool SolveStep(Span<int> puzzle, int score, ref int steps, List<Move> history)
     {
-        GetCellCandidates(puzzle);
-
-        FindHiddenSingles();
+        //FindHiddenSingles();
 
         var move = FindLowestMove(puzzle);
 
@@ -74,8 +72,6 @@ public class Solver
                 _rowCandidates[y] &= ~(1 << puzzle[x + y9]);
 
                 _columnCandidates[y] &= ~(1 << puzzle[y + (x << 3) + x]);
-
-                _frequencies[puzzle[x + y9]]++;
             }
         }
 
@@ -251,19 +247,34 @@ public class Solver
     {
         for (var i = 1; i < 10; i++)
         {
-            if ((move.Values & (1 << i)) == 0)
+            var bit = 1 << i;
+            
+            if ((move.Values & bit) == 0)
             {
                 continue;
             }
 
             puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = i;
 
+            var previousRowCandidates = _rowCandidates[move.Position.Y];
+
+            var previousColumnCandidates = _columnCandidates[move.Position.X];
+
+            var previousBoxCandidates = _boxCandidates[move.Position.Y / 3 * 3 + move.Position.X / 3];
+
+            var previousCellCandidates = _cellCandidates[move.Position.X + (move.Position.Y << 3) + move.Position.Y];
+
+            _rowCandidates[move.Position.Y] &= ~bit;
+
+            _columnCandidates[move.Position.X] &= ~bit;
+
+            _boxCandidates[move.Position.Y / 3 * 3 + move.Position.X / 3] &= ~bit;
+
+            _cellCandidates[move.Position.X + (move.Position.Y << 3) + move.Position.Y] &= ~bit;
+
             score--;
-            
-            if (history != null)
-            {
-                history.Add(new Move(move.Position.X, move.Position.Y, i));
-            }
+
+            history?.Add(new Move(move.Position.X, move.Position.Y, i));
 
             if (score == 0)
             {
@@ -279,10 +290,15 @@ public class Solver
 
             puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = 0;
 
-            if (history != null)
-            {
-                history.RemoveAt(history.Count - 1);
-            }
+            _rowCandidates[move.Position.Y] = previousRowCandidates;
+
+            _columnCandidates[move.Position.X] = previousColumnCandidates;
+
+            _boxCandidates[move.Position.Y / 3 * 3 + move.Position.X / 3] = previousBoxCandidates;
+
+            _cellCandidates[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = previousCellCandidates;
+
+            history?.RemoveAt(history.Count - 1);
 
             score++;
         }
