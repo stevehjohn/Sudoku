@@ -20,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Puzzles", "Puzzles", "{7231
 		..\Puzzles\Hidden Single Test.sudoku = ..\Puzzles\Hidden Single Test.sudoku
 		..\Puzzles\Easy.sudoku = ..\Puzzles\Easy.sudoku
 		..\Puzzles\Top 50K Toughest.sudoku = ..\Puzzles\Top 50K Toughest.sudoku
+		..\Puzzles\Medium.sudoku = ..\Puzzles\Medium.sudoku
+		..\Puzzles\Hard.sudoku = ..\Puzzles\Hard.sudoku
 	EndProjectSection
 EndProject
 Global
