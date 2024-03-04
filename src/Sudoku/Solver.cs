@@ -15,11 +15,11 @@ public class Solver
 
     private readonly int[] _frequencies = new int[10];
 
-    public (int[] Solution, int Steps, int MaxStackSize, double Microseconds, List<Move> History) Solve(int[] puzzle, bool record = false)
+    public (int[] Solution, int Steps, int MaxDepth, double Microseconds, List<Move> History) Solve(int[] puzzle, bool record = false)
     {
         var steps = 0;
 
-        var maxStackSize = 0;
+        var maxDepth = 0;
 
         var stopwatch = Stopwatch.StartNew();
 
@@ -41,14 +41,14 @@ public class Solver
 
         var span = new Span<int>(workingCopy);
         
-        SolveStep(span, score, history);
+        SolveStep(span, score, ref steps, history);
         
         stopwatch.Stop();
         
-        return (workingCopy, steps, maxStackSize, stopwatch.Elapsed.TotalMicroseconds, history);
+        return (workingCopy, steps, maxDepth, stopwatch.Elapsed.TotalMicroseconds, history);
     }
     
-    private bool SolveStep(Span<int> puzzle, int score, List<Move> history)
+    private bool SolveStep(Span<int> puzzle, int score, ref int steps, List<Move> history)
     {
         GetCellCandidates(puzzle);
 
@@ -56,7 +56,7 @@ public class Solver
 
         var move = FindLowestMove(puzzle);
 
-        return CreateNextSteps(puzzle, move, score, history);
+        return CreateNextSteps(puzzle, move, score, ref steps, history);
     }
 
     private void GetCellCandidates(Span<int> puzzle)
@@ -247,7 +247,7 @@ public class Solver
         return (position, values, valueCount);
     }
 
-    private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, int score, List<Move> history)
+    private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, int score, ref int steps, List<Move> history)
     {
         for (var i = 1; i < 10; i++)
         {
@@ -270,7 +270,9 @@ public class Solver
                 return true;
             }
 
-            if (SolveStep(puzzle, score, history))
+            steps++;
+            
+            if (SolveStep(puzzle, score, ref steps, history))
             {
                 return true;
             }
