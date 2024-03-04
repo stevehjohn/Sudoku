@@ -29,7 +29,7 @@ public class Solver
         {
             if (puzzle[i] != 0)
             {
-                score++;
+                score--;
             }
         }
 
@@ -40,15 +40,15 @@ public class Solver
         return (puzzle, steps, maxStackSize, stopwatch.Elapsed.TotalMicroseconds, null);
     }
     
-    private bool SolveStep(int[] puzzle, int score, List<Move> history)
+    private void SolveStep(int[] puzzle, int score, List<Move> history)
     {
         GetCellCandidates(puzzle);
 
         FindHiddenSingles();
 
         var move = FindLowestMove(puzzle);
-
-        return CreateNextSteps(puzzle, move, score, history);
+        
+        CreateNextSteps(puzzle, move, score, history);
     }
 
     private void GetCellCandidates(int[] puzzle)
@@ -239,7 +239,7 @@ public class Solver
         return (position, values, valueCount);
     }
 
-    private bool CreateNextSteps(int[] puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, int score, List<Move> history)
+    private void CreateNextSteps(int[] puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, int score, List<Move> history)
     {
         for (var i = 1; i < 10; i++)
         {
@@ -261,17 +261,12 @@ public class Solver
 
             if (score == 0)
             {
-                return true;
+                return;
             }
 
-            if (SolveStep(puzzle, score, newHistory))
-            {
-                return true;
-            }
+            SolveStep(puzzle, score, newHistory);
 
             puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = 0;
         }
-
-        return false;
     }
 }
