@@ -157,9 +157,11 @@ public class Solver
                 continue;
             }
 
-            puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = i;
+            var position = move.Position.X + (move.Position.Y << 3) + move.Position.Y;
+            
+            puzzle[position] = i;
 
-            _cellCandidates[move.Position.X + (move.Position.Y << 3) + move.Position.Y] &= ~bit;
+            _cellCandidates[position] &= ~bit;
 
             score--;
 
@@ -177,9 +179,9 @@ public class Solver
                 return true;
             }
 
-            puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = 0;
+            puzzle[position] = 0;
 
-            _cellCandidates[move.Position.X + (move.Position.Y << 3) + move.Position.Y] |= bit;
+            _cellCandidates[position] |= bit;
 
             history?.RemoveAt(history.Count - 1);
 
