@@ -167,15 +167,13 @@ public class Solver
 
             _boxCandidates[move.Position.Y / 3 * 3 + move.Position.X / 3] &= ~bit;
 
-            for (var y = 0; y < 9; y++)
+            for (var j = 0; j < 9; j++)
             {
-                for (var x = 0; x < 9; x++)
-                {
-                    if (puzzle[x + (y << 3) + y] == 0)
-                    {
-                        _cellCandidates[x + (y << 3) + y] = _columnCandidates[x] & _rowCandidates[y] & _boxCandidates[y / 3 * 3 + x / 3];
-                    }
-                }
+                _cellCandidates[move.Position.X + move.Position.Y * 9] &= ~bit;
+                
+                _cellCandidates[move.Position.Y + move.Position.X * 9] &= ~bit;
+
+                _cellCandidates[move.Position.Y / 3 * 3 + move.Position.X / 3] &= ~bit;
             }
 
             score--;
