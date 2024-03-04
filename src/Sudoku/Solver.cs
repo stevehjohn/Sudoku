@@ -41,7 +41,7 @@ public class Solver
         
         stopwatch.Stop();
         
-        return (puzzle, steps, maxStackSize, stopwatch.Elapsed.TotalMicroseconds, history);
+        return (puzzle.ToArray(), steps, maxStackSize, stopwatch.Elapsed.TotalMicroseconds, history);
     }
     
     private void SolveStep(Span<int> puzzle, int score, List<Move> history)
