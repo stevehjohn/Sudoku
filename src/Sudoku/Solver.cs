@@ -1,13 +1,10 @@
-﻿using System.Buffers;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Numerics;
 
 namespace Sudoku.Solver;
 
 public class Solver
 {
-    private readonly ArrayPool<int> _pool = ArrayPool<int>.Shared;
-    
     private readonly int[] _rowCandidates = new int[9];
     
     private readonly int[] _columnCandidates = new int[9];
@@ -18,32 +15,32 @@ public class Solver
 
     private readonly int[] _frequencies = new int[10];
 
-    private readonly PriorityQueue<(int[] Puzzle, bool Solved, List<Move> History), int> _stepSolutions = new();
-
-    private readonly Stack<(int[] Puzzle, List<Move> History)> _stack = new(30);
-    
     public (int[] Solution, int Steps, int MaxStackSize, double Microseconds, List<Move> History) Solve(int[] puzzle, bool record = false)
     {
-        _stepSolutions.Clear();
-        
-        _stack.Clear();
-        
-        _stack.Push((puzzle, record ? [] : null));
-
         var steps = 0;
 
         var maxStackSize = 0;
 
         var stopwatch = Stopwatch.StartNew();
 
-        SolveStep(ref puzzle, record ? [] : null);
+        var score = 81;
+        
+        for (var i = 0; i < 81; i++)
+        {
+            if (puzzle[i] != 0)
+            {
+                score++;
+            }
+        }
+
+        SolveStep(puzzle, score, record ? [] : null);
         
         stopwatch.Stop();
         
         return (puzzle, steps, maxStackSize, stopwatch.Elapsed.TotalMicroseconds, null);
     }
     
-    private void SolveStep(ref int[] puzzle, List<Move> history)
+    private bool SolveStep(int[] puzzle, int score, List<Move> history)
     {
         GetCellCandidates(puzzle);
 
@@ -51,7 +48,7 @@ public class Solver
 
         var move = FindLowestMove(puzzle);
 
-        CreateNextSteps(ref puzzle, move, history);
+        return CreateNextSteps(puzzle, move, score, history);
     }
 
     private void GetCellCandidates(int[] puzzle)
@@ -242,10 +239,8 @@ public class Solver
         return (position, values, valueCount);
     }
 
-    private void CreateNextSteps(ref int[] puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, List<Move> history)
+    private bool CreateNextSteps(int[] puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, int score, List<Move> history)
     {
-        _stepSolutions.Clear();
-        
         for (var i = 1; i < 10; i++)
         {
             if ((move.Values & (1 << i)) == 0)
@@ -253,24 +248,10 @@ public class Solver
                 continue;
             }
 
-            //var copy = _pool.Rent(81);
-
-            var score = 80;
-
-            for (var j = 0; j < 81; j++)
-            {
-                var value = puzzle[j];
-
-                //copy[j] = value;
-
-                if (value != 0)
-                {
-                    score--;
-                }
-            }
-
             puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = i;
 
+            score--;
+            
             List<Move> newHistory = null;
 
             if (history != null)
@@ -280,12 +261,17 @@ public class Solver
 
             if (score == 0)
             {
-                return;
+                return true;
             }
-            
-            SolveStep(ref puzzle, newHistory);
+
+            if (SolveStep(puzzle, score, newHistory))
+            {
+                return true;
+            }
 
             puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = 0;
         }
+
+        return false;
     }
 }
