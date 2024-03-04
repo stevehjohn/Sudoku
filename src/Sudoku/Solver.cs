@@ -39,14 +39,14 @@ public class Solver
         
         GetCellCandidates(span);
 
-        SolveStep(workingCopy, score, ref steps, history);
+        SolveStep(span, score, ref steps, history);
         
         stopwatch.Stop();
         
         return (workingCopy, steps, stopwatch.Elapsed.TotalMicroseconds, history);
     }
     
-    private bool SolveStep(int[] puzzle, int score, ref int steps, List<Move> history)
+    private bool SolveStep(Span<int> puzzle, int score, ref int steps, List<Move> history)
     {
         var move = FindLowestMove(puzzle);
 
@@ -142,7 +142,7 @@ public class Solver
         return (position, values, valueCount);
     }
 
-    private bool CreateNextSteps(int[] puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, int score, ref int steps, List<Move> history)
+    private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, int score, ref int steps, List<Move> history)
     {
         for (var i = 1; i < 10; i++)
         {
@@ -157,13 +157,13 @@ public class Solver
 
             var copy = new int[81];
             
-            Array.Copy(puzzle.ToArray(), copy, 81);
+            Array.Copy(_cellCandidates, copy, 81);
 
             for (var j = 0; j < 9; j++)
             {
-                _cellCandidates[move.Position.X + move.Position.Y * 9] &= ~bit;
+                _cellCandidates[j + move.Position.Y * 9] &= ~bit;
                 
-                _cellCandidates[move.Position.Y + move.Position.X * 9] &= ~bit;
+                _cellCandidates[move.Position.Y + j * 9] &= ~bit;
 
                 _cellCandidates[move.Position.Y / 3 * 3 + move.Position.X / 3] &= ~bit;
             }
@@ -185,8 +185,8 @@ public class Solver
             }
 
             puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = 0;
-            
-            Array.Copy(copy, puzzle, 81);
+
+            Array.Copy(copy, _cellCandidates, 81);
 
             history?.RemoveAt(history.Count - 1);
 
