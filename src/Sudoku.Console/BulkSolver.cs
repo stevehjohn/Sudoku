@@ -23,6 +23,8 @@ public class BulkSolver
 
     private int _maxTimePuzzleNumber;
 
+    private int _maxStackSizePuzzleNumber;
+
     private Stopwatch _stopwatch;
 
     private readonly StringBuilder _output = new(10_000);
@@ -68,8 +70,13 @@ public class BulkSolver
 
                 lock (_statsLock)
                 {
-                    _maxStackSize = Math.Max(_maxStackSize, solution.MaxStackSize);
-                    
+                    if (solution.MaxStackSize > _maxStackSize)
+                    {
+                        _maxStackSize = solution.MaxStackSize;
+
+                        _maxStepsPuzzleNumber = i;
+                    }
+
                     var totalMicroseconds = solution.Microseconds;
 
                     var clues = _puzzles[i].Clues;
@@ -269,7 +276,7 @@ public class BulkSolver
             
             _output.AppendLine($" Combinations...\n  Minimum: {_steps.Minimum:N0}          \n  Mean:    {_steps.Total / solved:N0}          \n  Maximum: {_steps.Maximum:N0} (Puzzle #{_maxStepsPuzzleNumber:N0})           \n");
 
-            _output.AppendLine($" Max Stack Size: {_maxStackSize}    \n");
+            _output.AppendLine($" Max Stack Size: {_maxStackSize} (Puzzle #{_maxStepsPuzzleNumber:N0})    \n");
             
             var meanTime = _stopwatch.Elapsed.TotalSeconds / solved;
             
