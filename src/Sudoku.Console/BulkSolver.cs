@@ -6,13 +6,15 @@ namespace Sudoku.Console;
 
 public class BulkSolver
 {
-    private readonly int[][] _puzzles;
+    private readonly (int[] Puzzle, int Clues)[] _puzzles;
 
     private readonly int _puzzleCount;
     
     private (double Total, double Minimum, double Maximum) _elapsed = (0, double.MaxValue, 0);
 
     private (long Total, int Minimum, int Maximum) _steps = (0, int.MaxValue, 0);
+
+    private readonly Dictionary<int, (int Count, double Elapsed)> _timings = new();
 
     private int _maxStepsPuzzleNumber;
 
@@ -26,7 +28,7 @@ public class BulkSolver
 
     private readonly object _consoleLock = new();
     
-    public BulkSolver(int[][] puzzles)
+    public BulkSolver((int[] Puzzle, int Clues)[] puzzles)
     {
         _puzzles = puzzles;
 
@@ -55,11 +57,20 @@ public class BulkSolver
             () => new Solver.Solver(),
             (i, _, solver) => 
             {
-                var solution = solver.Solve(_puzzles[i], record);
+                var solution = solver.Solve(_puzzles[i].Puzzle, record);
 
                 lock (_statsLock)
                 {
                     var totalMicroseconds = solution.Microseconds;
+
+                    var clues = _puzzles[i].Clues;
+
+                    if (! _timings.ContainsKey(clues))
+                    {
+                        _timings[clues] = (0, 0);
+                    }
+
+                    _timings[clues] = (_timings[clues].Count + 1, _timings[clues].Elapsed + solution.Microseconds);
                     
                     _elapsed.Total += totalMicroseconds;
 
@@ -86,11 +97,11 @@ public class BulkSolver
                     solved++;
                 }
 
-                Dump(_puzzles[i], solution.Solution, solved);
+                Dump(_puzzles[i].Puzzle, solution.Solution, solved);
 
                 if (record)
                 {
-                    DumpHistory(_puzzles[i], solution.History);
+                    DumpHistory(_puzzles[i].Puzzle, solution.History);
                 }
 
                 return solver;
@@ -101,6 +112,13 @@ public class BulkSolver
 
         System.Console.WriteLine($"\n All puzzles solved in: {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}.{_stopwatch.Elapsed.Milliseconds:N0}.");
         
+        System.Console.WriteLine(" Clues...");
+
+        foreach (var timing in _timings.OrderBy(t => t.Key))
+        {
+            System.Console.WriteLine($"  {timing.Key}: {timing.Value.Elapsed / timing.Value.Count:N0}μs");
+        }
+
         System.Console.CursorVisible = true;
     }
 
@@ -234,7 +252,7 @@ public class BulkSolver
             _output.AppendLine($" Timings...\n  Minimum: {_elapsed.Minimum:N0}μs          \n  Mean:    {mean:N0}μs          \n  Maximum: {_elapsed.Maximum:N0}μs (Puzzle #{_maxTimePuzzleNumber:N0})         \n");
             
             _output.AppendLine($" Combinations...\n  Minimum: {_steps.Minimum:N0}          \n  Mean:    {_steps.Total / solved:N0}          \n  Maximum: {_steps.Maximum:N0} (Puzzle #{_maxStepsPuzzleNumber:N0})           \n");
-
+            
             var meanTime = _stopwatch.Elapsed.TotalSeconds / solved;
             
             var eta = TimeSpan.FromSeconds((_puzzles.Length - solved) * meanTime);
