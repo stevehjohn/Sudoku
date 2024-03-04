@@ -167,7 +167,7 @@ public class Solver
                 
                 _cellCandidates[move.Position.X + j * 9] &= ~bit;
                 
-                _cellCandidates[box + j / 3 + j / 3 * 9] &= ~bit;
+                _cellCandidates[box + j % 3 + j / 3 * 9] &= ~bit;
             }
 
             score--;
