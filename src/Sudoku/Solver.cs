@@ -47,7 +47,7 @@ public class Solver
         FindHiddenSingles();
 
         var move = FindLowestMove(puzzle);
-        
+
         CreateNextSteps(puzzle, move, score, history);
     }
 
@@ -248,6 +248,11 @@ public class Solver
                 continue;
             }
 
+            if (puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] != 0)
+            {
+                return;
+            }
+
             puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = i;
 
             score--;
@@ -261,9 +266,21 @@ public class Solver
 
             if (score == 0)
             {
+                for (var y = 0; y < 9; y++)
+                {
+                    for (var x = 0; x < 9; x++)
+                    {
+                        Console.Write($"{puzzle[x + y * 9]} ");
+                    }
+                    
+                    Console.WriteLine();
+                }
+
+                Environment.Exit(0);
+                
                 return;
             }
-
+            
             SolveStep(puzzle, score, newHistory);
 
             puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = 0;
