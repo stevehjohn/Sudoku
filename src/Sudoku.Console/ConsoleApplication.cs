@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Runtime;
 
 namespace Sudoku.Console;
@@ -223,6 +224,13 @@ public class ConsoleApplication
 
     private void EnumeratePuzzleFiles()
     {
-        _files = Directory.EnumerateFiles("/Users/steve.john/PersonalGit/Sudoku/Puzzles", "*.sudoku").Order().ToList();
+        if (Debugger.IsAttached)
+        {
+            _files = Directory.EnumerateFiles("/Users/steve.john/PersonalGit/Sudoku/Puzzles", "*.sudoku").Order().ToList();
+        }
+        else
+        {
+            _files = Directory.EnumerateFiles("Puzzles", "*.sudoku").Order().ToList();
+        }
     }
 }
