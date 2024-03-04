@@ -1,3 +1,5 @@
+using System.Runtime;
+
 namespace Sudoku.Console;
 
 public class ConsoleApplication

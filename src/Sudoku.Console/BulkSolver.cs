@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Runtime;
 using System.Text;
 using Sudoku.Solver;
 
@@ -46,6 +47,10 @@ public class BulkSolver
         _stopwatch = Stopwatch.StartNew();
 
         var record = _puzzles.Length == 1;
+
+        var oldMode = GCSettings.LatencyMode;
+        
+        GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
         
         Parallel.For(
             0, 
@@ -109,6 +114,8 @@ public class BulkSolver
             _ => { });
 
         _stopwatch.Stop();
+
+        GCSettings.LatencyMode = oldMode;
 
         System.Console.WriteLine($"\n All puzzles solved in: {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}.{_stopwatch.Elapsed.Milliseconds:N0}.");
         
