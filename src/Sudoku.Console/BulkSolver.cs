@@ -121,7 +121,7 @@ public class BulkSolver
 
         GCSettings.LatencyMode = oldMode;
 
-        System.Console.WriteLine($"\n All puzzles solved in: {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}.{_stopwatch.Elapsed.Milliseconds:N0}.");
+        System.Console.WriteLine($"\n All puzzles solved in: {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}.{_stopwatch.Elapsed.Milliseconds:N0}.\n");
         
         System.Console.WriteLine(" Clues...");
 
