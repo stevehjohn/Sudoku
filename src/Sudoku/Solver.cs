@@ -103,10 +103,6 @@ public class Solver
                 {
                     _cellCandidates[x + (y << 3) + y] = _columnCandidates[x] & _rowCandidates[y] & _boxCandidates[y / 3 * 3 + x / 3];
                 }
-                else
-                {
-                    _cellCandidates[x + (y << 3) + y] = 0;
-                }
             }
         }
     }
@@ -165,15 +161,22 @@ public class Solver
 
             var previousBoxCandidates = _boxCandidates[move.Position.Y / 3 * 3 + move.Position.X / 3];
 
-            var previousCellCandidates = _cellCandidates[move.Position.X + (move.Position.Y << 3) + move.Position.Y];
-
             _rowCandidates[move.Position.Y] &= ~bit;
 
             _columnCandidates[move.Position.X] &= ~bit;
 
             _boxCandidates[move.Position.Y / 3 * 3 + move.Position.X / 3] &= ~bit;
 
-            _cellCandidates[move.Position.X + (move.Position.Y << 3) + move.Position.Y] &= ~bit;
+            for (var y = 0; y < 9; y++)
+            {
+                for (var x = 0; x < 9; x++)
+                {
+                    if (puzzle[x + (y << 3) + y] == 0)
+                    {
+                        _cellCandidates[x + (y << 3) + y] = _columnCandidates[x] & _rowCandidates[y] & _boxCandidates[y / 3 * 3 + x / 3];
+                    }
+                }
+            }
 
             score--;
 
@@ -198,8 +201,6 @@ public class Solver
             _columnCandidates[move.Position.X] = previousColumnCandidates;
 
             _boxCandidates[move.Position.Y / 3 * 3 + move.Position.X / 3] = previousBoxCandidates;
-
-            _cellCandidates[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = previousCellCandidates;
 
             history?.RemoveAt(history.Count - 1);
 
