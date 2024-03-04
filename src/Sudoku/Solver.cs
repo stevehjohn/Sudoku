@@ -15,11 +15,9 @@ public class Solver
 
     private readonly int[] _frequencies = new int[10];
 
-    public (int[] Solution, int Steps, int MaxDepth, double Microseconds, List<Move> History) Solve(int[] puzzle, bool record = false)
+    public (int[] Solution, int Steps, double Microseconds, List<Move> History) Solve(int[] puzzle, bool record = false)
     {
         var steps = 0;
-
-        var maxDepth = 0;
 
         var stopwatch = Stopwatch.StartNew();
 
@@ -45,7 +43,7 @@ public class Solver
         
         stopwatch.Stop();
         
-        return (workingCopy, steps, maxDepth, stopwatch.Elapsed.TotalMicroseconds, history);
+        return (workingCopy, steps, stopwatch.Elapsed.TotalMicroseconds, history);
     }
     
     private bool SolveStep(Span<int> puzzle, int score, ref int steps, List<Move> history)
