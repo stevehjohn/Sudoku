@@ -311,14 +311,12 @@ public class Solver
 
             if (score == 0)
             {
-                _stepSolutions.Clear();
-                
-                _stepSolutions.Enqueue((copy, true, newHistory), _frequencies[i]);
+                _stepSolutions.Enqueue((copy, true, newHistory), 0);
                 
                 return;
             }
 
-            _stepSolutions.Enqueue((copy, false, newHistory), _frequencies[i]);
+            _stepSolutions.Enqueue((copy, false, newHistory), _frequencies[i] + 1);
         }
     }
 }
