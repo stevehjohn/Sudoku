@@ -159,7 +159,7 @@ public class Solver
             
             Array.Copy(_cellCandidates, copy, 81);
 
-            var box = move.Position.Y / 3 * 3 + move.Position.X / 3;
+            var box = move.Position.Y / 3 * 27 + move.Position.X / 3 * 3;
             
             for (var j = 0; j < 9; j++)
             {
