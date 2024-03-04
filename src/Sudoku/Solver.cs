@@ -266,17 +266,15 @@ public class Solver
 
             if (score == 0)
             {
-                for (var y = 0; y < 9; y++)
-                {
-                    for (var x = 0; x < 9; x++)
-                    {
-                        Console.Write($"{puzzle[x + y * 9]} ");
-                    }
-                    
-                    Console.WriteLine();
-                }
-
-                Environment.Exit(0);
+                // for (var y = 0; y < 9; y++)
+                // {
+                //     for (var x = 0; x < 9; x++)
+                //     {
+                //         Console.Write($"{puzzle[x + y * 9]} ");
+                //     }
+                //     
+                //     Console.WriteLine();
+                // }
                 
                 return;
             }
@@ -284,6 +282,8 @@ public class Solver
             SolveStep(puzzle, score, newHistory);
 
             puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = 0;
+
+            score++;
         }
     }
 }
