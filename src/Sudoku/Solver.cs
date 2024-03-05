@@ -48,7 +48,7 @@ public class Solver
     {
         GetCellCandidates(puzzle);
 
-        if (! FindHiddenSingles())
+        //if (! FindHiddenSingles())
         {
             //FindNakedPairs();
         }
@@ -60,11 +60,11 @@ public class Solver
 
     private void GetCellCandidates(Span<int> puzzle)
     {
-        _rowCandidates.Clear();
+        _rowCandidates.Reset();
         
-        _columnCandidates.Clear();
+        _columnCandidates.Reset();
         
-        _boxCandidates.Clear();
+        _boxCandidates.Reset();
         
         for (var y = 0; y < 9; y++)
         {
@@ -72,9 +72,9 @@ public class Solver
 
             for (var x = 0; x < 9; x++)
             {
-                _rowCandidates.Add(y, puzzle[x + y9]);
+                _rowCandidates.Remove(y, puzzle[x + y9]);
 
-                _columnCandidates.Add(y, puzzle[y + (x << 3) + x]);
+                _columnCandidates.Remove(y, puzzle[y + (x << 3) + x]);
             }
         }
 
@@ -92,7 +92,7 @@ public class Solver
 
                     for (var x = 0; x < 3; x++)
                     {
-                        _boxCandidates.Add(boxIndex, puzzle[row + x]);
+                        _boxCandidates.Remove(boxIndex, puzzle[row + x]);
                     }
                 }
 
@@ -116,256 +116,256 @@ public class Solver
         }
     }
 
-    private bool FindHiddenSingles()
-    {
-        for (var y = 0; y < 9; y++)
-        {
-            var oneMaskRow = 0;
-
-            var twoMaskRow = 0;
-
-            var oneMaskColumn = 0;
-
-            var twoMaskColumn = 0;
-
-            for (var x = 0; x < 9; x++)
-            {
-                twoMaskRow |= oneMaskRow & _cellCandidates[(y << 3) + y + x];
-
-                oneMaskRow |= _cellCandidates[(y << 3) + y + x];
-
-                twoMaskColumn |= oneMaskColumn & _cellCandidates[(x << 3) + x + y];
-
-                oneMaskColumn |= _cellCandidates[(x << 3) + x + y];
-            }
-
-            var onceRow = oneMaskRow & ~twoMaskRow;
-
-            var onceColumn = oneMaskColumn & ~twoMaskColumn;
-
-            if (BitOperations.PopCount((uint) onceRow) == 1)
-            {
-                for (var x = 0; x < 9; x++)
-                {
-                    if ((_cellCandidates[(y << 3) + y + x] & onceRow) > 0)
-                    {
-                        _cellCandidates[(y << 3) + y + x] = onceRow;
-                    }
-                }
-
-                return true;
-            }
-
-            if (BitOperations.PopCount((uint) onceColumn) == 1)
-            {
-                for (var x = 0; x < 9; x++)
-                {
-                    if ((_cellCandidates[(x << 3) + x + y] & onceColumn) > 0)
-                    {
-                        _cellCandidates[(x << 3) + x + y] = onceColumn;
-                    }
-                }
-
-                return true;
-            }
-        }
-
-        for (var yO = 0; yO < 81; yO += 27)
-        {
-            for (var xO = 0; xO < 9; xO += 3)
-            {
-                var oneMask = 0;
-
-                var twoMask = 0;
-
-                var start = yO + xO;
-
-                for (var y = 0; y < 3; y++)
-                {
-                    for (var x = 0; x < 3; x++)
-                    {
-                        twoMask |= oneMask & _cellCandidates[start + (y << 3) + y + x];
-
-                        oneMask |= _cellCandidates[start + (y << 3) + y + x];
-                    }
-                }
-
-                var once = oneMask & ~twoMask;
-
-                if (BitOperations.PopCount((uint) once) == 1)
-                {
-                    for (var y = 0; y < 3; y++)
-                    {
-                        for (var x = 0; x < 3; x++)
-                        {
-                            if ((_cellCandidates[start + (y << 3) + y + x] & once) > 0)
-                            {
-                                _cellCandidates[start + (y << 3) + y + x] = once;
-                            }
-                        }
-                    }
-
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    private void FindNakedPairs()
-    {
-        var first = 0;
-
-        var second = 0;
-
-        var third = 0;
-
-        var count = 0;
-
-        for (var i = 0; i < 9; i++)
-        {
-            var candidate = _rowCandidates[i];
-            
-            if (BitOperations.PopCount((uint) candidate) == 2)
-            {
-                if (first > 0)
-                {
-                    if (second > 0)
-                    {
-                        third = candidate;
-                    }
-                    else
-                    {
-                        second = candidate;
-                    }
-                }
-                else
-                {
-                    first = candidate;
-                }
-            }
-
-            if (candidate > 0)
-            {
-                count++;
-            }
-        }
-
-        if (first == second && third == 0 && count > 2)
-        {
-            first = ~first;
-
-            for (var i = 0; i < 9; i++)
-            {
-                if (_rowCandidates[i] != first)
-                {
-                    _rowCandidates[i] &= first;
-                }
-            }
-
-            return;
-        }
-
-        first = 0;
-
-        second = 0;
-
-        third = 0;
-
-        for (var i = 0; i < 9; i++)
-        {
-            var candidate = _columnCandidates[i];
-            
-            if (BitOperations.PopCount((uint) candidate) == 2)
-            {
-                if (first > 0)
-                {
-                    if (second > 0)
-                    {
-                        third = candidate;
-                    }
-                    else
-                    {
-                        second = candidate;
-                    }
-                }
-                else
-                {
-                    first = candidate;
-                }
-            }
-
-            if (candidate > 0)
-            {
-                count++;
-            }
-
-        }
-
-        if (first == second && third == 0 && count > 2)
-        {
-            first = ~first;
-
-            for (var i = 0; i < 9; i++)
-            {
-                if (_columnCandidates[i] != first)
-                {
-                    _columnCandidates[i] &= first;
-                }
-            }
-
-            return;
-        }
-
-        first = 0;
-
-        second = 0;
-
-        third = 0;
-
-        for (var i = 0; i < 9; i++)
-        {
-            var candidate = _boxCandidates[i];
-            
-            if (BitOperations.PopCount((uint) candidate) == 2)
-            {
-                if (first > 0)
-                {
-                    if (second > 0)
-                    {
-                        third = candidate;
-                    }
-                    else
-                    {
-                        second = candidate;
-                    }
-                }
-                else
-                {
-                    first = candidate;
-                }
-            }
-
-            if (candidate > 0)
-            {
-                count++;
-            }
-        }
-
-        if (first == second && third == 0 && count > 2)
-        {
-            first = ~first;
-
-            for (var i = 0; i < 9; i++)
-            {
-                if (_boxCandidates[i] != first)
-                {
-                    _boxCandidates[i] &= first;
-                }
-            }
-        }
-    }
+    // private bool FindHiddenSingles()
+    // {
+    //     for (var y = 0; y < 9; y++)
+    //     {
+    //         var oneMaskRow = 0;
+    //
+    //         var twoMaskRow = 0;
+    //
+    //         var oneMaskColumn = 0;
+    //
+    //         var twoMaskColumn = 0;
+    //
+    //         for (var x = 0; x < 9; x++)
+    //         {
+    //             twoMaskRow |= oneMaskRow & _cellCandidates[(y << 3) + y + x];
+    //
+    //             oneMaskRow |= _cellCandidates[(y << 3) + y + x];
+    //
+    //             twoMaskColumn |= oneMaskColumn & _cellCandidates[(x << 3) + x + y];
+    //
+    //             oneMaskColumn |= _cellCandidates[(x << 3) + x + y];
+    //         }
+    //
+    //         var onceRow = oneMaskRow & ~twoMaskRow;
+    //
+    //         var onceColumn = oneMaskColumn & ~twoMaskColumn;
+    //
+    //         if (BitOperations.PopCount((uint) onceRow) == 1)
+    //         {
+    //             for (var x = 0; x < 9; x++)
+    //             {
+    //                 if ((_cellCandidates[(y << 3) + y + x] & onceRow) > 0)
+    //                 {
+    //                     _cellCandidates[(y << 3) + y + x] = onceRow;
+    //                 }
+    //             }
+    //
+    //             return true;
+    //         }
+    //
+    //         if (BitOperations.PopCount((uint) onceColumn) == 1)
+    //         {
+    //             for (var x = 0; x < 9; x++)
+    //             {
+    //                 if ((_cellCandidates[(x << 3) + x + y] & onceColumn) > 0)
+    //                 {
+    //                     _cellCandidates[(x << 3) + x + y] = onceColumn;
+    //                 }
+    //             }
+    //
+    //             return true;
+    //         }
+    //     }
+    //
+    //     for (var yO = 0; yO < 81; yO += 27)
+    //     {
+    //         for (var xO = 0; xO < 9; xO += 3)
+    //         {
+    //             var oneMask = 0;
+    //
+    //             var twoMask = 0;
+    //
+    //             var start = yO + xO;
+    //
+    //             for (var y = 0; y < 3; y++)
+    //             {
+    //                 for (var x = 0; x < 3; x++)
+    //                 {
+    //                     twoMask |= oneMask & _cellCandidates[start + (y << 3) + y + x];
+    //
+    //                     oneMask |= _cellCandidates[start + (y << 3) + y + x];
+    //                 }
+    //             }
+    //
+    //             var once = oneMask & ~twoMask;
+    //
+    //             if (BitOperations.PopCount((uint) once) == 1)
+    //             {
+    //                 for (var y = 0; y < 3; y++)
+    //                 {
+    //                     for (var x = 0; x < 3; x++)
+    //                     {
+    //                         if ((_cellCandidates[start + (y << 3) + y + x] & once) > 0)
+    //                         {
+    //                             _cellCandidates[start + (y << 3) + y + x] = once;
+    //                         }
+    //                     }
+    //                 }
+    //
+    //                 return true;
+    //             }
+    //         }
+    //     }
+    //
+    //     return false;
+    // }
+    //
+    // private void FindNakedPairs()
+    // {
+    //     var first = 0;
+    //
+    //     var second = 0;
+    //
+    //     var third = 0;
+    //
+    //     var count = 0;
+    //
+    //     for (var i = 0; i < 9; i++)
+    //     {
+    //         var candidate = _rowCandidates[i];
+    //         
+    //         if (BitOperations.PopCount((uint) candidate) == 2)
+    //         {
+    //             if (first > 0)
+    //             {
+    //                 if (second > 0)
+    //                 {
+    //                     third = candidate;
+    //                 }
+    //                 else
+    //                 {
+    //                     second = candidate;
+    //                 }
+    //             }
+    //             else
+    //             {
+    //                 first = candidate;
+    //             }
+    //         }
+    //
+    //         if (candidate > 0)
+    //         {
+    //             count++;
+    //         }
+    //     }
+    //
+    //     if (first == second && third == 0 && count > 2)
+    //     {
+    //         first = ~first;
+    //
+    //         for (var i = 0; i < 9; i++)
+    //         {
+    //             if (_rowCandidates[i] != first)
+    //             {
+    //                 _rowCandidates[i] &= first;
+    //             }
+    //         }
+    //
+    //         return;
+    //     }
+    //
+    //     first = 0;
+    //
+    //     second = 0;
+    //
+    //     third = 0;
+    //
+    //     for (var i = 0; i < 9; i++)
+    //     {
+    //         var candidate = _columnCandidates[i];
+    //         
+    //         if (BitOperations.PopCount((uint) candidate) == 2)
+    //         {
+    //             if (first > 0)
+    //             {
+    //                 if (second > 0)
+    //                 {
+    //                     third = candidate;
+    //                 }
+    //                 else
+    //                 {
+    //                     second = candidate;
+    //                 }
+    //             }
+    //             else
+    //             {
+    //                 first = candidate;
+    //             }
+    //         }
+    //
+    //         if (candidate > 0)
+    //         {
+    //             count++;
+    //         }
+    //
+    //     }
+    //
+    //     if (first == second && third == 0 && count > 2)
+    //     {
+    //         first = ~first;
+    //
+    //         for (var i = 0; i < 9; i++)
+    //         {
+    //             if (_columnCandidates[i] != first)
+    //             {
+    //                 _columnCandidates[i] &= first;
+    //             }
+    //         }
+    //
+    //         return;
+    //     }
+    //
+    //     first = 0;
+    //
+    //     second = 0;
+    //
+    //     third = 0;
+    //
+    //     for (var i = 0; i < 9; i++)
+    //     {
+    //         var candidate = _boxCandidates[i];
+    //         
+    //         if (BitOperations.PopCount((uint) candidate) == 2)
+    //         {
+    //             if (first > 0)
+    //             {
+    //                 if (second > 0)
+    //                 {
+    //                     third = candidate;
+    //                 }
+    //                 else
+    //                 {
+    //                     second = candidate;
+    //                 }
+    //             }
+    //             else
+    //             {
+    //                 first = candidate;
+    //             }
+    //         }
+    //
+    //         if (candidate > 0)
+    //         {
+    //             count++;
+    //         }
+    //     }
+    //
+    //     if (first == second && third == 0 && count > 2)
+    //     {
+    //         first = ~first;
+    //
+    //         for (var i = 0; i < 9; i++)
+    //         {
+    //             if (_boxCandidates[i] != first)
+    //             {
+    //                 _boxCandidates[i] &= first;
+    //             }
+    //         }
+    //     }
+    // }
 
     private ((int X, int Y) Position, int Values, int ValueCount) FindLowestMove(Span<int> puzzle)
     {
