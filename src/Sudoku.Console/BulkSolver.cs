@@ -70,12 +70,14 @@ public class BulkSolver
 
                     var clues = _puzzles[i].Clues;
 
-                    if (! _timings.ContainsKey(clues))
+                    if (! _timings.TryGetValue(clues, out (int Count, double Elapsed) value))
                     {
-                        _timings[clues] = (0, 0);
+                        value = (0, 0);
+                        
+                        _timings[clues] = value;
                     }
 
-                    _timings[clues] = (_timings[clues].Count + 1, _timings[clues].Elapsed + solution.Microseconds);
+                    _timings[clues] = (value.Count + 1, value.Elapsed + solution.Microseconds);
                     
                     _elapsed.Total += totalMicroseconds;
 
