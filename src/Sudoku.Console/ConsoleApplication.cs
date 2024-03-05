@@ -103,21 +103,65 @@ public class ConsoleApplication
         }
     }
 
-    private void RunTestSuite()
+    private static void RunTestSuite()
     {
         // Easy, medium, hard, diabolical, min clues, benchmarks, 2m.
         var files = new[] { "Easy", "Medium", "Hard", "Diabolical", "Minimum Clues", "Benchmarks", "2 Million" };
 
+        System.Console.Clear();
+
+        System.Console.CursorVisible = false;
+        
+        System.Console.WriteLine();
+
+        var stopwatch = Stopwatch.StartNew();
+
+        var count = 0;
+        
+        System.Console.Write(" Warming up...");
+        
+        var data = File.ReadAllLines("Puzzles/Easy.sudoku");
+
+        var puzzles = ParseData(data);
+
+        var solver = new BulkSolver(puzzles);
+        
+        solver.Solve(true, true);
+        
+        System.Console.WriteLine("\n");
+
         foreach (var file in files)
         {
-            var data = File.ReadAllLines($"Puzzles/{file}.sudoku");
-
-            var puzzles = ParseData(data);
-
-            var solver = new BulkSolver(puzzles);
+            System.Console.Write(" Loading...");
             
-            solver.Solve();
+            data = File.ReadAllLines($"Puzzles/{file}.sudoku");
+
+            count += data.Length;
+            
+            puzzles = ParseData(data);
+
+            solver = new BulkSolver(puzzles);
+
+            System.Console.CursorLeft = 0;
+
+            System.Console.Write("                    ");
+
+            System.Console.CursorLeft = 0;
+            
+            System.Console.Write($" {file}: ");
+            
+            solver.Solve(true);
+
+            System.Console.CursorVisible = false;
+            
+            System.Console.WriteLine();
         }
+        
+        stopwatch.Stop();
+        
+        System.Console.WriteLine($" Solved {count:N0} puzzles in {stopwatch.Elapsed.Minutes:N0}:{stopwatch.Elapsed.Seconds:D2}.{stopwatch.Elapsed.Milliseconds:N0}.");
+
+        System.Console.CursorVisible = true;
     }
 
     private static void SolveUserPuzzle()

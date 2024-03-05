@@ -36,11 +36,14 @@ public class BulkSolver
         _puzzleCount = puzzles.Length;
     }
 
-    public void Solve()
+    public void Solve(bool quiet = false, bool noSummary = false)
     {
         var solved = 0;
-        
-        System.Console.Clear();
+
+        if (! quiet)
+        {
+            System.Console.Clear();
+        }
 
         System.Console.CursorVisible = false;
         
@@ -104,7 +107,14 @@ public class BulkSolver
                     solved++;
                 }
 
-                Dump(_puzzles[i].Puzzle, solution.Solution, solved);
+                if (quiet)
+                {
+                    ShowProgress(solved, noSummary);
+                }
+                else
+                {
+                    Dump(_puzzles[i].Puzzle, solution.Solution, solved);
+                }
 
                 if (record)
                 {
@@ -119,21 +129,68 @@ public class BulkSolver
 
         GCSettings.LatencyMode = oldMode;
 
-        if (solved == 1)
+        if (! quiet)
         {
-            System.Console.WriteLine("\n");
-        }
+            if (solved == 1)
+            {
+                System.Console.WriteLine("\n");
+            }
 
-        System.Console.WriteLine($"\n All puzzles solved in: {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}.{_stopwatch.Elapsed.Milliseconds:N0}.\n");
+            System.Console.WriteLine($"\n All puzzles solved in: {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}.{_stopwatch.Elapsed.Milliseconds:N0}.\n");
+
+            System.Console.WriteLine(" Clues...");
+
+            foreach (var timing in _timings.OrderBy(t => t.Key))
+            {
+                System.Console.WriteLine($"  {timing.Key}: {timing.Value.Elapsed / timing.Value.Count:N0}μs");
+            }
+        }
+        else
+        {
+            if (! noSummary)
+            {
+                if (_stopwatch.Elapsed.TotalSeconds < 1)
+                {
+                    System.Console.WriteLine($" puzzles solved in {_stopwatch.Elapsed.TotalMicroseconds:N0}μs.");
+                }
+                else
+                {
+                    System.Console.WriteLine($" puzzles solved in {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}.{_stopwatch.Elapsed.Milliseconds:N0}.");
+                }
+            }
+        }
         
-        System.Console.WriteLine(" Clues...");
+        System.Console.CursorVisible = true;
+    }
 
-        foreach (var timing in _timings.OrderBy(t => t.Key))
+    private void ShowProgress(int solved, bool noSummary)
+    {
+        if (solved != _puzzleCount)
         {
-            System.Console.WriteLine($"  {timing.Key}: {timing.Value.Elapsed / timing.Value.Count:N0}μs");
+            if (! Monitor.TryEnter(_consoleLock))
+            {
+                return;
+            }
+        }
+        else
+        {
+            Monitor.Enter(_consoleLock);
         }
 
-        System.Console.CursorVisible = true;
+        System.Console.CursorLeft = 17;
+        
+        var percent = 100 - (_puzzleCount - solved) * 100d / _puzzleCount;
+
+        var line = (int) Math.Floor(percent / 4);
+
+        System.Console.Write($" {new string('\u2588', line)}{new string('-', 25 - line)}   ");
+
+        if (! noSummary)
+        {
+            System.Console.Write($"{$"{solved:N0}",9}");
+        }
+
+        Monitor.Exit(_consoleLock);
     }
 
     private static void DumpHistory(int[] puzzle, List<Move> solution)
