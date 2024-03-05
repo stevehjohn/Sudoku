@@ -221,29 +221,38 @@ public class Solver
 
         var third = 0;
 
+        var count = 0;
+
         for (var i = 0; i < 9; i++)
         {
-            if (BitOperations.PopCount((uint) _rowCandidates[i]) == 2)
+            var candidate = _rowCandidates[i];
+            
+            if (BitOperations.PopCount((uint) candidate) == 2)
             {
                 if (first > 0)
                 {
                     if (second > 0)
                     {
-                        third = _rowCandidates[i];
+                        third = candidate;
                     }
                     else
                     {
-                        second = _rowCandidates[i];
+                        second = candidate;
                     }
                 }
                 else
                 {
-                    first = _rowCandidates[i];
+                    first = candidate;
                 }
+            }
+
+            if (candidate > 0)
+            {
+                count++;
             }
         }
 
-        if (first == second && third == 0)
+        if (first == second && third == 0 && count > 2)
         {
             first = ~first;
 
@@ -266,27 +275,35 @@ public class Solver
 
         for (var i = 0; i < 9; i++)
         {
-            if (BitOperations.PopCount((uint) _columnCandidates[i]) == 2)
+            var candidate = _columnCandidates[i];
+            
+            if (BitOperations.PopCount((uint) candidate) == 2)
             {
                 if (first > 0)
                 {
                     if (second > 0)
                     {
-                        third = _rowCandidates[i];
+                        third = candidate;
                     }
                     else
                     {
-                        second = _rowCandidates[i];
+                        second = candidate;
                     }
                 }
                 else
                 {
-                    first = _rowCandidates[i];
+                    first = candidate;
                 }
             }
+
+            if (candidate > 0)
+            {
+                count++;
+            }
+
         }
 
-        if (first == second && third == 0)
+        if (first == second && third == 0 && count > 2)
         {
             first = ~first;
 
@@ -309,27 +326,34 @@ public class Solver
 
         for (var i = 0; i < 9; i++)
         {
-            if (BitOperations.PopCount((uint) _boxCandidates[i]) == 2)
+            var candidate = _boxCandidates[i];
+            
+            if (BitOperations.PopCount((uint) candidate) == 2)
             {
                 if (first > 0)
                 {
                     if (second > 0)
                     {
-                        third = _rowCandidates[i];
+                        third = candidate;
                     }
                     else
                     {
-                        second = _rowCandidates[i];
+                        second = candidate;
                     }
                 }
                 else
                 {
-                    first = _rowCandidates[i];
+                    first = candidate;
                 }
+            }
+
+            if (candidate > 0)
+            {
+                count++;
             }
         }
 
-        if (first == second && third == 0)
+        if (first == second && third == 0 && count > 2)
         {
             first = ~first;
 
