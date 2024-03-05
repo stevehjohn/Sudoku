@@ -150,10 +150,10 @@ public class Solver
                     if ((_cellCandidates[(y << 3) + y + x] & onceRow) > 0)
                     {
                         _cellCandidates[(y << 3) + y + x] = onceRow;
-
-                        return true;
                     }
                 }
+
+                return true;
             }
 
             if (BitOperations.PopCount((uint) onceColumn) == 1)
@@ -163,10 +163,10 @@ public class Solver
                     if ((_cellCandidates[(x << 3) + x + y] & onceColumn) > 0)
                     {
                         _cellCandidates[(x << 3) + x + y] = onceColumn;
-
-                        return true;
                     }
                 }
+
+                return true;
             }
         }
 
@@ -201,11 +201,11 @@ public class Solver
                             if ((_cellCandidates[start + (y << 3) + y + x] & once) > 0)
                             {
                                 _cellCandidates[start + (y << 3) + y + x] = once;
-
-                                return true;
                             }
                         }
                     }
+
+                    return true;
                 }
             }
         }
