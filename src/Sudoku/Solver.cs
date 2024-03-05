@@ -218,6 +218,8 @@ public class Solver
         var first = 0;
 
         var second = 0;
+
+        var third = 0;
         
         for (var i = 0; i < 9; i++)
         {
@@ -225,7 +227,14 @@ public class Solver
             {
                 if (first > 0)
                 {
-                    second = _rowCandidates[i];
+                    if (second > 0)
+                    {
+                        third = _rowCandidates[i];
+                    }
+                    else
+                    {
+                        second = _rowCandidates[i];
+                    }
                 }
                 else
                 {
@@ -234,7 +243,7 @@ public class Solver
             }
         }
 
-        if (first == second)
+        if (first == second && third == 0)
         {
             first = ~first;
             
@@ -250,6 +259,8 @@ public class Solver
         first = 0;
 
         second = 0;
+
+        third = 0;
         
         for (var i = 0; i < 9; i++)
         {
@@ -257,16 +268,22 @@ public class Solver
             {
                 if (first > 0)
                 {
-                    second = _columnCandidates[i];
+                    if (second > 0)
+                    {
+                        third = _rowCandidates[i];
+                    }
+                    else
+                    {
+                        second = _rowCandidates[i];
+                    }
                 }
                 else
                 {
-                    first = _columnCandidates[i];
-                }
-            }
+                    first = _rowCandidates[i];
+                }            }
         }
 
-        if (first == second)
+        if (first == second && third == 0)
         {
             first = ~first;
             
@@ -283,22 +300,30 @@ public class Solver
 
         second = 0;
 
+        third = 0;
+
         for (var i = 0; i < 9; i++)
         {
             if (BitOperations.PopCount((uint) _boxCandidates[i]) == 2)
             {
                 if (first > 0)
                 {
-                    second = _boxCandidates[i];
+                    if (second > 0)
+                    {
+                        third = _rowCandidates[i];
+                    }
+                    else
+                    {
+                        second = _rowCandidates[i];
+                    }
                 }
                 else
                 {
-                    first = _boxCandidates[i];
-                }
-            }
+                    first = _rowCandidates[i];
+                }            }
         }
 
-        if (first == second)
+        if (first == second && third == 0)
         {
             first = ~first;
             
