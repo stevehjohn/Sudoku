@@ -51,7 +51,7 @@ public class Solver
         return CreateNextSteps(puzzle, move, score, candidates, ref steps, history);
     }
 
-    private (Candidates Row, Candidates Column, Candidates Box) GetSectionCandidates(Span<int> puzzle)
+    private static (Candidates Row, Candidates Column, Candidates Box) GetSectionCandidates(Span<int> puzzle)
     {
         var rowCandidates = new Candidates();
 
