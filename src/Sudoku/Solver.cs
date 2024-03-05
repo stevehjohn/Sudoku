@@ -198,6 +198,8 @@ public class Solver
                             if ((_cellCandidates[start + (y << 3) + y + x] & once) > 0)
                             {
                                 _cellCandidates[start + (y << 3) + y + x] = once;
+                                
+                                return;
                             }
                         }
                     }
