@@ -1,10 +1,14 @@
 namespace Sudoku.Solver;
 
-public class Candidates
+public struct Candidates
 {
     private ulong _high = ulong.MaxValue;
 
     private ulong _low = ulong.MaxValue;
+
+    public Candidates()
+    {
+    }
 
     public void Remove(int index, int value)
     {

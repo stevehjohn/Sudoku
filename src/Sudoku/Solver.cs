@@ -31,17 +31,17 @@ public class Solver
 
         var span = new Span<int>(workingCopy);
 
-        SolveStep(span, score, ref steps, history);
+        var candidates = GetSectionCandidates(puzzle);
+
+        SolveStep(span, score, candidates, ref steps, history);
 
         stopwatch.Stop();
 
         return (workingCopy, steps, stopwatch.Elapsed.TotalMicroseconds, history);
     }
 
-    private bool SolveStep(Span<int> puzzle, int score, ref int steps, List<Move> history)
+    private bool SolveStep(Span<int> puzzle, int score, (Candidates Row, Candidates Column, Candidates Box) candidates, ref int steps, List<Move> history)
     {
-        var candidates = GetSectionCandidates(puzzle);
-
         GetCellCandidates(puzzle, candidates);
         
         //if (! FindHiddenSingles())
@@ -51,7 +51,7 @@ public class Solver
 
         var move = FindLowestMove(puzzle);
 
-        return CreateNextSteps(puzzle, move, score, ref steps, history);
+        return CreateNextSteps(puzzle, move, score, candidates, ref steps, history);
     }
 
     private (Candidates Row, Candidates Column, Candidates Box) GetSectionCandidates(Span<int> puzzle)
@@ -408,7 +408,7 @@ public class Solver
         return (position, values, valueCount);
     }
 
-    private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, int score, ref int steps, List<Move> history)
+    private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, int score, (Candidates Row, Candidates Column, Candidates Box) candidates, ref int steps, List<Move> history)
     {
         for (var i = 1; i < 10; i++)
         {
@@ -421,6 +421,14 @@ public class Solver
 
             puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = i;
 
+            var oldCandidates = candidates;
+
+            candidates.Row.Remove(move.Position.Y, i);
+
+            candidates.Column.Remove(move.Position.X, i);
+
+            candidates.Box.Remove(move.Position.Y / 3 * 3 + move.Position.X / 3, i);
+            
             score--;
 
             history?.Add(new Move(move.Position.X, move.Position.Y, i));
@@ -432,13 +440,15 @@ public class Solver
 
             steps++;
 
-            if (SolveStep(puzzle, score, ref steps, history))
+            if (SolveStep(puzzle, score, candidates, ref steps, history))
             {
                 return true;
             }
 
             puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = 0;
 
+            candidates = oldCandidates;
+            
             history?.RemoveAt(history.Count - 1);
 
             score++;
