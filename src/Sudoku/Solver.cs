@@ -43,11 +43,8 @@ public class Solver
     private bool SolveStep(Span<int> puzzle, int score, (Candidates Row, Candidates Column, Candidates Box) candidates, ref int steps, List<Move> history)
     {
         GetCellCandidates(puzzle, candidates);
-        
-        if (! FindHiddenSingles())
-        {
-            //FindNakedPairs();
-        }
+
+        FindHiddenSingles();
 
         var move = FindLowestMove(puzzle);
 
@@ -117,7 +114,7 @@ public class Solver
         }
     }
 
-    private bool FindHiddenSingles()
+    private void FindHiddenSingles()
     {
         for (var y = 0; y < 9; y++)
         {
@@ -154,7 +151,7 @@ public class Solver
                     }
                 }
     
-                return true;
+                return;
             }
     
             if (BitOperations.PopCount((uint) onceColumn) == 1)
@@ -167,7 +164,7 @@ public class Solver
                     }
                 }
     
-                return true;
+                return;
             }
         }
     
@@ -206,166 +203,12 @@ public class Solver
                         }
                     }
     
-                    return true;
+                    return;
                 }
             }
         }
     
-        return false;
-    }
-
-    private void FindNakedPairs((Candidates Row, Candidates Column, Candidates Box) candidates)
-    {
-        var first = 0;
-    
-        var second = 0;
-    
-        var third = 0;
-    
-        var count = 0;
-    
-        for (var i = 0; i < 9; i++)
-        {
-            var candidate = candidates.Row[i];
-            
-            if (BitOperations.PopCount((uint) candidate) == 2)
-            {
-                if (first > 0)
-                {
-                    if (second > 0)
-                    {
-                        third = candidate;
-                    }
-                    else
-                    {
-                        second = candidate;
-                    }
-                }
-                else
-                {
-                    first = candidate;
-                }
-            }
-    
-            if (candidate > 0)
-            {
-                count++;
-            }
-        }
-    
-        if (first == second && third == 0 && count > 2)
-        {
-            first = ~first;
-    
-            for (var i = 0; i < 9; i++)
-            {
-                if (candidates.Row[i] != first)
-                {
-                    candidates.Row[i] &= first;
-                }
-            }
-    
-            return;
-        }
-    
-        first = 0;
-    
-        second = 0;
-    
-        third = 0;
-    
-        for (var i = 0; i < 9; i++)
-        {
-            var candidate = candidates.Column[i];
-            
-            if (BitOperations.PopCount((uint) candidate) == 2)
-            {
-                if (first > 0)
-                {
-                    if (second > 0)
-                    {
-                        third = candidate;
-                    }
-                    else
-                    {
-                        second = candidate;
-                    }
-                }
-                else
-                {
-                    first = candidate;
-                }
-            }
-    
-            if (candidate > 0)
-            {
-                count++;
-            }
-    
-        }
-    
-        if (first == second && third == 0 && count > 2)
-        {
-            first = ~first;
-    
-            for (var i = 0; i < 9; i++)
-            {
-                if (candidates.Column[i] != first)
-                {
-                    candidates.Column[i] &= first;
-                }
-            }
-    
-            return;
-        }
-    
-        first = 0;
-    
-        second = 0;
-    
-        third = 0;
-    
-        for (var i = 0; i < 9; i++)
-        {
-            var candidate = candidates.Box[i];
-            
-            if (BitOperations.PopCount((uint) candidate) == 2)
-            {
-                if (first > 0)
-                {
-                    if (second > 0)
-                    {
-                        third = candidate;
-                    }
-                    else
-                    {
-                        second = candidate;
-                    }
-                }
-                else
-                {
-                    first = candidate;
-                }
-            }
-    
-            if (candidate > 0)
-            {
-                count++;
-            }
-        }
-    
-        if (first == second && third == 0 && count > 2)
-        {
-            first = ~first;
-    
-            for (var i = 0; i < 9; i++)
-            {
-                if (candidates.Box[i] != first)
-                {
-                    candidates.Box[i] &= first;
-                }
-            }
-        }
+        return;
     }
 
     private ((int X, int Y) Position, int Values, int ValueCount) FindLowestMove(Span<int> puzzle)
