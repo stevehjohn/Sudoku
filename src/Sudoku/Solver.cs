@@ -207,8 +207,6 @@ public class Solver
                 }
             }
         }
-    
-        return;
     }
 
     private ((int X, int Y) Position, int Values, int ValueCount) FindLowestMove(Span<int> puzzle)
