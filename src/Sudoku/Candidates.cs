@@ -8,6 +8,11 @@ public class Candidates
 
     public void Add(int index, int value)
     {
+        if (value == 0)
+        {
+            return;
+        }
+
         if (index < 5)
         {
             _high |= 1ul << (index * 9 + value - 1);
@@ -31,10 +36,10 @@ public class Candidates
         {
             if (index < 5)
             {
-                return (int) (_low << (index * 9) & 0b1_1111_1111);
+                return (int) (_low << (index * 9)) & 0b1_1111_1111;
             }
 
-            return (int) _high << ((index - 5) * 9) & 0b1_1111_1111;
+            return (int) (_high << ((index - 5) * 9)) & 0b1_1111_1111;
         }
         set
         {

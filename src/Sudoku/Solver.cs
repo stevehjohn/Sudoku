@@ -411,7 +411,7 @@ public class Solver
     {
         for (var i = 1; i < 10; i++)
         {
-            var bit = 1 << i;
+            var bit = 1 << (i - 1);
 
             if ((move.Values & bit) == 0)
             {
