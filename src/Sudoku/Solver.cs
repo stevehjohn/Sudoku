@@ -46,8 +46,10 @@ public class Solver
 
     private bool SolveStep(Span<int> puzzle, int score, ref int steps, List<Move> history)
     {
-        GetCellCandidates(puzzle);
+        GetSectionCandidates(puzzle);
 
+        GetCellCandidates(puzzle);
+        
         //if (! FindHiddenSingles())
         {
             //FindNakedPairs();
@@ -58,14 +60,14 @@ public class Solver
         return CreateNextSteps(puzzle, move, score, ref steps, history);
     }
 
-    private void GetCellCandidates(Span<int> puzzle)
+    private void GetSectionCandidates(Span<int> puzzle)
     {
         _rowCandidates.Reset();
-        
+
         _columnCandidates.Reset();
-        
+
         _boxCandidates.Reset();
-        
+
         for (var y = 0; y < 9; y++)
         {
             var y9 = (y << 3) + y;
@@ -99,7 +101,10 @@ public class Solver
                 boxIndex++;
             }
         }
+    }
 
+    private void GetCellCandidates(Span<int> puzzle)
+    {
         for (var y = 0; y < 9; y++)
         {
             for (var x = 0; x < 9; x++)
