@@ -106,6 +106,18 @@ public class ConsoleApplication
     private void RunTestSuite()
     {
         // Easy, medium, hard, diabolical, min clues, benchmarks, 2m.
+        var files = new[] { "Easy", "Medium", "Hard", "Diabolical", "Minimum Clues", "Benchmarks", "2 Million" };
+
+        foreach (var file in files)
+        {
+            var data = File.ReadAllLines($"Puzzles/{file}.sudoku");
+
+            var puzzles = ParseData(data);
+
+            var solver = new BulkSolver(puzzles);
+            
+            solver.Solve();
+        }
     }
 
     private static void SolveUserPuzzle()
