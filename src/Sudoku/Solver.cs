@@ -44,7 +44,10 @@ public class Solver
     {
         GetCellCandidates(puzzle, candidates);
 
-        FindHiddenSingles();
+        if (score > 27)
+        {
+            FindHiddenSingles();
+        }
 
         var move = FindLowestMove(puzzle);
 
