@@ -48,9 +48,10 @@ public class Solver
     {
         GetCellCandidates(puzzle);
 
-        FindHiddenSingles();
-
-        FindNakedPairs();
+        if (! FindHiddenSingles())
+        {
+            FindNakedPairs();
+        }
         
         var move = FindLowestMove(puzzle);
 
@@ -115,7 +116,7 @@ public class Solver
         }
     }
 
-    private void FindHiddenSingles()
+    private bool FindHiddenSingles()
     {
         for (var y = 0; y < 9; y++)
         {
@@ -150,7 +151,7 @@ public class Solver
                     {
                         _cellCandidates[(y << 3) + y + x] = onceRow;
 
-                        return;
+                        return true;
                     }
                 }
             }
@@ -163,7 +164,7 @@ public class Solver
                     {
                         _cellCandidates[(x << 3) + x + y] = onceColumn;
 
-                        return;
+                        return true;
                     }
                 }
             }
@@ -201,13 +202,15 @@ public class Solver
                             {
                                 _cellCandidates[start + (y << 3) + y + x] = once;
                                 
-                                return;
+                                return true;
                             }
                         }
                     }
                 }
             }
         }
+        
+        return false;
     }
 
     private void FindNakedPairs()
