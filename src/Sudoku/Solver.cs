@@ -6,9 +6,9 @@ namespace Sudoku.Solver;
 public class Solver
 {
     private readonly int[] _rowCandidates = new int[9];
-    
+
     private readonly int[] _columnCandidates = new int[9];
-    
+
     private readonly int[] _boxCandidates = new int[9];
 
     private readonly int[] _cellCandidates = new int[81];
@@ -20,9 +20,9 @@ public class Solver
         var stopwatch = Stopwatch.StartNew();
 
         var workingCopy = new int[81];
-        
+
         var score = 81;
-        
+
         for (var i = 0; i < 81; i++)
         {
             if (puzzle[i] != 0)
@@ -36,14 +36,14 @@ public class Solver
         var history = record ? new List<Move>() : null;
 
         var span = new Span<int>(workingCopy);
-        
+
         SolveStep(span, score, ref steps, history);
-        
+
         stopwatch.Stop();
-        
+
         return (workingCopy, steps, stopwatch.Elapsed.TotalMicroseconds, history);
     }
-    
+
     private bool SolveStep(Span<int> puzzle, int score, ref int steps, List<Move> history)
     {
         GetCellCandidates(puzzle);
@@ -52,7 +52,7 @@ public class Solver
         {
             FindNakedPairs();
         }
-        
+
         var move = FindLowestMove(puzzle);
 
         return CreateNextSteps(puzzle, move, score, ref steps, history);
@@ -77,7 +77,7 @@ public class Solver
         }
 
         var boxIndex = 0;
-        
+
         for (var yO = 0; yO < 81; yO += 27)
         {
             for (var xO = 0; xO < 9; xO += 3)
@@ -121,28 +121,28 @@ public class Solver
         for (var y = 0; y < 9; y++)
         {
             var oneMaskRow = 0;
-        
+
             var twoMaskRow = 0;
-        
+
             var oneMaskColumn = 0;
-        
+
             var twoMaskColumn = 0;
-        
+
             for (var x = 0; x < 9; x++)
             {
                 twoMaskRow |= oneMaskRow & _cellCandidates[(y << 3) + y + x];
-        
+
                 oneMaskRow |= _cellCandidates[(y << 3) + y + x];
 
                 twoMaskColumn |= oneMaskColumn & _cellCandidates[(x << 3) + x + y];
-        
+
                 oneMaskColumn |= _cellCandidates[(x << 3) + x + y];
             }
-        
+
             var onceRow = oneMaskRow & ~twoMaskRow;
-        
+
             var onceColumn = oneMaskColumn & ~twoMaskColumn;
-        
+
             if (BitOperations.PopCount((uint) onceRow) == 1)
             {
                 for (var x = 0; x < 9; x++)
@@ -155,7 +155,7 @@ public class Solver
                     }
                 }
             }
-        
+
             if (BitOperations.PopCount((uint) onceColumn) == 1)
             {
                 for (var x = 0; x < 9; x++)
@@ -201,7 +201,7 @@ public class Solver
                             if ((_cellCandidates[start + (y << 3) + y + x] & once) > 0)
                             {
                                 _cellCandidates[start + (y << 3) + y + x] = once;
-                                
+
                                 return true;
                             }
                         }
@@ -209,7 +209,7 @@ public class Solver
                 }
             }
         }
-        
+
         return false;
     }
 
@@ -220,7 +220,7 @@ public class Solver
         var second = 0;
 
         var third = 0;
-        
+
         for (var i = 0; i < 9; i++)
         {
             if (BitOperations.PopCount((uint) _rowCandidates[i]) == 2)
@@ -246,7 +246,7 @@ public class Solver
         if (first == second && third == 0)
         {
             first = ~first;
-            
+
             for (var i = 0; i < 9; i++)
             {
                 if (_rowCandidates[i] != first)
@@ -254,6 +254,8 @@ public class Solver
                     _rowCandidates[i] &= first;
                 }
             }
+
+            return;
         }
 
         first = 0;
@@ -261,7 +263,7 @@ public class Solver
         second = 0;
 
         third = 0;
-        
+
         for (var i = 0; i < 9; i++)
         {
             if (BitOperations.PopCount((uint) _columnCandidates[i]) == 2)
@@ -280,13 +282,14 @@ public class Solver
                 else
                 {
                     first = _rowCandidates[i];
-                }            }
+                }
+            }
         }
 
         if (first == second && third == 0)
         {
             first = ~first;
-            
+
             for (var i = 0; i < 9; i++)
             {
                 if (_columnCandidates[i] != first)
@@ -294,8 +297,10 @@ public class Solver
                     _columnCandidates[i] &= first;
                 }
             }
+
+            return;
         }
-        
+
         first = 0;
 
         second = 0;
@@ -320,13 +325,14 @@ public class Solver
                 else
                 {
                     first = _rowCandidates[i];
-                }            }
+                }
+            }
         }
 
         if (first == second && third == 0)
         {
             first = ~first;
-            
+
             for (var i = 0; i < 9; i++)
             {
                 if (_boxCandidates[i] != first)
@@ -355,7 +361,7 @@ public class Solver
                 }
 
                 var candidates = _cellCandidates[x + (y << 3) + y];
-                
+
                 var count = BitOperations.PopCount((uint) candidates);
 
                 if (count < valueCount)
@@ -382,7 +388,7 @@ public class Solver
         for (var i = 1; i < 10; i++)
         {
             var bit = 1 << i;
-            
+
             if ((move.Values & bit) == 0)
             {
                 continue;
@@ -400,7 +406,7 @@ public class Solver
             }
 
             steps++;
-            
+
             if (SolveStep(puzzle, score, ref steps, history))
             {
                 return true;
