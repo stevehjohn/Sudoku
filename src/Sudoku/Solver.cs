@@ -49,6 +49,8 @@ public class Solver
         GetCellCandidates(puzzle);
 
         FindHiddenSingles();
+
+        FindNakedPairs();
         
         var move = FindLowestMove(puzzle);
 
@@ -207,7 +209,106 @@ public class Solver
             }
         }
     }
-    
+
+    private void FindNakedPairs()
+    {
+        var first = 0;
+
+        var second = 0;
+        
+        for (var i = 0; i < 9; i++)
+        {
+            if (BitOperations.PopCount((uint) _rowCandidates[i]) == 2)
+            {
+                if (first > 0)
+                {
+                    second = _rowCandidates[i];
+                }
+                else
+                {
+                    first = _rowCandidates[i];
+                }
+            }
+        }
+
+        if (first == second)
+        {
+            first = ~first;
+            
+            for (var i = 0; i < 9; i++)
+            {
+                if (_rowCandidates[i] != first)
+                {
+                    _rowCandidates[i] &= first;
+                }
+            }
+        }
+
+        first = 0;
+
+        second = 0;
+        
+        for (var i = 0; i < 9; i++)
+        {
+            if (BitOperations.PopCount((uint) _columnCandidates[i]) == 2)
+            {
+                if (first > 0)
+                {
+                    second = _columnCandidates[i];
+                }
+                else
+                {
+                    first = _columnCandidates[i];
+                }
+            }
+        }
+
+        if (first == second)
+        {
+            first = ~first;
+            
+            for (var i = 0; i < 9; i++)
+            {
+                if (_columnCandidates[i] != first)
+                {
+                    _columnCandidates[i] &= first;
+                }
+            }
+        }
+        
+        first = 0;
+
+        second = 0;
+
+        for (var i = 0; i < 9; i++)
+        {
+            if (BitOperations.PopCount((uint) _boxCandidates[i]) == 2)
+            {
+                if (first > 0)
+                {
+                    second = _boxCandidates[i];
+                }
+                else
+                {
+                    first = _boxCandidates[i];
+                }
+            }
+        }
+
+        if (first == second)
+        {
+            first = ~first;
+            
+            for (var i = 0; i < 9; i++)
+            {
+                if (_boxCandidates[i] != first)
+                {
+                    _boxCandidates[i] &= first;
+                }
+            }
+        }
+    }
+
     private ((int X, int Y) Position, int Values, int ValueCount) FindLowestMove(Span<int> puzzle)
     {
         var position = (X: -1, Y: -1);
