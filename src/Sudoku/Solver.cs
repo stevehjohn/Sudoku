@@ -230,6 +230,11 @@ public class Solver
                     values = candidates;
 
                     valueCount = count;
+
+                    if (count == 1)
+                    {
+                        return (position, values, valueCount);
+                    }
                 }
             }
         }
