@@ -14,14 +14,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Puzzles", "Puzzles", "{7231
 		..\Puzzles\2 Million.sudoku = ..\Puzzles\2 Million.sudoku
 		..\Puzzles\Euler.sudoku = ..\Puzzles\Euler.sudoku
 		..\Puzzles\Diabolical.sudoku = ..\Puzzles\Diabolical.sudoku
-		..\Puzzles\Hidden Pair Test.sudoku = ..\Puzzles\Hidden Pair Test.sudoku
 		..\Puzzles\Most Steps.sudoku = ..\Puzzles\Most Steps.sudoku
 		..\Puzzles\Minimum Clues.sudoku = ..\Puzzles\Minimum Clues.sudoku
-		..\Puzzles\Hidden Single Test.sudoku = ..\Puzzles\Hidden Single Test.sudoku
 		..\Puzzles\Easy.sudoku = ..\Puzzles\Easy.sudoku
 		..\Puzzles\Top 50K Toughest.sudoku = ..\Puzzles\Top 50K Toughest.sudoku
 		..\Puzzles\Medium.sudoku = ..\Puzzles\Medium.sudoku
 		..\Puzzles\Hard.sudoku = ..\Puzzles\Hard.sudoku
+		..\Puzzles\Benchmarks.sudoku = ..\Puzzles\Benchmarks.sudoku
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.Tests", "Sudoku.Tests\Sudoku.Tests.csproj", "{E05213CF-2295-4E44-8488-DB5458042766}"

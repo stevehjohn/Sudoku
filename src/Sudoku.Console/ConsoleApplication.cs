@@ -30,6 +30,8 @@ public class ConsoleApplication
             Out();
             
             Out("   E: Enter manually\n");
+            
+            Out("   T: Test Suite\n");
 
             Out("   Q: Exit application\n");
 
@@ -44,6 +46,19 @@ public class ConsoleApplication
                     Out("Thanks for playing. Bye.\n");
 
                     return;
+                }
+
+                if (response == "t")
+                {
+                    RunTestSuite();
+                    
+                    Out();
+
+                    Out("Press any key to continue.");
+
+                    System.Console.ReadKey();
+
+                    break;
                 }
 
                 if (response == "e")
@@ -86,6 +101,11 @@ public class ConsoleApplication
                 Out("Unknown command, please try again.\n");
             }
         }
+    }
+
+    private void RunTestSuite()
+    {
+        // Easy, medium, hard, diabolical, min clues, benchmarks, 2m.
     }
 
     private static void SolveUserPuzzle()
