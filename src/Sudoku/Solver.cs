@@ -46,9 +46,9 @@ public class Solver
 
     private bool SolveStep(Span<int> puzzle, int score, ref int steps, List<Move> history)
     {
-        GetSectionCandidates(puzzle);
+        var candidates = GetSectionCandidates(puzzle);
 
-        GetCellCandidates(puzzle);
+        GetCellCandidates(puzzle, candidates);
         
         //if (! FindHiddenSingles())
         {
@@ -60,7 +60,7 @@ public class Solver
         return CreateNextSteps(puzzle, move, score, ref steps, history);
     }
 
-    private void GetSectionCandidates(Span<int> puzzle)
+    private (Candidates Row, Candidates Column, Candidates Box) GetSectionCandidates(Span<int> puzzle)
     {
         _rowCandidates = new Candidates();
 
@@ -101,9 +101,11 @@ public class Solver
                 boxIndex++;
             }
         }
+
+        return (_rowCandidates, _columnCandidates, _boxCandidates);
     }
 
-    private void GetCellCandidates(Span<int> puzzle)
+    private void GetCellCandidates(Span<int> puzzle, (Candidates Row, Candidates Column, Candidates Box) candidates)
     {
         for (var y = 0; y < 9; y++)
         {
@@ -111,7 +113,7 @@ public class Solver
             {
                 if (puzzle[x + (y << 3) + y] == 0)
                 {
-                    _cellCandidates[x + (y << 3) + y] = _columnCandidates[x] & _rowCandidates[y] & _boxCandidates[y / 3 * 3 + x / 3];
+                    _cellCandidates[x + (y << 3) + y] = candidates.Column[x] & candidates.Row[y] & candidates.Box[y / 3 * 3 + x / 3];
                 }
                 else
                 {
