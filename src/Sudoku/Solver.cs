@@ -5,6 +5,12 @@ namespace Sudoku.Solver;
 
 public class Solver
 {
+    private Candidates _rowCandidates;
+
+    private Candidates _columnCandidates;
+
+    private Candidates _boxCandidates;
+
     private readonly int[] _cellCandidates = new int[81];
 
     public (int[] Solution, int Steps, double Microseconds, List<Move> History) Solve(int[] puzzle, bool record = false)
@@ -40,9 +46,9 @@ public class Solver
 
     private bool SolveStep(Span<int> puzzle, int score, ref int steps, List<Move> history)
     {
-        var candidates = GetSectionCandidates(puzzle);
+        GetSectionCandidates(puzzle);
 
-        GetCellCandidates(puzzle, candidates);
+        GetCellCandidates(puzzle);
         
         //if (! FindHiddenSingles())
         {
@@ -54,23 +60,23 @@ public class Solver
         return CreateNextSteps(puzzle, move, score, ref steps, history);
     }
 
-    private static (Candidates Row, Candidates Column, Candidates Box) GetSectionCandidates(Span<int> puzzle)
+    private void GetSectionCandidates(Span<int> puzzle)
     {
-        var rowCandidates = new Candidates();
-        
-        var columnCandidates = new Candidates();
-        
-        var boxCandidates = new Candidates();
-        
+        _rowCandidates = new Candidates();
+
+        _columnCandidates = new Candidates();
+
+        _boxCandidates = new Candidates();
+
         for (var y = 0; y < 9; y++)
         {
             var y9 = (y << 3) + y;
 
             for (var x = 0; x < 9; x++)
             {
-                rowCandidates.Remove(y, puzzle[x + y9]);
+                _rowCandidates.Remove(y, puzzle[x + y9]);
 
-                columnCandidates.Remove(y, puzzle[y + (x << 3) + x]);
+                _columnCandidates.Remove(y, puzzle[y + (x << 3) + x]);
             }
         }
 
@@ -88,18 +94,16 @@ public class Solver
 
                     for (var x = 0; x < 3; x++)
                     {
-                        boxCandidates.Remove(boxIndex, puzzle[row + x]);
+                        _boxCandidates.Remove(boxIndex, puzzle[row + x]);
                     }
                 }
 
                 boxIndex++;
             }
         }
-
-        return (rowCandidates, columnCandidates, boxCandidates);
     }
 
-    private void GetCellCandidates(Span<int> puzzle, (Candidates Row, Candidates Column, Candidates Box) candidates)
+    private void GetCellCandidates(Span<int> puzzle)
     {
         for (var y = 0; y < 9; y++)
         {
@@ -107,7 +111,7 @@ public class Solver
             {
                 if (puzzle[x + (y << 3) + y] == 0)
                 {
-                    _cellCandidates[x + (y << 3) + y] = candidates.Row[x] & candidates.Column[y] & candidates.Box[y / 3 * 3 + x / 3];
+                    _cellCandidates[x + (y << 3) + y] = _columnCandidates[x] & _rowCandidates[y] & _boxCandidates[y / 3 * 3 + x / 3];
                 }
                 else
                 {
