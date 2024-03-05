@@ -37,8 +37,6 @@ public class Solver
 
         var span = new Span<int>(workingCopy);
         
-        GetCellCandidates(span);
-
         SolveStep(span, score, ref steps, history);
         
         stopwatch.Stop();
@@ -48,6 +46,8 @@ public class Solver
     
     private bool SolveStep(Span<int> puzzle, int score, ref int steps, List<Move> history)
     {
+        GetCellCandidates(puzzle);
+
         FindHiddenSingles();
         
         var move = FindLowestMove(puzzle);
@@ -259,21 +259,6 @@ public class Solver
 
             puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = i;
 
-            var copy = new int[81];
-            
-            Array.Copy(_cellCandidates, copy, 81);
-
-            var box = move.Position.Y / 3 * 27 + move.Position.X / 3 * 3;
-            
-            for (var j = 0; j < 9; j++)
-            {
-                _cellCandidates[j + move.Position.Y * 9] &= ~bit;
-                
-                _cellCandidates[move.Position.X + j * 9] &= ~bit;
-                
-                _cellCandidates[box + j % 3 + j / 3 * 9] &= ~bit;
-            }
-
             score--;
 
             history?.Add(new Move(move.Position.X, move.Position.Y, i));
@@ -291,8 +276,6 @@ public class Solver
             }
 
             puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = 0;
-
-            Array.Copy(copy, _cellCandidates, 81);
 
             history?.RemoveAt(history.Count - 1);
 
