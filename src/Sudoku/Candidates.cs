@@ -2,9 +2,9 @@ namespace Sudoku.Solver;
 
 public class Candidates
 {
-    private ulong _high;
+    private ulong _high = ulong.MaxValue;
 
-    private ulong _low;
+    private ulong _low = ulong.MaxValue;
 
     public void Remove(int index, int value)
     {
@@ -21,13 +21,6 @@ public class Candidates
         {
             _low &= ~(1ul << ((index - 5) * 9 + value - 1));
         }
-    }
-
-    public void Reset()
-    {
-        _low = ulong.MaxValue;
-
-        _high = ulong.MaxValue;
     }
 
     public int this[int index]
