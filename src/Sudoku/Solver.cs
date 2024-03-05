@@ -5,11 +5,11 @@ namespace Sudoku.Solver;
 
 public class Solver
 {
-    private readonly int[] _rowCandidates = new int[9];
+    private readonly Candidates _rowCandidates = new();
 
-    private readonly int[] _columnCandidates = new int[9];
+    private readonly Candidates _columnCandidates = new();
 
-    private readonly int[] _boxCandidates = new int[9];
+    private readonly Candidates _boxCandidates = new();
 
     private readonly int[] _cellCandidates = new int[81];
 
@@ -50,7 +50,7 @@ public class Solver
 
         if (! FindHiddenSingles())
         {
-            FindNakedPairs();
+            //FindNakedPairs();
         }
 
         var move = FindLowestMove(puzzle);
@@ -60,19 +60,21 @@ public class Solver
 
     private void GetCellCandidates(Span<int> puzzle)
     {
+        _rowCandidates.Clear();
+        
+        _columnCandidates.Clear();
+        
+        _boxCandidates.Clear();
+        
         for (var y = 0; y < 9; y++)
         {
-            _rowCandidates[y] = 0b11_1111_1111;
-
-            _columnCandidates[y] = 0b11_1111_1111;
-
             var y9 = (y << 3) + y;
 
             for (var x = 0; x < 9; x++)
             {
-                _rowCandidates[y] &= ~(1 << puzzle[x + y9]);
+                _rowCandidates.Add(y, puzzle[x + y9]);
 
-                _columnCandidates[y] &= ~(1 << puzzle[y + (x << 3) + x]);
+                _columnCandidates.Add(y, puzzle[y + (x << 3) + x]);
             }
         }
 
@@ -84,15 +86,13 @@ public class Solver
             {
                 var start = xO + yO;
 
-                _boxCandidates[boxIndex] = 0b11_1111_1111;
-
                 for (var y = 0; y < 3; y++)
                 {
                     var row = start + (y << 3) + y;
 
                     for (var x = 0; x < 3; x++)
                     {
-                        _boxCandidates[boxIndex] &= ~(1 << puzzle[row + x]);
+                        _boxCandidates.Add(boxIndex, puzzle[row + x]);
                     }
                 }
 
