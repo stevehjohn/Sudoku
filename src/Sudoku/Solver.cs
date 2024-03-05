@@ -44,7 +44,7 @@ public class Solver
     {
         GetCellCandidates(puzzle, candidates);
         
-        //if (! FindHiddenSingles())
+        if (! FindHiddenSingles())
         {
             //FindNakedPairs();
         }
@@ -117,103 +117,103 @@ public class Solver
         }
     }
 
-    // private bool FindHiddenSingles()
-    // {
-    //     for (var y = 0; y < 9; y++)
-    //     {
-    //         var oneMaskRow = 0;
-    //
-    //         var twoMaskRow = 0;
-    //
-    //         var oneMaskColumn = 0;
-    //
-    //         var twoMaskColumn = 0;
-    //
-    //         for (var x = 0; x < 9; x++)
-    //         {
-    //             twoMaskRow |= oneMaskRow & _cellCandidates[(y << 3) + y + x];
-    //
-    //             oneMaskRow |= _cellCandidates[(y << 3) + y + x];
-    //
-    //             twoMaskColumn |= oneMaskColumn & _cellCandidates[(x << 3) + x + y];
-    //
-    //             oneMaskColumn |= _cellCandidates[(x << 3) + x + y];
-    //         }
-    //
-    //         var onceRow = oneMaskRow & ~twoMaskRow;
-    //
-    //         var onceColumn = oneMaskColumn & ~twoMaskColumn;
-    //
-    //         if (BitOperations.PopCount((uint) onceRow) == 1)
-    //         {
-    //             for (var x = 0; x < 9; x++)
-    //             {
-    //                 if ((_cellCandidates[(y << 3) + y + x] & onceRow) > 0)
-    //                 {
-    //                     _cellCandidates[(y << 3) + y + x] = onceRow;
-    //                 }
-    //             }
-    //
-    //             return true;
-    //         }
-    //
-    //         if (BitOperations.PopCount((uint) onceColumn) == 1)
-    //         {
-    //             for (var x = 0; x < 9; x++)
-    //             {
-    //                 if ((_cellCandidates[(x << 3) + x + y] & onceColumn) > 0)
-    //                 {
-    //                     _cellCandidates[(x << 3) + x + y] = onceColumn;
-    //                 }
-    //             }
-    //
-    //             return true;
-    //         }
-    //     }
-    //
-    //     for (var yO = 0; yO < 81; yO += 27)
-    //     {
-    //         for (var xO = 0; xO < 9; xO += 3)
-    //         {
-    //             var oneMask = 0;
-    //
-    //             var twoMask = 0;
-    //
-    //             var start = yO + xO;
-    //
-    //             for (var y = 0; y < 3; y++)
-    //             {
-    //                 for (var x = 0; x < 3; x++)
-    //                 {
-    //                     twoMask |= oneMask & _cellCandidates[start + (y << 3) + y + x];
-    //
-    //                     oneMask |= _cellCandidates[start + (y << 3) + y + x];
-    //                 }
-    //             }
-    //
-    //             var once = oneMask & ~twoMask;
-    //
-    //             if (BitOperations.PopCount((uint) once) == 1)
-    //             {
-    //                 for (var y = 0; y < 3; y++)
-    //                 {
-    //                     for (var x = 0; x < 3; x++)
-    //                     {
-    //                         if ((_cellCandidates[start + (y << 3) + y + x] & once) > 0)
-    //                         {
-    //                             _cellCandidates[start + (y << 3) + y + x] = once;
-    //                         }
-    //                     }
-    //                 }
-    //
-    //                 return true;
-    //             }
-    //         }
-    //     }
-    //
-    //     return false;
-    // }
-    //
+    private bool FindHiddenSingles()
+    {
+        for (var y = 0; y < 9; y++)
+        {
+            var oneMaskRow = 0;
+    
+            var twoMaskRow = 0;
+    
+            var oneMaskColumn = 0;
+    
+            var twoMaskColumn = 0;
+    
+            for (var x = 0; x < 9; x++)
+            {
+                twoMaskRow |= oneMaskRow & _cellCandidates[(y << 3) + y + x];
+    
+                oneMaskRow |= _cellCandidates[(y << 3) + y + x];
+    
+                twoMaskColumn |= oneMaskColumn & _cellCandidates[(x << 3) + x + y];
+    
+                oneMaskColumn |= _cellCandidates[(x << 3) + x + y];
+            }
+    
+            var onceRow = oneMaskRow & ~twoMaskRow;
+    
+            var onceColumn = oneMaskColumn & ~twoMaskColumn;
+    
+            if (BitOperations.PopCount((uint) onceRow) == 1)
+            {
+                for (var x = 0; x < 9; x++)
+                {
+                    if ((_cellCandidates[(y << 3) + y + x] & onceRow) > 0)
+                    {
+                        _cellCandidates[(y << 3) + y + x] = onceRow;
+                    }
+                }
+    
+                return true;
+            }
+    
+            if (BitOperations.PopCount((uint) onceColumn) == 1)
+            {
+                for (var x = 0; x < 9; x++)
+                {
+                    if ((_cellCandidates[(x << 3) + x + y] & onceColumn) > 0)
+                    {
+                        _cellCandidates[(x << 3) + x + y] = onceColumn;
+                    }
+                }
+    
+                return true;
+            }
+        }
+    
+        for (var yO = 0; yO < 81; yO += 27)
+        {
+            for (var xO = 0; xO < 9; xO += 3)
+            {
+                var oneMask = 0;
+    
+                var twoMask = 0;
+    
+                var start = yO + xO;
+    
+                for (var y = 0; y < 3; y++)
+                {
+                    for (var x = 0; x < 3; x++)
+                    {
+                        twoMask |= oneMask & _cellCandidates[start + (y << 3) + y + x];
+    
+                        oneMask |= _cellCandidates[start + (y << 3) + y + x];
+                    }
+                }
+    
+                var once = oneMask & ~twoMask;
+    
+                if (BitOperations.PopCount((uint) once) == 1)
+                {
+                    for (var y = 0; y < 3; y++)
+                    {
+                        for (var x = 0; x < 3; x++)
+                        {
+                            if ((_cellCandidates[start + (y << 3) + y + x] & once) > 0)
+                            {
+                                _cellCandidates[start + (y << 3) + y + x] = once;
+                            }
+                        }
+                    }
+    
+                    return true;
+                }
+            }
+        }
+    
+        return false;
+    }
+
     // private void FindNakedPairs()
     // {
     //     var first = 0;
