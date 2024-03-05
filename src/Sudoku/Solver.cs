@@ -5,12 +5,6 @@ namespace Sudoku.Solver;
 
 public class Solver
 {
-    private Candidates _rowCandidates;
-
-    private Candidates _columnCandidates;
-
-    private Candidates _boxCandidates;
-
     private readonly int[] _cellCandidates = new int[81];
 
     public (int[] Solution, int Steps, double Microseconds, List<Move> History) Solve(int[] puzzle, bool record = false)
@@ -62,11 +56,11 @@ public class Solver
 
     private (Candidates Row, Candidates Column, Candidates Box) GetSectionCandidates(Span<int> puzzle)
     {
-        _rowCandidates = new Candidates();
+        var rowCandidates = new Candidates();
 
-        _columnCandidates = new Candidates();
+        var columnCandidates = new Candidates();
 
-        _boxCandidates = new Candidates();
+        var boxCandidates = new Candidates();
 
         for (var y = 0; y < 9; y++)
         {
@@ -74,9 +68,9 @@ public class Solver
 
             for (var x = 0; x < 9; x++)
             {
-                _rowCandidates.Remove(y, puzzle[x + y9]);
+                rowCandidates.Remove(y, puzzle[x + y9]);
 
-                _columnCandidates.Remove(y, puzzle[y + (x << 3) + x]);
+                columnCandidates.Remove(y, puzzle[y + (x << 3) + x]);
             }
         }
 
@@ -94,7 +88,7 @@ public class Solver
 
                     for (var x = 0; x < 3; x++)
                     {
-                        _boxCandidates.Remove(boxIndex, puzzle[row + x]);
+                        boxCandidates.Remove(boxIndex, puzzle[row + x]);
                     }
                 }
 
@@ -102,7 +96,7 @@ public class Solver
             }
         }
 
-        return (_rowCandidates, _columnCandidates, _boxCandidates);
+        return (rowCandidates, columnCandidates, boxCandidates);
     }
 
     private void GetCellCandidates(Span<int> puzzle, (Candidates Row, Candidates Column, Candidates Box) candidates)
