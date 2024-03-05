@@ -13,8 +13,6 @@ public class Solver
 
     private readonly int[] _cellCandidates = new int[81];
 
-    private readonly int[] _frequencies = new int[10];
-
     public (int[] Solution, int Steps, double Microseconds, List<Move> History) Solve(int[] puzzle, bool record = false)
     {
         var steps = 0;
@@ -39,6 +37,8 @@ public class Solver
 
         var span = new Span<int>(workingCopy);
         
+        GetCellCandidates(span);
+
         SolveStep(span, score, ref steps, history);
         
         stopwatch.Stop();
@@ -48,10 +48,8 @@ public class Solver
     
     private bool SolveStep(Span<int> puzzle, int score, ref int steps, List<Move> history)
     {
-        GetCellCandidates(puzzle);
-
         FindHiddenSingles();
-
+        
         var move = FindLowestMove(puzzle);
 
         return CreateNextSteps(puzzle, move, score, ref steps, history);
@@ -72,8 +70,6 @@ public class Solver
                 _rowCandidates[y] &= ~(1 << puzzle[x + y9]);
 
                 _columnCandidates[y] &= ~(1 << puzzle[y + (x << 3) + x]);
-
-                _frequencies[puzzle[x + y9]]++;
             }
         }
 
@@ -108,10 +104,6 @@ public class Solver
                 if (puzzle[x + (y << 3) + y] == 0)
                 {
                     _cellCandidates[x + (y << 3) + y] = _columnCandidates[x] & _rowCandidates[y] & _boxCandidates[y / 3 * 3 + x / 3];
-                }
-                else
-                {
-                    _cellCandidates[x + (y << 3) + y] = 0;
                 }
             }
         }
@@ -209,7 +201,7 @@ public class Solver
             }
         }
     }
-
+    
     private ((int X, int Y) Position, int Values, int ValueCount) FindLowestMove(Span<int> puzzle)
     {
         var position = (X: -1, Y: -1);
@@ -249,19 +241,33 @@ public class Solver
     {
         for (var i = 1; i < 10; i++)
         {
-            if ((move.Values & (1 << i)) == 0)
+            var bit = 1 << i;
+            
+            if ((move.Values & bit) == 0)
             {
                 continue;
             }
 
             puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = i;
 
-            score--;
+            var copy = new int[81];
             
-            if (history != null)
+            Array.Copy(_cellCandidates, copy, 81);
+
+            var box = move.Position.Y / 3 * 27 + move.Position.X / 3 * 3;
+            
+            for (var j = 0; j < 9; j++)
             {
-                history.Add(new Move(move.Position.X, move.Position.Y, i));
+                _cellCandidates[j + move.Position.Y * 9] &= ~bit;
+                
+                _cellCandidates[move.Position.X + j * 9] &= ~bit;
+                
+                _cellCandidates[box + j % 3 + j / 3 * 9] &= ~bit;
             }
+
+            score--;
+
+            history?.Add(new Move(move.Position.X, move.Position.Y, i));
 
             if (score == 0)
             {
@@ -277,10 +283,9 @@ public class Solver
 
             puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = 0;
 
-            if (history != null)
-            {
-                history.RemoveAt(history.Count - 1);
-            }
+            Array.Copy(copy, _cellCandidates, 81);
+
+            history?.RemoveAt(history.Count - 1);
 
             score++;
         }
