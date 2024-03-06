@@ -18,12 +18,6 @@ public class SolverTests
     {
         var puzzles = File.ReadAllLines("Test Data/Puzzles With Answers.sudoku");
 
-        _testOutputHelper.WriteLine("Data:");
-        
-        _testOutputHelper.WriteLine(File.ReadAllText("Test Data/Puzzles With Answers.sudoku"));
-            
-        _testOutputHelper.WriteLine("End Data.");
-
         var solver = new Solver.Solver();
 
         var stopwatch = Stopwatch.StartNew();
