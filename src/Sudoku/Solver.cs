@@ -105,13 +105,15 @@ public class Solver
         {
             for (var x = 0; x < 9; x++)
             {
+                var cell = x + (y << 3) + y;
+                
                 if (puzzle[x + (y << 3) + y] == 0)
                 {
-                    _cellCandidates[x + (y << 3) + y] = candidates.Column[x] & candidates.Row[y] & candidates.Box[y / 3 * 3 + x / 3];
+                    _cellCandidates[cell] = candidates.Column[x] & candidates.Row[y] & candidates.Box[y / 3 * 3 + x / 3];
                 }
                 else
                 {
-                    _cellCandidates[x + (y << 3) + y] = 0;
+                    _cellCandidates[cell] = 0;
                 }
             }
         }
