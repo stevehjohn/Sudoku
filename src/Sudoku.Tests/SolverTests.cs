@@ -16,9 +16,7 @@ public class SolverTests
     [Fact]
     public void VerifySolverProducesCorrectResults()
     {
-        _testOutputHelper.WriteLine($"{Environment.CurrentDirectory}/Test Data/Puzzles With Answers.sudoku");
-        
-        var puzzles = File.ReadAllLines($"{Environment.CurrentDirectory}/Test Data/Puzzles With Answers.sudoku");
+        var puzzles = File.ReadAllLines("Test Data/Puzzles With Answers.sudoku");
 
         var solver = new Solver.Solver();
 
@@ -26,6 +24,8 @@ public class SolverTests
         
         foreach (var puzzle in puzzles)
         {
+            _testOutputHelper.WriteLine(puzzle);
+            
             var parts = puzzle.Split(',');
 
             var input = new int[81];
