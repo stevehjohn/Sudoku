@@ -189,11 +189,13 @@ public class Solver
     
                 for (var y = 0; y < 3; y++)
                 {
+                    var y9 = (y << 3) + y;
+                    
                     for (var x = 0; x < 3; x++)
                     {
-                        twoMask |= oneMask & _cellCandidates[start + (y << 3) + y + x];
+                        twoMask |= oneMask & _cellCandidates[start + y9 + x];
     
-                        oneMask |= _cellCandidates[start + (y << 3) + y + x];
+                        oneMask |= _cellCandidates[start + y9 + x];
                     }
                 }
     
