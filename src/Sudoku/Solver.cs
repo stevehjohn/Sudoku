@@ -133,11 +133,13 @@ public class Solver
     
             var twoMaskColumn = 0;
     
+            var y9 = (y << 3) + y;
+            
             for (var x = 0; x < 9; x++)
             {
-                twoMaskRow |= oneMaskRow & _cellCandidates[(y << 3) + y + x];
+                twoMaskRow |= oneMaskRow & _cellCandidates[y9 + x];
     
-                oneMaskRow |= _cellCandidates[(y << 3) + y + x];
+                oneMaskRow |= _cellCandidates[y9 + x];
     
                 twoMaskColumn |= oneMaskColumn & _cellCandidates[(x << 3) + x + y];
     
@@ -152,9 +154,9 @@ public class Solver
             {
                 for (var x = 0; x < 9; x++)
                 {
-                    if ((_cellCandidates[(y << 3) + y + x] & onceRow) > 0)
+                    if ((_cellCandidates[y9 + x] & onceRow) > 0)
                     {
-                        _cellCandidates[(y << 3) + y + x] = onceRow;
+                        _cellCandidates[y9 + x] = onceRow;
                     }
                 }
     
