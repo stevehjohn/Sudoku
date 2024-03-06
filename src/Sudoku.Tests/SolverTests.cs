@@ -46,6 +46,6 @@ public class SolverTests
         
         stopwatch.Stop();
         
-        _testOutputHelper.WriteLine($"{puzzles.Length:N0} puzzles verified in {stopwatch.Elapsed.TotalMilliseconds}ms.");
+        _testOutputHelper.WriteLine($"{puzzles.Length:N0} puzzles verified in {stopwatch.Elapsed.TotalMilliseconds:D3}ms.");
     }
 }
