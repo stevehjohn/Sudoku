@@ -18,7 +18,7 @@
 
     <ItemGroup>
       <None Update="Test Data\Puzzles With Answers.sudoku">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>
 
