@@ -15,5 +15,6 @@ jobs:
         dotnet-version: 8.0.x
     - name: Run Tests
       run: |
-        cd src/Sudoku.Tests
+        cd src
+        dotnet build
         dotnet test -l "console;verbosity=detailed"
