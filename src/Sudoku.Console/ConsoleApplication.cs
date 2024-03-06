@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.IO.Compression;
 
 namespace Sudoku.Console;
 
@@ -119,12 +120,8 @@ public class ConsoleApplication
         var count = 0;
         
         System.Console.Write(" Warming up...");
-        
-        var data = File.ReadAllLines("Puzzles/Easy.sudoku");
 
-        var puzzles = ParseData(data);
-
-        var solver = new BulkSolver(puzzles);
+        var solver = new BulkSolver(LoadPuzzles("Puzzles/Easy.zip"));
         
         solver.Solve(true, true);
         
@@ -134,13 +131,7 @@ public class ConsoleApplication
         {
             System.Console.Write(" Loading...");
             
-            data = File.ReadAllLines($"Puzzles/{file}.sudoku");
-
-            count += data.Length;
-            
-            puzzles = ParseData(data);
-
-            solver = new BulkSolver(puzzles);
+            solver = new BulkSolver(LoadPuzzles($"Puzzles/{file}.zip"));
 
             System.Console.CursorLeft = 0;
 
@@ -226,14 +217,33 @@ public class ConsoleApplication
         Out();
         
         Out("Loading puzzles...");
-        
-        var data = File.ReadAllLines(_files[fileId]);
 
-        var puzzles = ParseData(data);
-        
-        var solver = new BulkSolver(puzzles);
+        var solver = new BulkSolver(LoadPuzzles(_files[fileId]));
 
         solver.Solve();
+    }
+
+    private static (int[] Puzzle, int Clues)[] LoadPuzzles(string filename)
+    {
+        using var file = File.OpenRead(filename);
+
+        using var zip = new ZipArchive(file, ZipArchiveMode.Read);
+
+        var lines = new List<string>();
+        
+        foreach(var entry in zip.Entries)
+        {
+            using var stream = entry.Open();
+
+            using var reader = new StreamReader(stream);
+
+            while (reader.ReadLine() is { } line)
+            {
+                lines.Add(line);
+            }
+        }
+
+        return ParseData(lines.ToArray());
     }
 
     private static (int[] Puzzle, int Clues)[] ParseData(string[] data)
