@@ -155,13 +155,15 @@ public class BulkSolver
         {
             if (! noSummary)
             {
+                var perSecond = solved / _stopwatch.Elapsed.TotalSeconds;
+                
                 if (_stopwatch.Elapsed.TotalSeconds < 1)
                 {
-                    System.Console.WriteLine($" puzzles solved in {_stopwatch.Elapsed.TotalMicroseconds:N0}μs.");
+                    System.Console.WriteLine($" puzzles solved in {_stopwatch.Elapsed.TotalMicroseconds:N0}μs, {perSecond:N0}/sec.");
                 }
                 else
                 {
-                    System.Console.WriteLine($" puzzles solved in {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}.{_stopwatch.Elapsed.Milliseconds:N0}.");
+                    System.Console.WriteLine($" puzzles solved in {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}.{_stopwatch.Elapsed.Milliseconds:N0}, {perSecond:N0}/sec.");
                 }
             }
         }
