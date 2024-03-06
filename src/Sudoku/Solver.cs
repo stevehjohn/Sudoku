@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Numerics;
 
-namespace Sudoku.Solver;
+namespace Sudoku;
 
 public class Solver
 {

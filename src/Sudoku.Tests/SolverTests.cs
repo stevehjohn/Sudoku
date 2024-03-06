@@ -18,7 +18,7 @@ public class SolverTests
     {
         var puzzles = File.ReadAllLines("Test Data/Puzzles With Answers.txt");
 
-        var solver = new Solver.Solver();
+        var solver = new Solver();
 
         var stopwatch = Stopwatch.StartNew();
         
