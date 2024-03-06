@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace Sudoku;
 
@@ -103,6 +104,7 @@ public class Solver
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void FindHiddenSingles()
     {
         for (var y = 0; y < 9; y++)
@@ -202,6 +204,7 @@ public class Solver
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private ((int X, int Y) Position, int Values, int ValueCount) FindLowestMove(Span<int> puzzle)
     {
         var position = (X: -1, Y: -1);
