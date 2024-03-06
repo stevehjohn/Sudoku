@@ -5,10 +5,9 @@ name: Publish NuGet Package
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
-
+    tags:
+      - "v*.*.*"
+      
 jobs:
   build:
     name: Publish NuGet Package
