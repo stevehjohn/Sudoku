@@ -237,6 +237,11 @@ public class ConsoleApplication
 
             while (reader.ReadLine() is { } line)
             {
+                if (line[0] == '\0')
+                {
+                    continue;
+                }
+
                 lines.Add(line);
             }
         }
