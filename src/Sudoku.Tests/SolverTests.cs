@@ -16,7 +16,9 @@ public class SolverTests
     [Fact]
     public void VerifySolverProducesCorrectResults()
     {
-        var puzzles = File.ReadAllLines("Test Data/Puzzles With Answers.sudoku");
+        _testOutputHelper.WriteLine($"{Environment.CurrentDirectory}/Test Data/Puzzles With Answers.sudoku");
+        
+        var puzzles = File.ReadAllLines($"{Environment.CurrentDirectory}/Test Data/Puzzles With Answers.sudoku");
 
         var solver = new Solver.Solver();
 
