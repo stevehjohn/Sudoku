@@ -18,14 +18,16 @@ public class SolverTests
     {
         var puzzles = File.ReadAllLines("Test Data/Puzzles With Answers.sudoku");
 
+        _testOutputHelper.WriteLine("Data:");
+        
+        _testOutputHelper.WriteLine(File.ReadAllText("Test Data/Puzzles With Answers.sudoku"));
+            
         var solver = new Solver.Solver();
 
         var stopwatch = Stopwatch.StartNew();
         
         foreach (var puzzle in puzzles)
         {
-            _testOutputHelper.WriteLine(puzzle);
-            
             var parts = puzzle.Split(',');
 
             var input = new int[81];
