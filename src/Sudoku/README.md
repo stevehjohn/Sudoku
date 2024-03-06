@@ -14,7 +14,7 @@ var puzzle = new int[81];
   so puzzle[0..8] is the first row, puzzle[9..17] is second and so on.
 */
 
-var solver = new Solver.Solver();
+var solver = new Solver();
 
 var result = solver.Solve(puzzle);
 

@@ -7,8 +7,8 @@
         <RootNamespace>Sudoku.Solver</RootNamespace>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Authors>Steve John</Authors>
-        <Version>1.0.8</Version>
-        <RootNamespace>Sudoku.Solver</RootNamespace>
+        <Version>1.0.9</Version>
+        <RootNamespace>Sudoku</RootNamespace>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using System.Runtime;
 using System.Text;
-using Sudoku.Solver;
 
 namespace Sudoku.Console;
 
@@ -62,7 +61,7 @@ public class BulkSolver
             {
                 MaxDegreeOfParallelism = Environment.ProcessorCount - 1
             },
-            () => new Solver.Solver(),
+            () => new Solver(),
             (i, _, solver) => 
             {
                 var solution = solver.Solve(_puzzles[i].Puzzle, record);

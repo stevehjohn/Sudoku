@@ -1,4 +1,4 @@
-namespace Sudoku.Solver;
+namespace Sudoku;
 
 public struct Candidates
 {
