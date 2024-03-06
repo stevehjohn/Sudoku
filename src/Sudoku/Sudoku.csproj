@@ -7,7 +7,8 @@
         <RootNamespace>Sudoku.Solver</RootNamespace>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Authors>Steve John</Authors>
-        <Version>1.0.4</Version>
+        <Version>1.0.6</Version>
+        <RootNamespace>Sudoku.Solver</RootNamespace>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -17,5 +18,10 @@
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
       <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     </PropertyGroup>
-
+    
+    <PropertyGroup>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
+    
 </Project>
