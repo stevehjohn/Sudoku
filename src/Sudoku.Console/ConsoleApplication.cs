@@ -117,8 +117,6 @@ public class ConsoleApplication
 
         var stopwatch = Stopwatch.StartNew();
 
-        var count = 0;
-        
         System.Console.Write(" Warming up...");
 
         var solver = new BulkSolver(LoadPuzzles("Puzzles/Easy.zip"));
@@ -150,7 +148,7 @@ public class ConsoleApplication
         
         stopwatch.Stop();
         
-        System.Console.WriteLine($" Solved {count:N0} puzzles in {stopwatch.Elapsed.Minutes:N0}:{stopwatch.Elapsed.Seconds:D2}.{stopwatch.Elapsed.Milliseconds:N0}.");
+        System.Console.WriteLine($" Tests run in {stopwatch.Elapsed.Minutes:N0}:{stopwatch.Elapsed.Seconds:D2}.{stopwatch.Elapsed.Milliseconds:N0}.");
 
         System.Console.CursorVisible = true;
     }
