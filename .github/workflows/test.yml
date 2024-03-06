@@ -13,12 +13,6 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 8.0.x
-    - name: Checkout GitHub Repository
-      uses: actions/checkout@v2
-      with:
-        lfs: true
-    - name: Checkout LFS Objects
-      run: git lfs checkout
     - name: Run Tests
       run: |
         cd src
