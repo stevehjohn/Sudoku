@@ -226,14 +226,16 @@ public class Solver
 
         for (var y = 0; y < 9; y++)
         {
+            var y9 = (y << 3) + y;
+            
             for (var x = 0; x < 9; x++)
             {
-                if (puzzle[x + (y << 3) + y] != 0)
+                if (puzzle[x + y9] != 0)
                 {
                     continue;
                 }
 
-                var candidates = _cellCandidates[x + (y << 3) + y];
+                var candidates = _cellCandidates[x + y9];
 
                 var count = BitOperations.PopCount((uint) candidates);
 
