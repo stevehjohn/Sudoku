@@ -246,6 +246,8 @@ public class Solver
 
     private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, int score, (Candidates Row, Candidates Column, Candidates Box) candidates, ref int steps, List<Move> history)
     {
+        var cell = move.Position.X + (move.Position.Y << 3) + move.Position.Y;
+            
         for (var i = 1; i < 10; i++)
         {
             var bit = 1 << (i - 1);
@@ -255,7 +257,7 @@ public class Solver
                 continue;
             }
 
-            puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = i;
+            puzzle[cell] = i;
 
             var oldCandidates = candidates;
 
@@ -281,7 +283,7 @@ public class Solver
                 return true;
             }
 
-            puzzle[move.Position.X + (move.Position.Y << 3) + move.Position.Y] = 0;
+            puzzle[cell] = 0;
 
             candidates = oldCandidates;
             
