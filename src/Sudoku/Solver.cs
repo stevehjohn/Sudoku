@@ -66,33 +66,15 @@ public class Solver
         {
             var y9 = (y << 3) + y;
 
+            var y3 = y / 3 * 3;
+            
             for (var x = 0; x < 9; x++)
             {
                 rowCandidates.Remove(y, puzzle[x + y9]);
 
                 columnCandidates.Remove(y, puzzle[y + (x << 3) + x]);
-            }
-        }
-
-        var boxIndex = 0;
-
-        for (var yO = 0; yO < 81; yO += 27)
-        {
-            for (var xO = 0; xO < 9; xO += 3)
-            {
-                var start = xO + yO;
-
-                for (var y = 0; y < 3; y++)
-                {
-                    var row = start + (y << 3) + y;
-
-                    for (var x = 0; x < 3; x++)
-                    {
-                        boxCandidates.Remove(boxIndex, puzzle[row + x]);
-                    }
-                }
-
-                boxIndex++;
+                
+                boxCandidates.Remove(y3 + x / 3, puzzle[x + y9]);
             }
         }
 
