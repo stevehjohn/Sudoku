@@ -5,6 +5,8 @@ public class Generator
     private readonly List<int>[] _candidates = new List<int>[81];
 
     private readonly Random _rng = Random.Shared;
+
+    private readonly Solver _solver = new();
     
     public int[] Generate(int cellsToRemove = 51)
     {
@@ -14,7 +16,43 @@ public class Generator
 
         CreateSolvedPuzzle(puzzle);
 
+        RemoveCells(puzzle, cellsToRemove);
+
         return puzzle;
+    }
+
+    private bool RemoveCells(int[] puzzle, int cellsToRemove)
+    {
+        if (cellsToRemove == 0)
+        {
+            return true;
+        }
+
+        while (true)
+        {
+            var cell = _rng.Next(81);
+
+            while (puzzle[cell] == 0)
+            {
+                cell = _rng.Next(81);
+            }
+
+            var value = puzzle[cell];
+
+            puzzle[cell] = 0;
+
+            if (_solver.Solve(puzzle).Solution == null)
+            {
+                puzzle[cell] = value;
+                
+                return false;
+            }
+
+            if (RemoveCells(puzzle, cellsToRemove - 1))
+            {
+                return true;
+            }
+        }
     }
 
     private bool CreateSolvedPuzzle(Span<int> puzzle, int cell = 0)
