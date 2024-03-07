@@ -430,11 +430,11 @@ public class ConsoleApplication
     {
         if (Debugger.IsAttached)
         {
-            _files = Directory.EnumerateFiles("/Users/steve.john/Git/Sudoku/Puzzles", "*.zip").Order().ToList();
+            _files = Directory.EnumerateFiles("/Users/steve.john/Git/Sudoku/Puzzles", "*").Order().ToList();
         }
         else
         {
-            _files = Directory.EnumerateFiles("Puzzles", "*.zip").Order().ToList();
+            _files = Directory.EnumerateFiles("Puzzles", "*").Order().ToList();
         }
     }
 }
