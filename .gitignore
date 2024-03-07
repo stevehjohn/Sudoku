@@ -301,6 +301,4 @@ lambdas/.serverless/
 AoC.Games.*.zip
 Thumbs.db
 
-Puzzles/*.txt
-
 .DS_Store
