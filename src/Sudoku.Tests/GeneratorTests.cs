@@ -1,3 +1,4 @@
+using Sudoku.Extensions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -18,12 +19,7 @@ public class GeneratorTests
         var generator = new Generator();
 
         var puzzle = generator.Generate(60);
-
-        for (var y = 0; y < 9; y++)
-        {
-            _testOutputHelper.WriteLine(string.Join(' ', puzzle[(y * 9)..(y * 9 + 9)]).Replace('0', ' '));
-        }
         
-        _testOutputHelper.WriteLine(string.Join(string.Empty, puzzle).Replace('0', '.'));
+        puzzle.DumpToConsole((1, 1));
     }
 }
