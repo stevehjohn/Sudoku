@@ -145,9 +145,20 @@ public class BulkSolver
 
             System.Console.WriteLine(" Clues...");
 
+            var i = 0;
+            
             foreach (var timing in _timings.OrderBy(t => t.Key))
             {
-                System.Console.WriteLine($"  {timing.Key}: {timing.Value.Elapsed / timing.Value.Count:N0}μs");
+                System.Console.Write($"  {timing.Key}: {timing.Value.Elapsed / timing.Value.Count:N0}μs  ");
+
+                i++;
+
+                if (i == 4)
+                {
+                    System.Console.WriteLine();
+
+                    i = 0;
+                }
             }
         }
         else
