@@ -12,17 +12,17 @@ public class Generator
         
         InitialiseCandidates();
 
-        CreatePuzzle(puzzle);
+        Console.WriteLine(CreatePuzzle(puzzle));
         
         return puzzle;
     }
 
-    private void CreatePuzzle(Span<int> puzzle, int cell = 0)
+    private bool CreatePuzzle(Span<int> puzzle, int cell = 0)
     {
-        Console.WriteLine(string.Join(' ', puzzle.ToArray()));
-        
         while (_candidates[cell].Count > 0)
         {
+            Console.WriteLine(string.Join(string.Empty, puzzle.ToArray()));
+
             var candidateIndex = _rng.Next(_candidates[cell].Count);
 
             var candidate = _candidates[cell][candidateIndex];
@@ -35,14 +35,14 @@ public class Generator
             {
                 if (cell == 80)
                 {
-                    return;
+                    return true;
                 }
-
-                cell++;
-
-                CreatePuzzle(puzzle, cell + 1);
+                
+                return CreatePuzzle(puzzle, cell + 1);
             }
         }
+
+        return false;
     }
 
     private static bool IsValid(Span<int> puzzle)
