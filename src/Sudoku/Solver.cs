@@ -40,6 +40,13 @@ public class Solver
 
         stopwatch.Stop();
 
+        if (unique && solutionCount == 0)
+        {
+            history?.Clear();
+            
+            return (null, steps, stopwatch.Elapsed.TotalMicroseconds, history);
+        }
+
         return (workingCopy, steps, stopwatch.Elapsed.TotalMicroseconds, history);
     }
 
@@ -278,7 +285,9 @@ public class Solver
 
             if (score == 0)
             {
-                return true;
+                solutionCount--;
+
+                return solutionCount == 0;
             }
 
             steps++;

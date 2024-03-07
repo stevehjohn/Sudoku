@@ -17,7 +17,7 @@ public class GeneratorTests
     {
         var generator = new Generator();
 
-        var puzzle = generator.Generate(50);
+        var puzzle = generator.Generate();
 
         for (var y = 0; y < 9; y++)
         {
