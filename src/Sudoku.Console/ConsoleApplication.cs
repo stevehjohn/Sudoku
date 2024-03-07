@@ -157,46 +157,43 @@ public class ConsoleApplication
     {
         Out();
         
-        Out("Please enter each line of the puzzle without spaces,\n using dots (.) for empty cells");
+        Out("Please enter the puzzle flattened into one row.");
         
         Out();
         
-        Out("E.g. ...1.9..4\n");
+        Out("E.g. ......6....59.....82....8....45........3........6..3.54...325..6..................\n");
 
         var puzzle = new int[81];
 
         var clues = 0;
         
-        for (var y = 0; y < 9; y++)
+        retry:
+        System.Console.Write($" Puzzle: ");
+
+        var line = System.Console.ReadLine();
+
+        try
         {
-            retry:
-            System.Console.Write($" Line {y + 1}: ");
-
-            var line = System.Console.ReadLine();
-
-            try
+            for (var i = 0; i < 81; i++)
             {
-                for (var x = 0; x < 9; x++)
+                // ReSharper disable once PossibleNullReferenceException
+                if (line[i] == '.')
                 {
-                    // ReSharper disable once PossibleNullReferenceException
-                    if (line[x] == '.')
-                    {
-                        continue;
-                    }
-
-                    puzzle[y * 9 + x] = line[x] - '0';
-
-                    clues++;
+                    continue;
                 }
+
+                puzzle[i] = line[i] - '0';
+
+                clues++;
             }
-            catch
-            {
-                Out("");
-                
-                Out("That appears to be an invalid line. Please try again.\n");
-                
-                goto retry;
-            }
+        }
+        catch
+        {
+            Out("");
+            
+            Out("That appears to be an invalid line. Please try again.\n");
+            
+            goto retry;
         }
 
         var puzzles = new (int[] Puzzle, int Clues)[1];
