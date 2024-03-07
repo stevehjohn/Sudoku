@@ -32,8 +32,10 @@ public class ConsoleApplication
             
             Out("   E: Enter manually\n");
             
-            Out("   T: Test Suite\n");
+            Out("   T: Test suite\n");
 
+            Out("   G: Generate puzzles\n");
+            
             Out("   Q: Exit application\n");
 
             while (true)
@@ -62,9 +64,35 @@ public class ConsoleApplication
                     break;
                 }
 
+                if (response == "t")
+                {
+                    RunTestSuite();
+                    
+                    Out();
+
+                    Out("Press any key to continue.");
+
+                    System.Console.ReadKey();
+
+                    break;
+                }
+
                 if (response == "e")
                 {
                     SolveUserPuzzle();
+
+                    Out();
+
+                    Out("Press any key to continue.");
+
+                    System.Console.ReadKey();
+
+                    break;
+                }
+
+                if (response == "g")
+                {
+                    GeneratePuzzles();
 
                     Out();
 
@@ -102,6 +130,110 @@ public class ConsoleApplication
                 Out("Unknown command, please try again.\n");
             }
         }
+    }
+
+    private void GeneratePuzzles()
+    {
+        System.Console.Write("\n Clues to leave (17 - 72): ");
+
+        var response = System.Console.ReadLine();
+
+        if (! int.TryParse(response, out var clues))
+        {
+            Out("\n Invalid input.");
+            
+            return;
+        }
+
+        if (clues < 17 || clues > 72)
+        {
+            Out("\n Invalid input.");
+            
+            return;
+        }
+        
+        System.Console.Write("\n Number of puzzles to generate: ");
+        
+        response = System.Console.ReadLine();
+
+        if (! int.TryParse(response, out var puzzles))
+        {
+            Out("\n Invalid input.");
+            
+            return;
+        }
+        
+        GeneratePuzzles(clues, puzzles);
+    }
+
+    private void GeneratePuzzles(int clues, int puzzleCount)
+    {
+        var generator = new Generator();
+        
+        System.Console.Clear();
+
+        var stopwatch = Stopwatch.StartNew();
+
+        System.Console.CursorVisible = false;
+
+        const string filename = "Puzzles/Generated.txt";
+        
+        if (File.Exists(filename))
+        {
+            File.Delete(filename);
+        }
+
+        var puzzles = new HashSet<int[]>();
+        
+        Out("\nGenerating puzzles...\n");
+
+        var recent = new List<int[]>();
+        
+        for (var i = 0; i < puzzleCount; i++)
+        {
+            System.Console.CursorTop = 3;
+            
+            System.Console.WriteLine($" Puzzle {i + 1:N0}/{puzzleCount:N0}.               ");
+
+            var puzzle = generator.Generate(81 - clues);
+
+            var attempt = 1;
+            
+            while (! puzzles.Add(puzzle))
+            {
+                attempt++;
+                
+                System.Console.CursorTop = 3;
+            
+                System.Console.WriteLine($" Puzzle {i + 1}/{puzzleCount:N0}, attempt {attempt:N0}.");
+
+                puzzle = generator.Generate(81 - clues);
+            }
+            
+            recent.Add(puzzle);
+
+            if (recent.Count > 20)
+            {
+                recent.RemoveAt(0);
+            }
+
+            System.Console.WriteLine();
+            
+            foreach (var item in recent)
+            {
+                System.Console.WriteLine($" {string.Join(string.Empty, item).Replace('0', '.')}");
+            }
+        }
+        
+        stopwatch.Stop();
+        
+        File.WriteAllLines(filename, puzzles.Select(p => string.Join(string.Empty, p).Replace('0', '.')));
+
+        Out($"\n Puzzles have been written to {filename}.");
+        
+        Out($"\n {puzzleCount:N0} {clues} puzzles generated in {stopwatch.Elapsed.Minutes} minutes, {stopwatch.Elapsed.Seconds} seconds, {puzzleCount / stopwatch.Elapsed.TotalSeconds:N0} puzzles/second.");
+
+        System.Console.CursorVisible = true;
     }
 
     private static void RunTestSuite()
@@ -220,6 +352,13 @@ public class ConsoleApplication
 
     private static (int[] Puzzle, int Clues)[] LoadPuzzles(string filename)
     {
+        if (Path.GetExtension(filename).ToLower() != "zip")
+        {
+            var data = File.ReadAllLines(filename);
+
+            return ParseData(data);
+        }
+
         using var file = File.OpenRead(filename);
 
         using var zip = new ZipArchive(file, ZipArchiveMode.Read);
@@ -311,11 +450,11 @@ public class ConsoleApplication
     {
         if (Debugger.IsAttached)
         {
-            _files = Directory.EnumerateFiles("/Users/steve.john/Git/Sudoku/Puzzles", "*.zip").Order().ToList();
+            _files = Directory.EnumerateFiles("/Users/steve.john/Git/Sudoku/Puzzles", "*").Order().ToList();
         }
         else
         {
-            _files = Directory.EnumerateFiles("Puzzles", "*.zip").Order().ToList();
+            _files = Directory.EnumerateFiles("Puzzles", "*").Order().ToList();
         }
     }
 }
