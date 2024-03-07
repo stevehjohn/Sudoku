@@ -185,7 +185,7 @@ public class ConsoleApplication
 
         var puzzles = new HashSet<int[]>();
         
-        Out("\n Generating puzzles...\n");
+        Out($"\n Generating {puzzleCount} clue puzzles...\n");
 
         var recent = new List<int[]>();
         
@@ -210,11 +210,11 @@ public class ConsoleApplication
                 puzzle = generator.Generate(81 - clues);
             }
             
-            recent.Add(puzzle);
+            recent.Insert(0, puzzle);
 
             if (recent.Count > 20)
             {
-                recent.RemoveAt(0);
+                recent.RemoveAt(20);
             }
 
             System.Console.WriteLine();
