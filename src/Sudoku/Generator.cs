@@ -19,6 +19,8 @@ public class Generator
 
     private void CreatePuzzle(Span<int> puzzle, int cell = 0)
     {
+        Console.WriteLine(string.Join(' ', puzzle.ToArray()));
+        
         while (_candidates[cell].Count > 0)
         {
             var candidateIndex = _rng.Next(_candidates[cell].Count);
@@ -38,7 +40,7 @@ public class Generator
 
                 cell++;
 
-                CreatePuzzle(puzzle, cell);
+                CreatePuzzle(puzzle, cell + 1);
             }
         }
     }
@@ -124,8 +126,6 @@ public class Generator
             
             for (var c = 1; c < 10; c++)
             {
-                _candidates[i].Clear();
-                
                 _candidates[i].Add(c);
             }
         }
