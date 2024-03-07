@@ -10,6 +10,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Puzzles", "Puzzles", "{72316191-5E40-4936-A5D5-EBB6E9FCF6D7}"
+	ProjectSection(SolutionItems) = preProject
+		..\Puzzles\Top 50K Toughest.zip = ..\Puzzles\Top 50K Toughest.zip
+		..\Puzzles\2 Million.zip = ..\Puzzles\2 Million.zip
+		..\Puzzles\Hard.zip = ..\Puzzles\Hard.zip
+		..\Puzzles\Easy.zip = ..\Puzzles\Easy.zip
+		..\Puzzles\Most Steps.zip = ..\Puzzles\Most Steps.zip
+		..\Puzzles\Benchmarks.zip = ..\Puzzles\Benchmarks.zip
+		..\Puzzles\Euler.zip = ..\Puzzles\Euler.zip
+		..\Puzzles\Minimum Clues.zip = ..\Puzzles\Minimum Clues.zip
+		..\Puzzles\Medium.zip = ..\Puzzles\Medium.zip
+		..\Puzzles\Diabolical.zip = ..\Puzzles\Diabolical.zip
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.Tests", "Sudoku.Tests\Sudoku.Tests.csproj", "{E05213CF-2295-4E44-8488-DB5458042766}"
 EndProject
