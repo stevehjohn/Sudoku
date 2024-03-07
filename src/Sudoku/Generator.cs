@@ -81,6 +81,37 @@ public class Generator
                 return false;
             }
         }
+
+        var uniqueBox = new HashSet<int>();
+
+        for (var yO = 0; yO < 9; yO += 3)
+        {
+            for (var xO = 0; xO < 9; xO += 3)
+            {
+                uniqueBox.Clear();
+                
+                var countBox = 0;
+
+                for (var x = 0; x < 3; x++)
+                {
+                    for (var y = 0; y < 3; y++)
+                    {
+                        if (puzzle[(yO + y) * 9 + xO + x] != 0)
+                        {
+                            uniqueBox.Add(puzzle[(yO + y) * 9 + xO + x]);
+
+                            countBox++;
+                        }
+                    }
+                }
+
+                if (uniqueBox.Count < countBox)
+                {
+                    return false;
+                }
+            }
+        }
+
         
         return true;
     }
