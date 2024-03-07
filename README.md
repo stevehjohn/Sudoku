@@ -10,6 +10,8 @@ What to expect: https://youtu.be/pvAZ--dLYH4
 
 If there is only 1 puzzle to solve, it will display every evaluated step. Otherwise, it just shows each puzzle and its solution.
 
+![Screenshot](screenshot.png)
+
 ## Usage in Code
 
 ```csharp
