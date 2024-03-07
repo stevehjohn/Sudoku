@@ -8,7 +8,7 @@ public class Solver
 {
     private readonly int[] _cellCandidates = new int[81];
 
-    public (int[] Solution, int Steps, double Microseconds, List<Move> History) Solve(int[] puzzle, bool record = false)
+    public (int[] Solution, int Steps, double Microseconds, List<Move> History) Solve(int[] puzzle, bool unique = false, bool record = false)
     {
         var steps = 0;
 

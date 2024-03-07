@@ -64,7 +64,7 @@ public class BulkSolver
             () => new Solver(),
             (i, _, solver) => 
             {
-                var solution = solver.Solve(_puzzles[i].Puzzle, record);
+                var solution = solver.Solve(_puzzles[i].Puzzle, false, record);
 
                 if (! quiet)
                 {
