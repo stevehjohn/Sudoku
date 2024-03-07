@@ -4,6 +4,8 @@ A fast implementation of a Sudoku solver in C#. Can also act as a Sudoku generat
 
 ## Usage
 
+### Solving Sudokus
+
 ```csharp
 var puzzle = new int[81];
 
@@ -46,4 +48,11 @@ foreach (var move in result.History)
 {
     Console.WriteLine($"Row: {move.Y}    Column: {move.X}    Value: {move.Value}");        
 }
+```
+### Generating Sudokus
+
+```csharp
+var generator = new Generator();
+
+var puzzle = generator.Generate(51); // Will remove 51 cells, leaving a puzzle with 30 clues.
 ```

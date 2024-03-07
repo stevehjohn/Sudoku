@@ -14,6 +14,8 @@ If there is only 1 puzzle to solve, it will display every evaluated step. Otherw
 
 ## Usage in Code
 
+### Solving Sudokus
+
 ```csharp
 var puzzle = new int[81];
 
@@ -56,4 +58,12 @@ foreach (var move in result.History)
 {
     Console.WriteLine($"Row: {move.Y}    Column: {move.X}    Value: {move.Value}");        
 }
+```
+
+### Generating Sudokus
+
+```csharp
+var generator = new Generator();
+
+var puzzle = generator.Generate(51); // Will remove 51 cells, leaving a puzzle with 30 clues.
 ```
