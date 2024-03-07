@@ -339,6 +339,13 @@ public class ConsoleApplication
 
     private static (int[] Puzzle, int Clues)[] LoadPuzzles(string filename)
     {
+        if (Path.GetExtension(filename).ToLower() == "sudoku")
+        {
+            var data = File.ReadAllLines(filename);
+
+            return ParseData(data);
+        }
+
         using var file = File.OpenRead(filename);
 
         using var zip = new ZipArchive(file, ZipArchiveMode.Read);
