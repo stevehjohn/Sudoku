@@ -292,6 +292,8 @@ public class BulkSolver
     
         for (var y = 0; y < 9; y++)
         {
+            _output.Append(" \u2502");
+
             for (var x = 0; x < 9; x++)
             {
                 if (left[x + y * 9] == 0)
@@ -309,7 +311,7 @@ public class BulkSolver
                 }
             }
 
-            _output.Append("    ");
+            _output.Append(" \u2502  \u2502");
             
             for (var x = 0; x < 9; x++)
             {
@@ -327,12 +329,14 @@ public class BulkSolver
                     _output.Append(" \u2502");
                 }
             }
+
+            _output.Append(" \u2502");
             
             _output.AppendLine();
 
             if (y is 2 or 5)
             {
-                _output.AppendLine(" \u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500     \u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500");
+                _output.AppendLine(" \u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524  \u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524");
             }
         }
         
