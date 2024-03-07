@@ -160,6 +160,11 @@ public class BulkSolver
                     i = 0;
                 }
             }
+
+            if (i > 0)
+            {
+                System.Console.WriteLine();
+            }
         }
         else
         {
