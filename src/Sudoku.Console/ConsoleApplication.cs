@@ -185,7 +185,7 @@ public class ConsoleApplication
 
         var puzzles = new HashSet<int[]>();
         
-        Out($"\n Generating {puzzleCount} clue puzzles...\n");
+        Out($"\n Generating {clues} clue puzzles...\n");
 
         var recent = new List<int[]>();
         
@@ -194,7 +194,7 @@ public class ConsoleApplication
             System.Console.CursorTop = 3;
             
             System.Console.WriteLine($" Puzzle {i + 1:N0}/{puzzleCount:N0}.               ");
-
+            
             var puzzle = generator.Generate(81 - clues);
 
             var attempt = 1;
