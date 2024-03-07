@@ -161,6 +161,8 @@ public class ConsoleApplication
 
         var stopwatch = Stopwatch.StartNew();
 
+        System.Console.CursorVisible = false;
+
         const string filename = "Puzzles/Generated.sudoku";
         
         if (File.Exists(filename))
@@ -216,7 +218,9 @@ public class ConsoleApplication
 
         Out($"\n Puzzles have been written to {filename}.");
         
-        Out($"\n {puzzleCount:N0} generated in {stopwatch.Elapsed.Minutes} minutes, {stopwatch.Elapsed.Seconds} seconds, {stopwatch.Elapsed.TotalSeconds / puzzleCount:N0} puzzles/second.");
+        Out($"\n {puzzleCount:N0} generated in {stopwatch.Elapsed.Minutes} minutes, {stopwatch.Elapsed.Seconds} seconds, {puzzleCount / stopwatch.Elapsed.TotalSeconds:N0} puzzles/second.");
+
+        System.Console.CursorVisible = true;
     }
 
     private static void RunTestSuite()
