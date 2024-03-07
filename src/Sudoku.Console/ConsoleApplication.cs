@@ -170,10 +170,43 @@ public class ConsoleApplication
 
         var puzzles = new HashSet<int[]>();
         
+        Out("\nGenerating puzzles...\n");
+
+        var recent = new List<int[]>();
+        
         for (var i = 0; i < puzzleCount; i++)
         {
-            while (! puzzles.Add(generator.Generate(81 - clues)))
+            System.Console.CursorTop = 3;
+            
+            System.Console.WriteLine($" Puzzle {i + 1}/{puzzleCount}.               ");
+
+            var puzzle = generator.Generate(81 - clues);
+
+            var attempt = 1;
+            
+            while (! puzzles.Add(puzzle))
             {
+                attempt++;
+                
+                System.Console.CursorTop = 3;
+            
+                System.Console.WriteLine($" Puzzle {i + 1}/{puzzleCount}, attempt {attempt}.");
+
+                puzzle = generator.Generate(81 - clues);
+            }
+            
+            recent.Add(puzzle);
+
+            if (recent.Count > 20)
+            {
+                recent.RemoveAt(0);
+            }
+
+            System.Console.WriteLine();
+            
+            foreach (var item in recent)
+            {
+                System.Console.WriteLine($" {string.Join(string.Empty, item).Replace('0', '.')}");
             }
         }
         
@@ -181,9 +214,9 @@ public class ConsoleApplication
         
         File.WriteAllLines(filename, puzzles.Select(p => string.Join(string.Empty, p).Replace('0', '.')));
 
-        Out($"Puzzles have been written to {filename}.");
+        Out($"\n Puzzles have been written to {filename}.");
         
-        Out($"{puzzleCount:N0} generated in {stopwatch.Elapsed.Minutes}:{stopwatch.Elapsed.Seconds}, {puzzleCount / stopwatch.Elapsed.TotalMicroseconds} puzzles/second.");
+        Out($"\n {puzzleCount:N0} generated in {stopwatch.Elapsed.Minutes} minutes, {stopwatch.Elapsed.Seconds} seconds, {stopwatch.Elapsed.TotalSeconds / puzzleCount:N0} puzzles/second.");
     }
 
     private static void RunTestSuite()
