@@ -23,5 +23,7 @@ public class GeneratorTests
         {
             _testOutputHelper.WriteLine(string.Join(' ', puzzle[(y * 9)..(y * 9 + 9)]).Replace('0', ' '));
         }
+        
+        _testOutputHelper.WriteLine(string.Join(string.Empty, puzzle).Replace('0', '.'));
     }
 }
