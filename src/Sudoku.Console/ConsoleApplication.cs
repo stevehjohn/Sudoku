@@ -188,12 +188,14 @@ public class ConsoleApplication
         Out($"\n Generating {clues} clue puzzles...\n");
 
         var recent = new List<int[]>();
+
+        var collisions = 0;
         
         for (var i = 0; i < puzzleCount; i++)
         {
             System.Console.CursorTop = 3;
             
-            System.Console.WriteLine($" Puzzle {i + 1:N0}/{puzzleCount:N0}.               ");
+            System.Console.WriteLine($" Puzzle {i + 1:N0}/{puzzleCount:N0}, {collisions} collision(s).               ");
             
             var puzzle = generator.Generate(81 - clues);
 
@@ -202,10 +204,12 @@ public class ConsoleApplication
             while (! puzzles.Add(puzzle))
             {
                 attempt++;
+
+                collisions++;
                 
                 System.Console.CursorTop = 3;
             
-                System.Console.WriteLine($" Puzzle {i + 1}/{puzzleCount:N0}, attempt {attempt:N0}.");
+                System.Console.WriteLine($" Puzzle {i + 1}/{puzzleCount:N0}, attempt {attempt:N0}.               ");
 
                 puzzle = generator.Generate(81 - clues);
             }
