@@ -32,8 +32,10 @@ public class ConsoleApplication
             
             Out("   E: Enter manually\n");
             
-            Out("   T: Test Suite\n");
+            Out("   T: Test suite\n");
 
+            Out("   G: Generate puzzles\n");
+            
             Out("   Q: Exit application\n");
 
             while (true)
@@ -75,6 +77,19 @@ public class ConsoleApplication
                     break;
                 }
 
+                if (response == "g")
+                {
+                    GeneratePuzzles();
+
+                    Out();
+
+                    Out("Press any key to continue.");
+
+                    System.Console.ReadKey();
+
+                    break;
+                }
+
                 if (int.TryParse(response, out var id))
                 {
                     if (id > _files.Count)
@@ -102,6 +117,73 @@ public class ConsoleApplication
                 Out("Unknown command, please try again.\n");
             }
         }
+    }
+
+    private void GeneratePuzzles()
+    {
+        System.Console.Write("\n Clues to leave (17 - 72): ");
+
+        var response = System.Console.ReadLine();
+
+        if (! int.TryParse(response, out var clues))
+        {
+            Out("\n Invalid input.");
+            
+            return;
+        }
+
+        if (clues < 17 || clues > 72)
+        {
+            Out("\n Invalid input.");
+            
+            return;
+        }
+        
+        System.Console.Write("\n Number of puzzles to generate: ");
+        
+        response = System.Console.ReadLine();
+
+        if (! int.TryParse(response, out var puzzles))
+        {
+            Out("\n Invalid input.");
+            
+            return;
+        }
+        
+        GeneratePuzzles(clues, puzzles);
+    }
+
+    private void GeneratePuzzles(int clues, int puzzleCount)
+    {
+        var generator = new Generator();
+        
+        System.Console.Clear();
+
+        var stopwatch = Stopwatch.StartNew();
+
+        const string filename = "Puzzles/Generated.sudoku";
+        
+        if (File.Exists(filename))
+        {
+            File.Delete(filename);
+        }
+
+        var puzzles = new HashSet<int[]>();
+        
+        for (var i = 0; i < puzzleCount; i++)
+        {
+            while (! puzzles.Add(generator.Generate(81 - clues)))
+            {
+            }
+        }
+        
+        stopwatch.Stop();
+        
+        File.WriteAllLines(filename, puzzles.Select(p => string.Join(string.Empty, p).Replace('0', '.')));
+
+        Out($"Puzzles have been written to {filename}.");
+        
+        Out($"{puzzleCount:N0} generated in {stopwatch.Elapsed.Minutes}:{stopwatch.Elapsed.Seconds}, {puzzleCount / stopwatch.Elapsed.TotalMicroseconds} puzzles/second.");
     }
 
     private static void RunTestSuite()
