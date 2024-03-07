@@ -302,3 +302,4 @@ AoC.Games.*.zip
 Thumbs.db
 
 .DS_Store
+Puzzles/Generated.txt
