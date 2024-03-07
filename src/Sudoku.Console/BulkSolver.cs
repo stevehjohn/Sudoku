@@ -218,7 +218,7 @@ public class BulkSolver
 
     private static void DumpHistory(int[] puzzle, List<Move> solution)
     {
-        var yIncrement = 0;
+        int yIncrement;
 
         for (var y = 0; y < 9; y++)
         {
@@ -236,10 +236,20 @@ public class BulkSolver
 
             System.Console.CursorTop = y + 2 + yIncrement;
 
-            System.Console.CursorLeft = 30;
-
             for (var x = 0; x < 9; x++)
             {
+                System.Console.CursorLeft = 30 + x * 2;
+
+                if (x > 2)
+                {
+                    System.Console.CursorLeft += 2;
+                }
+
+                if (x > 5)
+                {
+                    System.Console.CursorLeft += 2;
+                }
+
                 if (puzzle[x + y * 9] == 0)
                 {
                     System.Console.Write("  ");
@@ -284,6 +294,16 @@ public class BulkSolver
 
                 System.Console.CursorLeft = 30 + move.X * 2;
 
+                if (move.X > 2)
+                {
+                    System.Console.CursorLeft += 2;
+                }
+
+                if (move.X > 5)
+                {
+                    System.Console.CursorLeft += 2;
+                }
+
                 if (i % 2 == 0)
                 {
                     System.Console.Write(move.Value);
@@ -322,10 +342,20 @@ public class BulkSolver
 
             System.Console.CursorLeft = 30 + move.X * 2;
             
+            if (move.X > 2)
+            {
+                System.Console.CursorLeft += 2;
+            }
+
+            if (move.X > 5)
+            {
+                System.Console.CursorLeft += 2;
+            }
+
             System.Console.Write(move.Value);
         }
 
-        System.Console.CursorTop = 28;
+        System.Console.CursorTop = 30;
     }
 
     private void Dump(int[] left, int[] right, int solved)
