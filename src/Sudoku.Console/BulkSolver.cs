@@ -18,6 +18,8 @@ public class BulkSolver
 
     private int _maxStepsPuzzleNumber;
 
+    private int _mostStepsClues;
+
     private int _maxTimePuzzleNumber;
 
     private Stopwatch _stopwatch;
@@ -103,6 +105,8 @@ public class BulkSolver
                             _maxStepsPuzzleNumber = i;
 
                             _steps.Maximum = solution.Steps;
+
+                            _mostStepsClues = clues;
                         }
                     }
                 }
@@ -477,7 +481,7 @@ public class BulkSolver
 
             _output.AppendLine($" Timings...\n  Minimum: {_elapsed.Minimum:N0}μs          \n  Mean:    {mean:N0}μs          \n  Maximum: {_elapsed.Maximum:N0}μs (Puzzle #{_maxTimePuzzleNumber:N0})         \n");
             
-            _output.AppendLine($" Combinations...\n  Minimum: {_steps.Minimum:N0}          \n  Mean:    {_steps.Total / solved:N0}          \n  Maximum: {_steps.Maximum:N0} (Puzzle #{_maxStepsPuzzleNumber:N0})           \n");
+            _output.AppendLine($" Combinations...\n  Minimum: {_steps.Minimum:N0}          \n  Mean:    {_steps.Total / solved:N0}          \n  Maximum: {_steps.Maximum:N0} (Puzzle #{_maxStepsPuzzleNumber:N0}, Clues: {_mostStepsClues})           \n");
 
             var meanTime = _stopwatch.Elapsed.TotalSeconds / solved;
             
