@@ -120,6 +120,8 @@ public class Generator
     {
         for (var i = 0; i < 81; i++)
         {
+            _candidates[i] = new List<int>(9);
+            
             for (var c = 1; c < 10; c++)
             {
                 _candidates[i].Clear();
