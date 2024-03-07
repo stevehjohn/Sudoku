@@ -149,7 +149,7 @@ public class BulkSolver
             
             foreach (var timing in _timings.OrderBy(t => t.Key))
             {
-                System.Console.Write($"  {timing.Key}: {timing.Value.Elapsed / timing.Value.Count:N0}μs  ");
+                System.Console.Write($"  {timing.Key}: {$"{timing.Value.Elapsed / timing.Value.Count:N0}",5}μs  ");
 
                 i++;
 
