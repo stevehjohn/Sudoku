@@ -12,12 +12,12 @@ public class Generator
         
         InitialiseCandidates();
 
-        Console.WriteLine(CreatePuzzle(puzzle));
-        
+        CreateSolvedPuzzle(puzzle);
+
         return puzzle;
     }
 
-    private bool CreatePuzzle(Span<int> puzzle, int cell = 0)
+    private bool CreateSolvedPuzzle(Span<int> puzzle, int cell = 0)
     {
         while (_candidates[cell].Count > 0)
         {
@@ -38,11 +38,15 @@ public class Generator
                     return true;
                 }
                 
-                return CreatePuzzle(puzzle, cell + 1);
+                return CreateSolvedPuzzle(puzzle, cell + 1);
             }
         }
+        
+        puzzle[cell] = 0;
 
-        return false;
+        _candidates[cell] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+        return CreateSolvedPuzzle(puzzle, cell - 1);
     }
 
     private static bool IsValid(Span<int> puzzle)
@@ -122,12 +126,7 @@ public class Generator
     {
         for (var i = 0; i < 81; i++)
         {
-            _candidates[i] = new List<int>(9);
-            
-            for (var c = 1; c < 10; c++)
-            {
-                _candidates[i].Add(c);
-            }
+            _candidates[i] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
         }
     }
 }
