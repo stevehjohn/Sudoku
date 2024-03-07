@@ -1,18 +1,10 @@
 using Sudoku.Extensions;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Sudoku.Tests;
 
 public class GeneratorTests
 {
-    private readonly ITestOutputHelper _testOutputHelper;
-
-    public GeneratorTests(ITestOutputHelper testOutputHelper)
-    {
-        _testOutputHelper = testOutputHelper;
-    }
-
     [Fact]
     public void GeneratesAValidSudokuPuzzle()
     {
