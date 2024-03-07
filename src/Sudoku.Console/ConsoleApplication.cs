@@ -168,7 +168,7 @@ public class ConsoleApplication
         var clues = 0;
         
         retry:
-        System.Console.Write($" Puzzle: ");
+        System.Console.Write(" Puzzle: ");
 
         var line = System.Console.ReadLine();
 
