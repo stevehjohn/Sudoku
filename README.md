@@ -10,8 +10,6 @@ What to expect: https://www.youtube.com/watch?v=-XmEU7f3rpE
 
 If there is only 1 puzzle to solve, it will display every evaluated step. Otherwise, it just shows each puzzle and its solution.
 
-![Screenshot](screenshot.png)
-
 ## Usage in Code
 
 ### Solving Sudokus
@@ -106,3 +104,7 @@ Output:
  │       │       │       │
  └───────┴───────┴───────┘
 ```
+
+## Screenshot
+
+![Screenshot](screenshot.png)
