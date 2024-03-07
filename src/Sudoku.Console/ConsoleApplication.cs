@@ -231,7 +231,7 @@ public class ConsoleApplication
 
         Out($"\n Puzzles have been written to {filename}.");
         
-        Out($"\n {puzzleCount:N0} {clues} puzzles generated in {stopwatch.Elapsed.Minutes} minutes, {stopwatch.Elapsed.Seconds} seconds, {puzzleCount / stopwatch.Elapsed.TotalSeconds:N0} puzzles/second.");
+        Out($"\n {puzzleCount:N0} {clues} clue puzzles generated in {stopwatch.Elapsed.Minutes} minutes, {stopwatch.Elapsed.Seconds} seconds, {puzzleCount / stopwatch.Elapsed.TotalSeconds:N0} puzzles/second.");
 
         System.Console.CursorVisible = true;
     }

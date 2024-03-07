@@ -1,6 +1,6 @@
 # Sudoku
 
-A fast implementation of a Sudoku solver in C#.
+A fast implementation of a Sudoku solver in C#. Can also act as a Sudoku generator.
 
 ## Usage
 
