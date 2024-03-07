@@ -55,4 +55,22 @@ foreach (var move in result.History)
 var generator = new Generator();
 
 var puzzle = generator.Generate(51); // Will remove 51 cells, leaving a puzzle with 30 clues.
+
+
+for (var y = 0; y < 9; y++)
+{
+    for (var (x = 0; x < 9; x++)
+    {
+        if (puzzle[y * 9 + x] == 0)
+        {
+            Console.Write("  ");    
+        }
+        else
+        {
+            Console.Write($"{puzzle[y * 9 + x]} ");
+        }
+    }
+    
+    Console.WriteLine();
+}
 ```
