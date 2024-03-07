@@ -218,12 +218,26 @@ public class BulkSolver
 
     private static void DumpHistory(int[] puzzle, List<Move> solution)
     {
+        var yIncrement = 0;
+
         for (var y = 0; y < 9; y++)
         {
-            System.Console.CursorTop = y + 1;
-
-            System.Console.CursorLeft = 23;
+            yIncrement = 0;
             
+            if (y > 2)
+            {
+                yIncrement++;
+            }
+
+            if (y > 5)
+            {
+                yIncrement++;
+            }
+
+            System.Console.CursorTop = y + 2 + yIncrement;
+
+            System.Console.CursorLeft = 30;
+
             for (var x = 0; x < 9; x++)
             {
                 if (puzzle[x + y * 9] == 0)
@@ -254,9 +268,21 @@ public class BulkSolver
             {
                 System.Console.ForegroundColor = ConsoleColor.Magenta;
 
-                System.Console.CursorTop = 1 + move.Y;
+                yIncrement = 0;
 
-                System.Console.CursorLeft = 23 + move.X * 2;
+                if (move.Y > 2)
+                {
+                    yIncrement++;
+                }
+
+                if (move.Y > 5)
+                {
+                    yIncrement++;
+                }
+
+                System.Console.CursorTop = move.Y + 2 + yIncrement;
+
+                System.Console.CursorLeft = 30 + move.X * 2;
 
                 if (i % 2 == 0)
                 {
@@ -280,9 +306,21 @@ public class BulkSolver
 
             System.Console.ForegroundColor = color;
 
-            System.Console.CursorTop = 1 + move.Y;
+            yIncrement = 0;
+            
+            if (move.Y > 2)
+            {
+                yIncrement++;
+            }
 
-            System.Console.CursorLeft = 23 + move.X * 2;
+            if (move.Y > 5)
+            {
+                yIncrement++;
+            }
+
+            System.Console.CursorTop = move.Y + 2 + yIncrement;
+
+            System.Console.CursorLeft = 30 + move.X * 2;
             
             System.Console.Write(move.Value);
         }
