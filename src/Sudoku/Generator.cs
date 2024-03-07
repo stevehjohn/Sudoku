@@ -17,8 +17,72 @@ public class Generator
         return puzzle;
     }
 
-    private void CreatePuzzle(Span<int> puzzle)
+    private void CreatePuzzle(Span<int> puzzle, int cell = 0)
     {
+        while (_candidates[cell].Count > 0)
+        {
+            var candidateIndex = _rng.Next(_candidates[cell].Count);
+
+            var candidate = _candidates[cell][candidateIndex];
+
+            _candidates[cell].RemoveAt(candidateIndex);
+
+            puzzle[cell] = candidate;
+
+            if (IsValid(puzzle))
+            {
+                if (cell == 80)
+                {
+                    return;
+                }
+
+                cell++;
+
+                CreatePuzzle(puzzle, cell);
+            }
+        }
+    }
+
+    private static bool IsValid(Span<int> puzzle)
+    {
+        var uniqueRow = new HashSet<int>();
+
+        var uniqueColumn = new HashSet<int>();
+
+        for (var y = 0; y < 9; y++)
+        {
+            uniqueRow.Clear();
+            
+            uniqueColumn.Clear();
+
+            var countRow = 0;
+
+            var countColumn = 0;
+
+            for (var x = 0; x < 9; x++)
+            {
+                if (puzzle[x + y * 9] != 0)
+                {
+                    uniqueRow.Add(puzzle[x + y * 9]);
+
+                    countRow++;
+                }
+
+                if (puzzle[y + x * 9] != 0)
+                {
+                    uniqueColumn.Add(puzzle[y + x * 9]);
+
+                    countColumn++;
+                }
+            }
+
+            if (uniqueRow.Count < countRow || uniqueColumn.Count < countColumn)
+            {
+                return false;
+            }
+        }
+        
+        return true;
     }
 
     private void InitialiseCandidates()
