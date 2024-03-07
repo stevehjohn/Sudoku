@@ -59,8 +59,6 @@ public class Generator
     {
         while (_candidates[cell].Count > 0)
         {
-            Console.WriteLine(string.Join(string.Empty, puzzle.ToArray()));
-
             var candidateIndex = _rng.Next(_candidates[cell].Count);
 
             var candidate = _candidates[cell][candidateIndex];

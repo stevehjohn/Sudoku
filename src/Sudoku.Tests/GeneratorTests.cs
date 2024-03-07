@@ -17,11 +17,11 @@ public class GeneratorTests
     {
         var generator = new Generator();
 
-        var puzzle = generator.Generate();
+        var puzzle = generator.Generate(50);
 
         for (var y = 0; y < 9; y++)
         {
-            _testOutputHelper.WriteLine(string.Join(' ', puzzle[(y * 9)..((y * 9) + 9)]));
+            _testOutputHelper.WriteLine(string.Join(' ', puzzle[(y * 9)..(y * 9 + 9)]).Replace('0', ' '));
         }
     }
 }
