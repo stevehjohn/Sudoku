@@ -163,7 +163,7 @@ public class ConsoleApplication
 
         System.Console.CursorVisible = false;
 
-        const string filename = "Puzzles/Generated.sudoku";
+        const string filename = "Puzzles/Generated.txt";
         
         if (File.Exists(filename))
         {
