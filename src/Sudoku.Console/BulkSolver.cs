@@ -305,7 +305,7 @@ public class BulkSolver
 
                 if (x is 2 or 5)
                 {
-                    _output.Append(" |");
+                    _output.Append(" \u2502");
                 }
             }
 
@@ -324,7 +324,7 @@ public class BulkSolver
 
                 if (x is 2 or 5)
                 {
-                    _output.Append(" |");
+                    _output.Append(" \u2502");
                 }
             }
             
@@ -332,7 +332,7 @@ public class BulkSolver
 
             if (y is 2 or 5)
             {
-                _output.AppendLine(" ---------------------     ---------------------");
+                _output.AppendLine(" \u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500     \u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500");
             }
         }
         
