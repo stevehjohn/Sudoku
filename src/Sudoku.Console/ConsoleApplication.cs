@@ -223,11 +223,11 @@ public class ConsoleApplication
             {
                 System.Console.WriteLine($" {string.Join(string.Empty, item).Replace('0', '.')}");
             }
+        
+            File.AppendAllText(filename, $"{string.Join(string.Empty, puzzle).Replace('0', '.')}\n");
         }
         
         stopwatch.Stop();
-        
-        File.WriteAllLines(filename, puzzles.Select(p => string.Join(string.Empty, p).Replace('0', '.')));
 
         Out($"\n Puzzles have been written to {filename}.");
         
