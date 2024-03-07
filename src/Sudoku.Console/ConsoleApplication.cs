@@ -180,7 +180,7 @@ public class ConsoleApplication
         {
             System.Console.CursorTop = 3;
             
-            System.Console.WriteLine($" Puzzle {i + 1}/{puzzleCount}.               ");
+            System.Console.WriteLine($" Puzzle {i + 1:N0}/{puzzleCount:N0}.               ");
 
             var puzzle = generator.Generate(81 - clues);
 
@@ -192,7 +192,7 @@ public class ConsoleApplication
                 
                 System.Console.CursorTop = 3;
             
-                System.Console.WriteLine($" Puzzle {i + 1}/{puzzleCount}, attempt {attempt}.");
+                System.Console.WriteLine($" Puzzle {i + 1}/{puzzleCount:N0}, attempt {attempt:N0}.");
 
                 puzzle = generator.Generate(81 - clues);
             }
