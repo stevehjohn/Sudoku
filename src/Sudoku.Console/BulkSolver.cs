@@ -294,20 +294,18 @@ public class BulkSolver
         {
             for (var x = 0; x < 9; x++)
             {
-                var leading = x != 3 && x != 6 ? " " : string.Empty;
-                
                 if (left[x + y * 9] == 0)
                 {
-                    _output.Append($"{leading} ");
+                    _output.Append("  ");
                 }
                 else
                 {
-                    _output.Append($"{leading}{left[x + y * 9]}");
+                    _output.Append($" {left[x + y * 9]}");
                 }
 
                 if (x is 2 or 5)
                 {
-                    _output.Append('|');
+                    _output.Append(" |");
                 }
             }
 
@@ -315,20 +313,18 @@ public class BulkSolver
             
             for (var x = 0; x < 9; x++)
             {
-                var leading = x != 3 && x != 6 ? " " : string.Empty;
-                
                 if (right[x + y * 9] == 0)
                 {
-                    _output.Append($"{leading} ");
+                    _output.Append("  ");
                 }
                 else
                 {
-                    _output.Append($"{leading}{right[x + y * 9]}");
+                    _output.Append($" {right[x + y * 9]}");
                 }
 
                 if (x is 2 or 5)
                 {
-                    _output.Append('|');
+                    _output.Append(" |");
                 }
             }
             
@@ -336,7 +332,7 @@ public class BulkSolver
 
             if (y is 2 or 5)
             {
-                _output.AppendLine(" -----------------     -----------------");
+                _output.AppendLine(" ---------------------     ---------------------");
             }
         }
         
