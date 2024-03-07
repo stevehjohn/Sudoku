@@ -185,7 +185,7 @@ public class ConsoleApplication
 
         var puzzles = new HashSet<int[]>();
         
-        Out("\nGenerating puzzles...\n");
+        Out("\n Generating puzzles...\n");
 
         var recent = new List<int[]>();
         
