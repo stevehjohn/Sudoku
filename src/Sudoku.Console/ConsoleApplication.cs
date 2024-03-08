@@ -6,7 +6,11 @@ namespace Sudoku.Console;
 public class ConsoleApplication
 {
     private List<string> _files;
-    
+
+    private readonly object _outputFileLock = new();
+
+    private readonly object _consoleLock = new();
+
     public void Run()
     {
         while (true)
@@ -29,13 +33,13 @@ public class ConsoleApplication
             }
 
             Out();
-            
+
             Out("   E: Enter manually\n");
-            
+
             Out("   T: Test suite\n");
 
             Out("   G: Generate puzzles\n");
-            
+
             Out("   Q: Exit application\n");
 
             while (true)
@@ -54,7 +58,7 @@ public class ConsoleApplication
                 if (response == "t")
                 {
                     RunTestSuite();
-                    
+
                     Out();
 
                     Out("Press any key to continue.");
@@ -67,7 +71,7 @@ public class ConsoleApplication
                 if (response == "t")
                 {
                     RunTestSuite();
-                    
+
                     Out();
 
                     Out("Press any key to continue.");
@@ -108,9 +112,9 @@ public class ConsoleApplication
                     if (id > _files.Count)
                     {
                         Out();
-                        
+
                         Out("Invalid puzzle set number, please try again.\n");
-                        
+
                         continue;
                     }
 
@@ -121,12 +125,12 @@ public class ConsoleApplication
                     Out("Press any key to continue.");
 
                     System.Console.ReadKey();
-                    
+
                     break;
                 }
-                
+
                 Out();
-                
+
                 Out("Unknown command, please try again.\n");
             }
         }
@@ -141,35 +145,33 @@ public class ConsoleApplication
         if (! int.TryParse(response, out var clues))
         {
             Out("\n Invalid input.");
-            
+
             return;
         }
 
         if (clues < 17 || clues > 72)
         {
             Out("\n Invalid input.");
-            
+
             return;
         }
-        
+
         System.Console.Write("\n Number of puzzles to generate: ");
-        
+
         response = System.Console.ReadLine();
 
         if (! int.TryParse(response, out var puzzles))
         {
             Out("\n Invalid input.");
-            
+
             return;
         }
-        
+
         GeneratePuzzles(clues, puzzles);
     }
 
     private void GeneratePuzzles(int clues, int puzzleCount)
     {
-        var generator = new Generator();
-        
         System.Console.Clear();
 
         var stopwatch = Stopwatch.StartNew();
@@ -177,65 +179,92 @@ public class ConsoleApplication
         System.Console.CursorVisible = false;
 
         const string filename = "Puzzles/Generated.txt";
-        
+
         if (File.Exists(filename))
         {
             File.Delete(filename);
         }
 
         var puzzles = new HashSet<int[]>();
-        
+
+        var puzzlesLock = new object();
+
         Out($"\n Generating {clues} clue puzzles...\n");
 
         var recent = new List<int[]>();
 
+        var recentLock = new object();
+
         var collisions = 0;
-        
-        for (var i = 0; i < puzzleCount; i++)
-        {
-            System.Console.CursorTop = 3;
-            
-            System.Console.WriteLine($" Puzzle {i + 1:N0}/{puzzleCount:N0}, {collisions} collision(s).               ");
-            
-            var puzzle = generator.Generate(81 - clues);
 
-            var attempt = 1;
-            
-            while (! puzzles.Add(puzzle))
+        var count = 0;
+
+        Parallel.For(0, puzzleCount,
+            new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount - 1 },
+            i =>
             {
-                attempt++;
+                lock (_consoleLock)
+                {
+                    count++;
+                    
+                    System.Console.CursorTop = 3;
 
-                collisions++;
-                
-                System.Console.CursorTop = 3;
-            
-                System.Console.WriteLine($" Puzzle {i + 1}/{puzzleCount:N0}, attempt {attempt:N0}.               ");
+                    System.Console.WriteLine($" Puzzle {count + 1:N0}/{puzzleCount:N0}, {collisions} collision(s).               \n");
 
-                puzzle = generator.Generate(81 - clues);
-            }
-            
-            recent.Insert(0, puzzle);
+                    lock (recentLock)
+                    {
+                        foreach (var item in recent)
+                        {
+                            System.Console.WriteLine($" {string.Join(string.Empty, item).Replace('0', '.')}");
+                        }
+                    }
+                }
 
-            if (recent.Count > 20)
-            {
-                recent.RemoveAt(20);
-            }
+                var generator = new Generator();
 
-            System.Console.WriteLine();
-            
-            foreach (var item in recent)
-            {
-                System.Console.WriteLine($" {string.Join(string.Empty, item).Replace('0', '.')}");
-            }
-        
-            File.AppendAllText(filename, $"{string.Join(string.Empty, puzzle).Replace('0', '.')}\n");
-        }
-        
+                var puzzle = generator.Generate(81 - clues);
+
+                bool added;
+
+                lock (puzzlesLock)
+                {
+                    added = puzzles.Add(puzzle);
+                }
+
+                while (! added)
+                {
+                    collisions++;
+
+                    puzzle = generator.Generate(81 - clues);
+
+                    lock (puzzlesLock)
+                    {
+                        added = puzzles.Add(puzzle);
+                    }
+                }
+
+                lock (recentLock)
+                {
+                    recent.Insert(0, puzzle);
+                }
+
+                if (recent.Count > 20)
+                {
+                    recent.RemoveAt(20);
+                }
+
+                lock (_outputFileLock)
+                {
+                    File.AppendAllText(filename, $"{string.Join(string.Empty, puzzle).Replace('0', '.')}\n");
+                }
+            });
+
         stopwatch.Stop();
 
         Out($"\n Puzzles have been written to {filename}.");
-        
-        Out($"\n {puzzleCount:N0} {clues} clue puzzles generated in {stopwatch.Elapsed.Minutes} minutes, {stopwatch.Elapsed.Seconds} seconds, {puzzleCount / stopwatch.Elapsed.TotalSeconds:N0} puzzles/second.");
+
+        Out(
+            $"\n {puzzleCount:N0} {clues} clue puzzles generated in {stopwatch.Elapsed.Minutes} minutes, {stopwatch.Elapsed.Seconds} seconds, {puzzleCount / stopwatch.Elapsed.TotalSeconds:N0} puzzles/second.");
 
         System.Console.CursorVisible = true;
     }
@@ -248,7 +277,7 @@ public class ConsoleApplication
         System.Console.Clear();
 
         System.Console.CursorVisible = false;
-        
+
         System.Console.WriteLine();
 
         var stopwatch = Stopwatch.StartNew();
@@ -256,15 +285,15 @@ public class ConsoleApplication
         System.Console.Write(" Warming up...");
 
         var solver = new BulkSolver(LoadPuzzles("Puzzles/Easy.zip"));
-        
+
         solver.Solve(true, true);
-        
+
         System.Console.WriteLine("\n");
 
         foreach (var file in files)
         {
             System.Console.Write(" Loading...");
-            
+
             solver = new BulkSolver(LoadPuzzles($"Puzzles/{file}.zip"));
 
             System.Console.CursorLeft = 0;
@@ -272,18 +301,18 @@ public class ConsoleApplication
             System.Console.Write("                    ");
 
             System.Console.CursorLeft = 0;
-            
+
             System.Console.Write($" {file}: ");
-            
+
             solver.Solve(true);
 
             System.Console.CursorVisible = false;
-            
+
             System.Console.WriteLine();
         }
-        
+
         stopwatch.Stop();
-        
+
         System.Console.WriteLine($" Tests run in {stopwatch.Elapsed.Minutes:N0}:{stopwatch.Elapsed.Seconds:D2}.{stopwatch.Elapsed.Milliseconds:N0}.");
 
         System.Console.CursorVisible = true;
@@ -292,17 +321,17 @@ public class ConsoleApplication
     private static void SolveUserPuzzle()
     {
         Out();
-        
+
         Out("Please enter the puzzle flattened into one row.");
-        
+
         Out();
-        
+
         Out("E.g. ......6....59.....82....8....45........3........6..3.54...325..6..................\n");
 
         var puzzle = new int[81];
 
         var clues = 0;
-        
+
         retry:
         System.Console.Write(" Puzzle: ");
 
@@ -326,9 +355,9 @@ public class ConsoleApplication
         catch
         {
             Out("");
-            
+
             Out("That appears to be an invalid line. Please try again.\n");
-            
+
             goto retry;
         }
 
@@ -339,14 +368,14 @@ public class ConsoleApplication
         puzzles[0].Clues = clues;
 
         var solver = new BulkSolver(puzzles);
-        
+
         solver.Solve();
     }
 
     private void SolvePuzzles(int fileId)
     {
         Out();
-        
+
         Out("Loading puzzles...");
 
         var solver = new BulkSolver(LoadPuzzles(_files[fileId]));
@@ -368,8 +397,8 @@ public class ConsoleApplication
         using var zip = new ZipArchive(file, ZipArchiveMode.Read);
 
         var lines = new List<string>();
-        
-        foreach(var entry in zip.Entries)
+
+        foreach (var entry in zip.Entries)
         {
             using var stream = entry.Open();
 
@@ -394,11 +423,11 @@ public class ConsoleApplication
         var puzzles = new (int[] Puzzle, int Clues)[data.Length];
 
         var count = 0;
-        
+
         foreach (var line in data)
         {
             var clues = 0;
-            
+
             puzzles[count].Puzzle = new int[81];
 
             for (var i = 0; i < 81; i++)
@@ -439,14 +468,14 @@ public class ConsoleApplication
     private static void Clear()
     {
         System.Console.Clear();
-        
+
         System.Console.WriteLine();
     }
 
     private static string In()
     {
         System.Console.Write(" > ");
-        
+
         return System.Console.ReadLine();
     }
 
