@@ -237,7 +237,7 @@ public class ConsoleApplication
 
                     puzzle = generator.Generate(81 - clues);
 
-                    lock (recentLock)
+                    lock (puzzlesLock)
                     {
                         added = puzzles.Add(puzzle);
                     }
@@ -246,11 +246,11 @@ public class ConsoleApplication
                 lock (recentLock)
                 {
                     recent.Insert(0, puzzle);
-                }
-
-                if (recent.Count > 20)
-                {
-                    recent.RemoveAt(20);
+                    
+                    if (recent.Count > 20)
+                    {
+                        recent.RemoveAt(20);
+                    }
                 }
 
                 lock (_outputFileLock)
