@@ -21,36 +21,37 @@ public class Generator
         return puzzle;
     }
 
-    private bool RemoveCells(int[] puzzle, int cellsToRemove)
+    private void RemoveCells(int[] puzzle, int cellsToRemove)
     {
-        if (cellsToRemove == 0)
+        var copy = new int[81];
+
+        for (var i = 0; i < 81; i++)
         {
-            return true;
+            copy[i] = puzzle[i];
         }
 
         while (true)
         {
-            var cell = _rng.Next(81);
-
-            while (puzzle[cell] == 0)
+            for (var i = 0; i < cellsToRemove; i++)
             {
-                cell = _rng.Next(81);
+                var cell = _rng.Next(81);
+
+                while (puzzle[cell] == 0)
+                {
+                    cell = _rng.Next(81);
+                }
+
+                puzzle[cell] = 0;
             }
 
-            var value = puzzle[cell];
-
-            puzzle[cell] = 0;
-
-            if (_solver.Solve(puzzle, false, true).Solution == null)
+            if (_solver.Solve(puzzle, false, true).Solution != null)
             {
-                puzzle[cell] = value;
-                
-                return false;
+                return;
             }
 
-            if (RemoveCells(puzzle, cellsToRemove - 1))
+            for (var i = 0; i < 81; i++)
             {
-                return true;
+                puzzle[i] = copy[i];
             }
         }
     }
