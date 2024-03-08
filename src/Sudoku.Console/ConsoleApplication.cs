@@ -460,5 +460,7 @@ public class ConsoleApplication
         {
             _files = Directory.EnumerateFiles("Puzzles", "*").Order().ToList();
         }
+
+        _files.RemoveAll(f => f.Contains(".DS_"));
     }
 }
