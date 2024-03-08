@@ -30,16 +30,20 @@ public class Generator
             copy[i] = puzzle[i];
         }
 
+        var filledCells = new HashSet<int>();
+
+        for (var i = 0; i < 81; i++)
+        {
+            filledCells.Add(i);
+        }
+
         while (true)
         {
             for (var i = 0; i < cellsToRemove; i++)
             {
-                var cell = _rng.Next(81);
+                var cell = _rng.Next(filledCells.Count);
 
-                while (puzzle[cell] == 0)
-                {
-                    cell = _rng.Next(81);
-                }
+                filledCells.Remove(cell);
 
                 puzzle[cell] = 0;
             }
@@ -51,6 +55,8 @@ public class Generator
 
             for (var i = 0; i < 81; i++)
             {
+                filledCells.Add(i);
+                
                 puzzle[i] = copy[i];
             }
         }
