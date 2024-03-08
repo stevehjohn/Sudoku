@@ -201,7 +201,7 @@ public class ConsoleApplication
 
         Parallel.For(0, puzzleCount,
             new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount - 1 },
-            i =>
+            _ =>
             {
                 lock (_consoleLock)
                 {
