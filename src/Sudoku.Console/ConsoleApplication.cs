@@ -185,17 +185,11 @@ public class ConsoleApplication
             File.Delete(filename);
         }
 
-        var puzzles = new HashSet<int[]>();
-
-        var puzzlesLock = new object();
-
         Out($"\n Generating {clues} clue puzzles...\n");
 
         var recent = new List<int[]>();
 
         var recentLock = new object();
-
-        var collisions = 0;
 
         var count = 0;
 
@@ -209,7 +203,7 @@ public class ConsoleApplication
                     
                     System.Console.CursorTop = 3;
 
-                    System.Console.WriteLine($" Puzzle {count + 1:N0}/{puzzleCount:N0}, {collisions} collision(s).               \n");
+                    System.Console.WriteLine($" Puzzle {count:N0}/{puzzleCount:N0}.               \n");
 
                     lock (recentLock)
                     {
@@ -223,25 +217,6 @@ public class ConsoleApplication
                 var generator = new Generator();
 
                 var puzzle = generator.Generate(81 - clues);
-
-                bool added;
-
-                lock (puzzlesLock)
-                {
-                    added = puzzles.Add(puzzle);
-                }
-
-                while (! added)
-                {
-                    collisions++;
-
-                    puzzle = generator.Generate(81 - clues);
-
-                    lock (puzzlesLock)
-                    {
-                        added = puzzles.Add(puzzle);
-                    }
-                }
 
                 lock (recentLock)
                 {
