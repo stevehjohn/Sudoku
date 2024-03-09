@@ -163,7 +163,7 @@ public class ConsoleApplication
 
         var result = solver.Solve(puzzle.Puzzle, HistoryType.AllSteps);
 
-        var visualiser = new ConsoleSolveVisualiser(puzzle.Puzzle, result.History);
+        var visualiser = new ConsoleSolveVisualiser(puzzle.Puzzle, result.History, result.InitialCandidates);
         
         visualiser.Visualise(1, 1);
     }

@@ -8,15 +8,19 @@ public class ConsoleSolveVisualiser
 
     private List<Move> _history;
 
+    private List<int>[] _initialCandidates;
+
     private int _left;
 
     private int _top;
 
-    public ConsoleSolveVisualiser(int[] puzzle, List<Move> history)
+    public ConsoleSolveVisualiser(int[] puzzle, List<Move> history, List<int>[] initialCandidates)
     {
         _puzzle = puzzle;
         
         _history = history;
+
+        _initialCandidates = initialCandidates;
     }
 
     public void Visualise(int left, int top)

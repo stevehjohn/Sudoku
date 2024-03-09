@@ -8,7 +8,7 @@ public class Solver
 {
     private readonly int[] _cellCandidates = new int[81];
 
-    public (int[] Solution, int Steps, double Microseconds, List<Move> History) Solve(int[] puzzle, HistoryType historyType = HistoryType.None, bool unique = false)
+    public (int[] Solution, int Steps, double Microseconds, List<Move> History, List<int>[] InitialCandidates) Solve(int[] puzzle, HistoryType historyType = HistoryType.None, bool unique = false)
     {
         var solutionCount = unique ? 2 : 1;
         
@@ -36,6 +36,31 @@ public class Solver
 
         var candidates = GetSectionCandidates(span);
 
+        List<int>[] initialCandidates = null;
+        
+        if (historyType == HistoryType.AllSteps)
+        {
+            initialCandidates = new List<int>[81];
+            
+            GetCellCandidates(puzzle, candidates);
+
+            for (var i = 0; i < 81; i++)
+            {
+                if (_cellCandidates[i] > 0)
+                {
+                    initialCandidates[i] = [];
+                    
+                    for (var j = 1; j < 10; j++)
+                    {
+                        if ((_cellCandidates[i] & 1 << (j - 1)) > 0)
+                        {
+                            initialCandidates[i].Add(j);
+                        }
+                    }
+                }
+            }
+        }
+
         SolveStep(span, score, candidates, ref steps, ref solutionCount, historyType, history);
 
         stopwatch.Stop();
@@ -44,10 +69,10 @@ public class Solver
         {
             history?.Clear();
             
-            return (null, steps, stopwatch.Elapsed.TotalMicroseconds, history);
+            return (null, steps, stopwatch.Elapsed.TotalMicroseconds, history, initialCandidates);
         }
 
-        return (workingCopy, steps, stopwatch.Elapsed.TotalMicroseconds, history);
+        return (workingCopy, steps, stopwatch.Elapsed.TotalMicroseconds, history, initialCandidates);
     }
 
     private bool SolveStep(Span<int> puzzle, int score, (Candidates Row, Candidates Column, Candidates Box) candidates, ref int steps, ref int solutionCount, HistoryType historyType, List<Move> history)
