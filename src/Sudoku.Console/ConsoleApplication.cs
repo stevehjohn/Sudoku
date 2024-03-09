@@ -375,7 +375,7 @@ public class ConsoleApplication
 
         filename = $"{filename[..^1]}2";
         
-        puzzles.AddRange(LoadPuzzles(filename));
+        puzzles.AddRange(LoadPuzzlesInternal(filename));
 
         return puzzles.ToArray();
     }
