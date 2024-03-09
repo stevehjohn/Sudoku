@@ -311,6 +311,8 @@ public class BulkSolver
         var color = System.Console.ForegroundColor;
 
         var sleep = true;
+
+        var step = 0;
         
         foreach (var move in solution)
         {
@@ -432,6 +434,16 @@ public class BulkSolver
                 }
 
                 System.Console.Write(move.Remove ? " " : move.Value.ToString());
+
+                System.Console.CursorTop = 14;
+                
+                step++;
+
+                var stepText = $"Step: {step:N0}/{solution.Count:N0}";
+                
+                System.Console.CursorLeft = 40 - stepText.Length / 2;
+
+                System.Console.Write(stepText);
                 
                 Thread.Sleep(100);
             }
