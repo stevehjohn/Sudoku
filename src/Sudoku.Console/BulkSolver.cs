@@ -50,7 +50,7 @@ public class BulkSolver
         
         _stopwatch = Stopwatch.StartNew();
 
-        var record = _puzzles.Length == 1;
+        var historyType = _puzzles.Length == 1 ? HistoryType.SolutionOnly : HistoryType.None;
 
         var oldMode = GCSettings.LatencyMode;
         
@@ -66,7 +66,7 @@ public class BulkSolver
             () => new Solver(),
             (i, _, solver) => 
             {
-                var solution = solver.Solve(_puzzles[i].Puzzle, record);
+                var solution = solver.Solve(_puzzles[i].Puzzle, historyType);
 
                 if (! quiet)
                 {
@@ -168,7 +168,7 @@ public class BulkSolver
                     Dump(_puzzles[i].Puzzle, solution.Solution, solved);
                 }
 
-                if (record)
+                if (historyType != HistoryType.None)
                 {
                     DumpHistory(_puzzles[i].Puzzle, solution.History);
                 }
