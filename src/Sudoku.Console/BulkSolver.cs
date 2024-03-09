@@ -483,7 +483,26 @@ public class BulkSolver
                 System.Console.CursorLeft = 40 - stepText.Length / 2;
 
                 System.Console.Write(stepText);
-                
+
+                if (! move.Remove)
+                {
+                    for (var i = 1; i < 10; i++)
+                    {
+                        System.Console.CursorLeft = 54;
+
+                        System.Console.CursorTop = i + 2;
+
+                        if (move.Candidates.Contains(i))
+                        {
+                            System.Console.Write(i);
+                        }
+                        else
+                        {
+                            System.Console.Write(' ');
+                        }
+                    }
+                }
+
                 Thread.Sleep(20);
             }
         }
