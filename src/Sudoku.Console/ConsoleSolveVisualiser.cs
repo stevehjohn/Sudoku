@@ -258,11 +258,11 @@ public class ConsoleSolveVisualiser
 
         Out.ForegroundColor = ConsoleColor.Blue;
         
-        Out.Write("\n                        tested");
+        Out.Write("\n                         tested");
 
         Out.ForegroundColor = ConsoleColor.Magenta;
         
-        Out.Write("\n                       untested");
+        Out.Write("\n                        untested");
 
         Out.ForegroundColor = _consoleColor;
         
