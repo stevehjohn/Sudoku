@@ -63,7 +63,7 @@ public class ConsoleSolveVisualiser
         
         Finish();
         
-        Out.CursorTop = 40;
+        Out.CursorTop = 44;
         
         Out.CursorVisible = true;
     }
@@ -255,7 +255,17 @@ public class ConsoleSolveVisualiser
         Out.CursorLeft = 1;
 
         Out.ForegroundColor = _consoleColor;
+
+        Out.ForegroundColor = ConsoleColor.Blue;
         
-        Out.Write("           < or > adjust visualisation speed");
+        Out.Write("\n                        tested");
+
+        Out.ForegroundColor = ConsoleColor.Magenta;
+        
+        Out.Write("\n                       untested");
+
+        Out.ForegroundColor = _consoleColor;
+        
+        Out.Write("\n\n           < or > adjust visualisation speed");
     }
 }
