@@ -74,9 +74,12 @@ public class ConsoleSolveVisualiser
         {
             for (var x = 0; x < 9; x++)
             {
-                SetCursorPosition(x, y, _solution[x + y * 9]);
-                
-                Out.Write(_solution[x + y * 9]);
+                if (_puzzle[x + y * 9] == 0)
+                {
+                    SetCursorPosition(x, y, _solution[x + y * 9]);
+
+                    Out.Write(_solution[x + y * 9]);
+                }
             }
         }
     }
@@ -116,12 +119,12 @@ public class ConsoleSolveVisualiser
             {
                 var key = Out.ReadKey(true).KeyChar;
 
-                if (key == '-' && _speedIndex > 0)
+                if (key == '<' && _speedIndex > 0)
                 {
                     _speedIndex--;
                 }
 
-                if (key == '+' && _speedIndex < _speeds.Length - 1)
+                if (key == '>' && _speedIndex < _speeds.Length - 1)
                 {
                     _speedIndex++;
                 }
@@ -199,6 +202,8 @@ public class ConsoleSolveVisualiser
     private void DrawBox()
     {
         var top = _top + 1;
+
+        Out.ForegroundColor = ConsoleColor.DarkBlue;
         
         Out.CursorTop = top++;
 
@@ -248,7 +253,9 @@ public class ConsoleSolveVisualiser
         Out.CursorTop = top;
 
         Out.CursorLeft = 1;
+
+        Out.ForegroundColor = _consoleColor;
         
-        Out.Write("      Press + or - to adjust visualisation speed");
+        Out.Write("      Press < or > to adjust visualisation speed");
     }
 }
