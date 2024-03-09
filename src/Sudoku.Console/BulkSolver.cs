@@ -372,37 +372,37 @@ public class BulkSolver
                 {
                     Thread.Sleep(500);
                 }
+
+                System.Console.ForegroundColor = color;
+
+                yIncrement = 0;
+                
+                if (move.Y > 2)
+                {
+                    yIncrement++;
+                }
+
+                if (move.Y > 5)
+                {
+                    yIncrement++;
+                }
+
+                System.Console.CursorTop = move.Y + 2 + yIncrement;
+
+                System.Console.CursorLeft = 30 + move.X * 2;
+                
+                if (move.X > 2)
+                {
+                    System.Console.CursorLeft += 2;
+                }
+
+                if (move.X > 5)
+                {
+                    System.Console.CursorLeft += 2;
+                }
+
+                System.Console.Write(move.Value);
             }
-
-            System.Console.ForegroundColor = color;
-
-            yIncrement = 0;
-            
-            if (move.Y > 2)
-            {
-                yIncrement++;
-            }
-
-            if (move.Y > 5)
-            {
-                yIncrement++;
-            }
-
-            System.Console.CursorTop = move.Y + 2 + yIncrement;
-
-            System.Console.CursorLeft = 30 + move.X * 2;
-            
-            if (move.X > 2)
-            {
-                System.Console.CursorLeft += 2;
-            }
-
-            if (move.X > 5)
-            {
-                System.Console.CursorLeft += 2;
-            }
-
-            System.Console.Write(move.Value);
         }
 
         System.Console.CursorTop = 30;
