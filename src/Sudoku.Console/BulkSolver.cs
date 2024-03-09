@@ -170,7 +170,7 @@ public class BulkSolver
 
                 if (historyType != HistoryType.None)
                 {
-                    DumpHistory(_puzzles[i].Puzzle, solution.History);
+                    DumpHistory(_puzzles[i].Puzzle, solution.History, historyType);
                 }
 
                 return solver;
@@ -263,7 +263,7 @@ public class BulkSolver
         Monitor.Exit(_consoleLock);
     }
 
-    private static void DumpHistory(int[] puzzle, List<Move> solution)
+    private static void DumpHistory(int[] puzzle, List<Move> solution, HistoryType historyType)
     {
         int yIncrement;
 
@@ -321,54 +321,57 @@ public class BulkSolver
                 System.Console.ReadKey();
             }
 
-            for (var i = 0; i < 5; i++)
+            if (historyType == HistoryType.SolutionOnly)
             {
-                System.Console.ForegroundColor = ConsoleColor.Magenta;
-
-                yIncrement = 0;
-
-                if (move.Y > 2)
+                for (var i = 0; i < 5; i++)
                 {
-                    yIncrement++;
-                }
+                    System.Console.ForegroundColor = ConsoleColor.Magenta;
 
-                if (move.Y > 5)
-                {
-                    yIncrement++;
-                }
+                    yIncrement = 0;
 
-                System.Console.CursorTop = move.Y + 2 + yIncrement;
+                    if (move.Y > 2)
+                    {
+                        yIncrement++;
+                    }
 
-                System.Console.CursorLeft = 30 + move.X * 2;
+                    if (move.Y > 5)
+                    {
+                        yIncrement++;
+                    }
 
-                if (move.X > 2)
-                {
-                    System.Console.CursorLeft += 2;
-                }
+                    System.Console.CursorTop = move.Y + 2 + yIncrement;
 
-                if (move.X > 5)
-                {
-                    System.Console.CursorLeft += 2;
-                }
+                    System.Console.CursorLeft = 30 + move.X * 2;
 
-                if (i % 2 == 0)
-                {
-                    System.Console.Write(move.Value);
-                }
-                else
-                {
-                    System.Console.Write(" ");
+                    if (move.X > 2)
+                    {
+                        System.Console.CursorLeft += 2;
+                    }
+
+                    if (move.X > 5)
+                    {
+                        System.Console.CursorLeft += 2;
+                    }
+
+                    if (i % 2 == 0)
+                    {
+                        System.Console.Write(move.Value);
+                    }
+                    else
+                    {
+                        System.Console.Write(" ");
+                    }
+
+                    if (sleep)
+                    {
+                        Thread.Sleep(100);
+                    }
                 }
 
                 if (sleep)
                 {
-                    Thread.Sleep(100);
+                    Thread.Sleep(500);
                 }
-            }
-
-            if (sleep)
-            {
-                Thread.Sleep(500);
             }
 
             System.Console.ForegroundColor = color;

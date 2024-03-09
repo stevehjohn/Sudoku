@@ -283,7 +283,7 @@ public class Solver
 
             if (historyType != HistoryType.None)
             {
-                history?.Add(new Move(move.Position.X, move.Position.Y, i));
+                history?.Add(new Move(move.Position.X, move.Position.Y, i, false));
             }
 
             if (score == 0)
@@ -304,9 +304,16 @@ public class Solver
 
             candidates = oldCandidates;
 
-            if (historyType == HistoryType.SolutionOnly)
+            if (historyType != HistoryType.None)
             {
-                history?.RemoveAt(history.Count - 1);
+                if (historyType == HistoryType.SolutionOnly)
+                {
+                    history?.RemoveAt(history.Count - 1);
+                }
+                else
+                {
+                    history?.Add(new Move(move.Position.X, move.Position.Y, i, true));
+                }
             }
 
             score++;
