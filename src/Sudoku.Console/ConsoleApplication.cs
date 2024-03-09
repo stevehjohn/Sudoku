@@ -38,7 +38,7 @@ public class ConsoleApplication
 
             Out();
 
-            Out("   V: Visualise Last Most Steps");
+            Out("   V: Visualise last most steps");
 
             Out("   E: Enter manually");
 
