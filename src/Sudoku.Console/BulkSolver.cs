@@ -107,6 +107,8 @@ public class BulkSolver
                             _steps.Maximum = solution.Steps;
 
                             _mostStepsClues = clues;
+                            
+                            File.WriteAllText("Puzzles/Most Steps.txt", string.Join(string.Empty, _puzzles[i].Puzzle).Replace('0', '.'));
                         }
                     }
                 }
