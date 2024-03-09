@@ -435,7 +435,7 @@ public class BulkSolver
 
                 System.Console.Write(move.Remove ? " " : move.Value.ToString());
 
-                System.Console.CursorTop = 14;
+                System.Console.CursorTop = 0;
                 
                 step++;
 
@@ -445,7 +445,7 @@ public class BulkSolver
 
                 System.Console.Write(stepText);
                 
-                Thread.Sleep(100);
+                Thread.Sleep(20);
             }
         }
 
