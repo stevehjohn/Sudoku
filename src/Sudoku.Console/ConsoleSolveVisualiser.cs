@@ -15,6 +15,10 @@ public class ConsoleSolveVisualiser
     private int _top;
 
     private readonly ConsoleColor _consoleColor;
+
+    private int[] _speeds = [ 2000, 1000, 500, 150, 100, 10, 0 ];
+
+    private int _speedIndex;
     
     public ConsoleSolveVisualiser(int[] puzzle, List<Move> history, List<int>[] initialCandidates)
     {
@@ -50,10 +54,56 @@ public class ConsoleSolveVisualiser
         }
         
         ShowText("");
+
+        Run();
         
-        Out.CursorTop = 39;
+        Out.CursorTop = 40;
         
         Out.CursorVisible = true;
+    }
+
+    private void Run()
+    {
+        var step = 0;
+        
+        foreach (var move in _history)
+        {
+            step++;
+            
+            SetCursorPosition(move.X, move.Y, move.Value);
+
+            if (move.Remove)
+            {
+                Out.ForegroundColor = ConsoleColor.Magenta;
+            }
+            else
+            {
+                Out.ForegroundColor = ConsoleColor.White;
+            }
+
+            Out.Write(move.Value);
+
+            Out.ForegroundColor = _consoleColor;
+            
+            ShowText($"Step {step:N0}/{_history.Count:N0}");
+
+            Thread.Sleep(_speeds[_speedIndex]);
+
+            if (Out.KeyAvailable)
+            {
+                var key = Out.ReadKey(true).KeyChar;
+
+                if (key == '-' && _speedIndex > 0)
+                {
+                    _speedIndex--;
+                }
+
+                if (key == '+' && _speedIndex < _speeds.Length - 1)
+                {
+                    _speedIndex++;
+                }
+            }
+        }
     }
 
     private void ShowText(string text)
@@ -166,10 +216,16 @@ public class ConsoleSolveVisualiser
             }
         }
 
-        Out.CursorTop = top;
+        Out.CursorTop = top++;
 
         Out.CursorLeft = 1;
         
         Out.Write("┗━━━━━┷━━━━━┷━━━━━┻━━━━━┷━━━━━┷━━━━━┻━━━━━┷━━━━━┷━━━━━┛ ");
+
+        Out.CursorTop = top;
+
+        Out.CursorLeft = 1;
+        
+        Out.Write("      Press + or - to adjust visualisation speed");
     }
 }
