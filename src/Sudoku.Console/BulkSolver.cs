@@ -313,6 +313,8 @@ public class BulkSolver
         var sleep = true;
 
         var step = 0;
+
+        var previousMove = new Move(-1, -1, -1, false);
         
         foreach (var move in solution)
         {
@@ -433,8 +435,45 @@ public class BulkSolver
                     System.Console.CursorLeft += 2;
                 }
 
+                System.Console.ForegroundColor = ConsoleColor.Magenta;
+                
                 System.Console.Write(move.Remove ? " " : move.Value.ToString());
 
+                System.Console.ForegroundColor = color;
+
+                if (previousMove.X > -1)
+                {
+                    yIncrement = 0;
+                
+                    if (previousMove.Y > 2)
+                    {
+                        yIncrement++;
+                    }
+
+                    if (previousMove.Y > 5)
+                    {
+                        yIncrement++;
+                    }
+
+                    System.Console.CursorTop = previousMove.Y + 2 + yIncrement;
+
+                    System.Console.CursorLeft = 30 + previousMove.X * 2;
+                
+                    if (previousMove.X > 2)
+                    {
+                        System.Console.CursorLeft += 2;
+                    }
+
+                    if (previousMove.X > 5)
+                    {
+                        System.Console.CursorLeft += 2;
+                    }
+
+                    System.Console.Write(previousMove.Remove ? " " : previousMove.Value.ToString());
+                }
+
+                previousMove = move;
+                
                 System.Console.CursorTop = 0;
                 
                 step++;
