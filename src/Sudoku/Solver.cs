@@ -289,7 +289,7 @@ public class Solver
                 
                 for (var j = 1; j < 10; j++)
                 {
-                    if (1 << (j - 1) != 0)
+                    if ((move.Values & 1 << (j - 1)) != 0)
                     {
                         historyCandidates.Add(j);
                     }
