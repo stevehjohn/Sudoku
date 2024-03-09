@@ -50,7 +50,7 @@ public class BulkSolver
         
         _stopwatch = Stopwatch.StartNew();
 
-        var historyType = _puzzles.Length == 1 ? HistoryType.SolutionOnly : HistoryType.None;
+        var historyType = _puzzles.Length == 1 ? HistoryType.AllSteps : HistoryType.None;
 
         var oldMode = GCSettings.LatencyMode;
         
@@ -402,6 +402,38 @@ public class BulkSolver
                 }
 
                 System.Console.Write(move.Value);
+            }
+            else
+            {
+                yIncrement = 0;
+                
+                if (move.Y > 2)
+                {
+                    yIncrement++;
+                }
+
+                if (move.Y > 5)
+                {
+                    yIncrement++;
+                }
+
+                System.Console.CursorTop = move.Y + 2 + yIncrement;
+
+                System.Console.CursorLeft = 30 + move.X * 2;
+                
+                if (move.X > 2)
+                {
+                    System.Console.CursorLeft += 2;
+                }
+
+                if (move.X > 5)
+                {
+                    System.Console.CursorLeft += 2;
+                }
+
+                System.Console.Write(move.Remove ? " " : move.Value.ToString());
+                
+                Thread.Sleep(100);
             }
         }
 
