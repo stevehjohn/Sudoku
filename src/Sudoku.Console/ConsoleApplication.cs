@@ -364,6 +364,24 @@ public class ConsoleApplication
 
     private static (int[] Puzzle, int Clues)[] LoadPuzzles(string filename)
     {
+        if (! filename.EndsWith('1'))
+        {
+            return LoadPuzzlesInternal(filename);
+        }
+
+        var puzzles = new List<(int[] Puzzle, int Clues)>();
+        
+        puzzles.AddRange(LoadPuzzlesInternal(filename));
+
+        filename = $"{filename[..^1]}2";
+        
+        puzzles.AddRange(LoadPuzzles(filename));
+
+        return puzzles.ToArray();
+    }
+
+    private static (int[] Puzzle, int Clues)[] LoadPuzzlesInternal(string filename)
+    {
         if (Path.GetExtension(filename).ToLower() == ".txt")
         {
             var data = File.ReadAllLines(filename);
@@ -470,5 +488,7 @@ public class ConsoleApplication
         }
 
         _files.RemoveAll(f => f.Contains(".DS_"));
+
+        _files.RemoveAll(f => f.EndsWith('2'));
     }
 }
