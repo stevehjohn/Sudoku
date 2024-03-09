@@ -6,6 +6,8 @@ public class ConsoleSolveVisualiser
 {
     private readonly int[] _puzzle;
 
+    private readonly int[] _solution;
+
     private readonly List<Move> _history;
 
     private readonly List<int>[] _initialCandidates;
@@ -16,13 +18,15 @@ public class ConsoleSolveVisualiser
 
     private readonly ConsoleColor _consoleColor;
 
-    private int[] _speeds = [ 2000, 1000, 500, 150, 100, 10, 0 ];
+    private readonly int[] _speeds = [ 2000, 1000, 500, 150, 100, 10, 0 ];
 
-    private int _speedIndex;
+    private int _speedIndex = 1;
     
-    public ConsoleSolveVisualiser(int[] puzzle, List<Move> history, List<int>[] initialCandidates)
+    public ConsoleSolveVisualiser(int[] puzzle, int[] solution, List<Move> history, List<int>[] initialCandidates)
     {
         _puzzle = puzzle;
+
+        _solution = solution;
         
         _history = history;
 
@@ -57,9 +61,24 @@ public class ConsoleSolveVisualiser
 
         Run();
         
+        Finish();
+        
         Out.CursorTop = 40;
         
         Out.CursorVisible = true;
+    }
+
+    private void Finish()
+    {
+        for (var y = 0; y < 9; y++)
+        {
+            for (var x = 0; x < 9; x++)
+            {
+                SetCursorPosition(x, y, _solution[x + y * 9]);
+                
+                Out.Write(_solution[x + y * 9]);
+            }
+        }
     }
 
     private void Run()
@@ -74,15 +93,19 @@ public class ConsoleSolveVisualiser
 
             if (move.Remove)
             {
-                Out.ForegroundColor = ConsoleColor.Magenta;
+                Out.ForegroundColor = ConsoleColor.Blue;
             }
             else
             {
-                Out.ForegroundColor = ConsoleColor.White;
+                Out.BackgroundColor = ConsoleColor.Green;
+
+                Out.ForegroundColor = ConsoleColor.Black;
             }
 
             Out.Write(move.Value);
 
+            Out.BackgroundColor = ConsoleColor.Black;
+            
             Out.ForegroundColor = _consoleColor;
             
             ShowText($"Step {step:N0}/{_history.Count:N0}");
@@ -119,7 +142,7 @@ public class ConsoleSolveVisualiser
 
     private void DrawInitialCandidates()
     {
-        Out.ForegroundColor = ConsoleColor.Blue;
+        Out.ForegroundColor = ConsoleColor.Magenta;
         
         for (var y = 0; y < 9; y++)
         {
