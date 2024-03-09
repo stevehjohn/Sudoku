@@ -1,4 +1,3 @@
-using System.Text;
 using Out = System.Console;
 
 namespace Sudoku.Console;
@@ -9,6 +8,10 @@ public class ConsoleSolveVisualiser
 
     private List<Move> _history;
 
+    private int _left;
+
+    private int _top;
+
     public ConsoleSolveVisualiser(int[] puzzle, List<Move> history)
     {
         _puzzle = puzzle;
@@ -16,24 +19,50 @@ public class ConsoleSolveVisualiser
         _history = history;
     }
 
-    public void Visualise()
+    public void Visualise(int left, int top)
     {
+        _left = left;
+
+        _top = top;
+        
         Out.CursorVisible = false;
         
         Out.Clear();
         
-        DrawBox(1, 2);
+        DrawBox();
+
+        DrawPuzzle();
 
         Out.CursorTop = 39;
         
         Out.CursorVisible = true;
     }
 
-    private void DrawBox(int left, int top)
+    private void DrawPuzzle()
     {
+        for (var y = 0; y < 9; y++)
+        {
+            for (var x = 0; x < 9; x++)
+            {
+                if (_puzzle[x + y * 9] != 0)
+                {
+                    Out.CursorTop = _top + 3 + y * 4;
+
+                    Out.CursorLeft = _left + 3 + x * 6;
+                    
+                    Out.Write(_puzzle[x + y * 9]);
+                }
+            }
+        }
+    }
+
+    private void DrawBox()
+    {
+        var top = _top + 1;
+        
         Out.CursorTop = top++;
 
-        Out.CursorLeft = left;
+        Out.CursorLeft = _left;
         
         Out.Write("┏━━━━━┯━━━━━┯━━━━━┳━━━━━┯━━━━━┯━━━━━┳━━━━━┯━━━━━┯━━━━━┓");
 

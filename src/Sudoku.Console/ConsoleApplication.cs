@@ -155,7 +155,7 @@ public class ConsoleApplication
         }
     }
 
-    private void VisualiseMostSteps()
+    private static void VisualiseMostSteps()
     {
         var puzzle = LoadPuzzles("Puzzles/Most Steps.txt")[0];
 
@@ -163,9 +163,9 @@ public class ConsoleApplication
 
         var result = solver.Solve(puzzle.Puzzle, HistoryType.AllSteps);
 
-        var visualiser = new ConsoleSolveVisualiser(result.Solution, result.History);
+        var visualiser = new ConsoleSolveVisualiser(puzzle.Puzzle, result.History);
         
-        visualiser.Visualise();
+        visualiser.Visualise(1, 1);
     }
 
     private void GeneratePuzzles()
