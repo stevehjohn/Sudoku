@@ -74,7 +74,7 @@ Output:
 ```csharp
 var generator = new Generator();
 
-var puzzle = generator.Generate(51); // Will remove 51 cells, leaving a puzzle with 30 clues.
+var puzzle = generator.Generate(60); // Will remove 60 cells, leaving a puzzle with 21 clues.
 
 puzzle.DumpToConsole(1);
 ```
