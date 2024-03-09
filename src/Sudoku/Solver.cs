@@ -283,7 +283,21 @@ public class Solver
 
             if (historyType != HistoryType.None)
             {
-                history?.Add(new Move(move.Position.X, move.Position.Y, i, false));
+                var historyMove = new Move(move.Position.X, move.Position.Y, i, false);
+
+                var historyCandidates = new List<int>();
+                
+                for (var j = 1; j < 10; j++)
+                {
+                    if (1 << (j - 1) != 0)
+                    {
+                        historyCandidates.Add(j);
+                    }
+                }
+
+                historyMove.Candidates = historyCandidates.ToArray();
+
+                history?.Add(historyMove);
             }
 
             if (score == 0)

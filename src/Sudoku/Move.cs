@@ -9,6 +9,8 @@ public struct Move
     public int Value { get; }
     
     public bool Remove { get; }
+    
+    public int[] Candidates { get; set; }
 
     public Move(int x, int y, int value, bool remove)
     {
