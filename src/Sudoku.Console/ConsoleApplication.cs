@@ -13,11 +13,6 @@ public class ConsoleApplication
 
     public void Run()
     {
-        var v = new ConsoleSolveVisualiser(null, null);
-        
-        v.Visualise();
-        
-        return;
         while (true)
         {
             Clear();
@@ -35,7 +30,7 @@ public class ConsoleApplication
                 var name = Path.GetFileName(file);
 
                 name = name[..name.IndexOf('.')];
-                
+
                 Out($"  {count,2}: {name}");
 
                 count++;
@@ -43,11 +38,13 @@ public class ConsoleApplication
 
             Out();
 
-            Out("   E: Enter manually\n");
+            Out("   V: Visualise Last Most Steps");
 
-            Out("   T: Test suite\n");
+            Out("   E: Enter manually");
 
-            Out("   G: Generate puzzles\n");
+            Out("   T: Test suite");
+
+            Out("   G: Generate puzzles");
 
             Out("   Q: Exit application\n");
 
@@ -62,6 +59,19 @@ public class ConsoleApplication
                     Out("Thanks for playing. Bye.\n");
 
                     return;
+                }
+
+                if (response == "v")
+                {
+                    VisualiseMostSteps();
+                    
+                    Out();
+
+                    Out("Press any key to continue.");
+
+                    System.Console.ReadKey();
+                    
+                    break;
                 }
 
                 if (response == "t")
@@ -145,6 +155,19 @@ public class ConsoleApplication
         }
     }
 
+    private void VisualiseMostSteps()
+    {
+        var puzzle = LoadPuzzles("Puzzles/Most Steps.txt")[0];
+
+        var solver = new Solver();
+
+        var result = solver.Solve(puzzle.Puzzle, HistoryType.AllSteps);
+
+        var visualiser = new ConsoleSolveVisualiser(result.Solution, result.History);
+        
+        visualiser.Visualise();
+    }
+
     private void GeneratePuzzles()
     {
         System.Console.Write("\n Clues to leave (17 - 72): ");
@@ -209,7 +232,7 @@ public class ConsoleApplication
                 lock (_consoleLock)
                 {
                     count++;
-                    
+
                     System.Console.CursorTop = 3;
 
                     System.Console.WriteLine($" Puzzle {count:N0}/{puzzleCount:N0}.               \n");
@@ -230,7 +253,7 @@ public class ConsoleApplication
                 lock (recentLock)
                 {
                     recent.Insert(0, puzzle);
-                    
+
                     if (recent.Count > 20)
                     {
                         recent.RemoveAt(20);
@@ -375,11 +398,11 @@ public class ConsoleApplication
         }
 
         var puzzles = new List<(int[] Puzzle, int Clues)>();
-        
+
         puzzles.AddRange(LoadPuzzlesInternal(filename));
 
         filename = $"{filename[..^1]}2";
-        
+
         puzzles.AddRange(LoadPuzzlesInternal(filename));
 
         return puzzles.ToArray();

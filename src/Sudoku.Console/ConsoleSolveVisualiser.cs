@@ -24,6 +24,8 @@ public class ConsoleSolveVisualiser
         
         DrawBox(1, 2);
 
+        Out.CursorTop = 39;
+        
         Out.CursorVisible = true;
     }
 
