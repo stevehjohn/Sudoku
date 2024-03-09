@@ -8,7 +8,7 @@ public class Solver
 {
     private readonly int[] _cellCandidates = new int[81];
 
-    public (int[] Solution, int Steps, double Microseconds, List<Move> History) Solve(int[] puzzle, bool record = false, bool unique = false)
+    public (int[] Solution, int Steps, double Microseconds, List<Move> History) Solve(int[] puzzle, HistoryType historyType = HistoryType.None, bool unique = false)
     {
         var solutionCount = unique ? 2 : 1;
         
@@ -30,13 +30,13 @@ public class Solver
             }
         }
 
-        var history = record ? new List<Move>() : null;
+        var history = historyType != HistoryType.None ? new List<Move>() : null;
 
         var span = new Span<int>(workingCopy);
 
         var candidates = GetSectionCandidates(span);
 
-        SolveStep(span, score, candidates, ref steps, ref solutionCount, history);
+        SolveStep(span, score, candidates, ref steps, ref solutionCount, historyType, history);
 
         stopwatch.Stop();
 
@@ -50,7 +50,7 @@ public class Solver
         return (workingCopy, steps, stopwatch.Elapsed.TotalMicroseconds, history);
     }
 
-    private bool SolveStep(Span<int> puzzle, int score, (Candidates Row, Candidates Column, Candidates Box) candidates, ref int steps, ref int solutionCount, List<Move> history)
+    private bool SolveStep(Span<int> puzzle, int score, (Candidates Row, Candidates Column, Candidates Box) candidates, ref int steps, ref int solutionCount, HistoryType historyType, List<Move> history)
     {
         GetCellCandidates(puzzle, candidates);
 
@@ -61,7 +61,7 @@ public class Solver
 
         var move = FindLowestMove(puzzle);
 
-        return CreateNextSteps(puzzle, move, score, candidates, ref steps, ref solutionCount, history);
+        return CreateNextSteps(puzzle, move, score, candidates, ref steps, ref solutionCount, historyType, history);
     }
 
     private static (Candidates Row, Candidates Column, Candidates Box) GetSectionCandidates(Span<int> puzzle)
@@ -256,7 +256,7 @@ public class Solver
         return (position, values, valueCount);
     }
 
-    private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, int score, (Candidates Row, Candidates Column, Candidates Box) candidates, ref int steps, ref int solutionCount, List<Move> history)
+    private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, int score, (Candidates Row, Candidates Column, Candidates Box) candidates, ref int steps, ref int solutionCount, HistoryType historyType, List<Move> history)
     {
         var cell = move.Position.X + (move.Position.Y << 3) + move.Position.Y;
             
@@ -281,7 +281,24 @@ public class Solver
             
             score--;
 
-            history?.Add(new Move(move.Position.X, move.Position.Y, i));
+            if (historyType != HistoryType.None)
+            {
+                var historyMove = new Move(move.Position.X, move.Position.Y, i, false);
+
+                var historyCandidates = new List<int>();
+                
+                for (var j = 1; j < 10; j++)
+                {
+                    if ((move.Values & 1 << (j - 1)) != 0)
+                    {
+                        historyCandidates.Add(j);
+                    }
+                }
+
+                historyMove.Candidates = historyCandidates.ToArray();
+
+                history?.Add(historyMove);
+            }
 
             if (score == 0)
             {
@@ -292,7 +309,7 @@ public class Solver
 
             steps++;
 
-            if (SolveStep(puzzle, score, candidates, ref steps, ref solutionCount, history))
+            if (SolveStep(puzzle, score, candidates, ref steps, ref solutionCount, historyType, history))
             {
                 return true;
             }
@@ -300,8 +317,18 @@ public class Solver
             puzzle[cell] = 0;
 
             candidates = oldCandidates;
-            
-            history?.RemoveAt(history.Count - 1);
+
+            if (historyType != HistoryType.None)
+            {
+                if (historyType == HistoryType.SolutionOnly)
+                {
+                    history?.RemoveAt(history.Count - 1);
+                }
+                else
+                {
+                    history?.Add(new Move(move.Position.X, move.Position.Y, i, true));
+                }
+            }
 
             score++;
         }

@@ -9,7 +9,7 @@ public class BulkSolver
     private readonly (int[] Puzzle, int Clues)[] _puzzles;
 
     private readonly int _puzzleCount;
-    
+
     private (double Total, double Minimum, double Maximum) _elapsed = (0, double.MaxValue, 0);
 
     private (long Total, int Minimum, int Maximum) _steps = (0, int.MaxValue, 0);
@@ -29,7 +29,7 @@ public class BulkSolver
     private readonly object _statsLock = new();
 
     private readonly object _consoleLock = new();
-    
+
     public BulkSolver((int[] Puzzle, int Clues)[] puzzles)
     {
         _puzzles = puzzles;
@@ -47,26 +47,26 @@ public class BulkSolver
         }
 
         System.Console.CursorVisible = false;
-        
+
         _stopwatch = Stopwatch.StartNew();
 
-        var record = _puzzles.Length == 1;
+        var historyType = _puzzles.Length == 1 ? HistoryType.AllSteps : HistoryType.None;
 
         var oldMode = GCSettings.LatencyMode;
-        
+
         GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
-        
+
         Parallel.For(
-            0, 
+            0,
             _puzzles.Length,
             new ParallelOptions
             {
                 MaxDegreeOfParallelism = Environment.ProcessorCount - 1
             },
             () => new Solver(),
-            (i, _, solver) => 
+            (i, _, solver) =>
             {
-                var solution = solver.Solve(_puzzles[i].Puzzle, record);
+                var solution = solver.Solve(_puzzles[i].Puzzle, historyType);
 
                 if (! quiet)
                 {
@@ -107,7 +107,7 @@ public class BulkSolver
                             _steps.Maximum = solution.Steps;
 
                             _mostStepsClues = clues;
-                            
+
                             File.WriteAllText("Puzzles/Most Steps.txt", string.Join(string.Empty, _puzzles[i].Puzzle).Replace('0', '.'));
                         }
                     }
@@ -168,9 +168,9 @@ public class BulkSolver
                     Dump(_puzzles[i].Puzzle, solution.Solution, solved);
                 }
 
-                if (record)
+                if (historyType != HistoryType.None)
                 {
-                    DumpHistory(_puzzles[i].Puzzle, solution.History);
+                    DumpHistory(_puzzles[i].Puzzle, solution.History, historyType);
                 }
 
                 return solver;
@@ -193,7 +193,7 @@ public class BulkSolver
             System.Console.WriteLine(" Clues...");
 
             var i = 0;
-            
+
             foreach (var timing in _timings.OrderBy(t => t.Key))
             {
                 System.Console.Write($"  {timing.Key}: {$"{timing.Value.Elapsed / timing.Value.Count:N0}",5}μs  ");
@@ -218,18 +218,19 @@ public class BulkSolver
             if (! noSummary)
             {
                 var perSecond = solved / _stopwatch.Elapsed.TotalSeconds;
-                
+
                 if (_stopwatch.Elapsed.TotalSeconds < 1)
                 {
                     System.Console.WriteLine($" puzzles solved in {_stopwatch.Elapsed.TotalMicroseconds:N0}μs, {perSecond:N0}/sec.");
                 }
                 else
                 {
-                    System.Console.WriteLine($" puzzles solved in {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}.{_stopwatch.Elapsed.Milliseconds:N0}, {perSecond:N0}/sec.");
+                    System.Console.WriteLine(
+                        $" puzzles solved in {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}.{_stopwatch.Elapsed.Milliseconds:N0}, {perSecond:N0}/sec.");
                 }
             }
         }
-        
+
         System.Console.CursorVisible = true;
     }
 
@@ -248,7 +249,7 @@ public class BulkSolver
         }
 
         System.Console.CursorLeft = 17;
-        
+
         var percent = 100 - (_puzzleCount - solved) * 100d / _puzzleCount;
 
         var line = (int) Math.Floor(percent / 4);
@@ -263,14 +264,14 @@ public class BulkSolver
         Monitor.Exit(_consoleLock);
     }
 
-    private static void DumpHistory(int[] puzzle, List<Move> solution)
+    private static void DumpHistory(int[] puzzle, List<Move> solution, HistoryType historyType)
     {
         int yIncrement;
 
         for (var y = 0; y < 9; y++)
         {
             yIncrement = 0;
-            
+
             if (y > 2)
             {
                 yIncrement++;
@@ -311,7 +312,11 @@ public class BulkSolver
         var color = System.Console.ForegroundColor;
 
         var sleep = true;
-        
+
+        var step = 0;
+
+        var previousMove = new Move(-1, -1, -1, false);
+
         foreach (var move in solution)
         {
             if (System.Console.KeyAvailable)
@@ -321,9 +326,59 @@ public class BulkSolver
                 System.Console.ReadKey();
             }
 
-            for (var i = 0; i < 5; i++)
+            if (historyType == HistoryType.SolutionOnly)
             {
-                System.Console.ForegroundColor = ConsoleColor.Magenta;
+                for (var i = 0; i < 5; i++)
+                {
+                    System.Console.ForegroundColor = ConsoleColor.Magenta;
+
+                    yIncrement = 0;
+
+                    if (move.Y > 2)
+                    {
+                        yIncrement++;
+                    }
+
+                    if (move.Y > 5)
+                    {
+                        yIncrement++;
+                    }
+
+                    System.Console.CursorTop = move.Y + 2 + yIncrement;
+
+                    System.Console.CursorLeft = 30 + move.X * 2;
+
+                    if (move.X > 2)
+                    {
+                        System.Console.CursorLeft += 2;
+                    }
+
+                    if (move.X > 5)
+                    {
+                        System.Console.CursorLeft += 2;
+                    }
+
+                    if (i % 2 == 0)
+                    {
+                        System.Console.Write(move.Value);
+                    }
+                    else
+                    {
+                        System.Console.Write(" ");
+                    }
+
+                    if (sleep)
+                    {
+                        Thread.Sleep(100);
+                    }
+                }
+
+                if (sleep)
+                {
+                    Thread.Sleep(500);
+                }
+
+                System.Console.ForegroundColor = color;
 
                 yIncrement = 0;
 
@@ -351,55 +406,128 @@ public class BulkSolver
                     System.Console.CursorLeft += 2;
                 }
 
-                if (i % 2 == 0)
+                System.Console.Write(move.Value);
+            }
+            else
+            {
+                yIncrement = 0;
+
+                if (move.Y > 2)
                 {
-                    System.Console.Write(move.Value);
+                    yIncrement++;
                 }
-                else
+
+                if (move.Y > 5)
                 {
-                    System.Console.Write(" ");
+                    yIncrement++;
                 }
 
-                if (sleep)
+                System.Console.CursorTop = move.Y + 2 + yIncrement;
+
+                System.Console.CursorLeft = 30 + move.X * 2;
+
+                if (move.X > 2)
                 {
-                    Thread.Sleep(100);
+                    System.Console.CursorLeft += 2;
                 }
+
+                if (move.X > 5)
+                {
+                    System.Console.CursorLeft += 2;
+                }
+
+                System.Console.ForegroundColor = ConsoleColor.Magenta;
+
+                System.Console.Write(move.Remove ? " " : move.Value.ToString());
+
+                System.Console.ForegroundColor = color;
+
+                if (previousMove.X > -1)
+                {
+                    yIncrement = 0;
+
+                    if (previousMove.Y > 2)
+                    {
+                        yIncrement++;
+                    }
+
+                    if (previousMove.Y > 5)
+                    {
+                        yIncrement++;
+                    }
+
+                    System.Console.CursorTop = previousMove.Y + 2 + yIncrement;
+
+                    System.Console.CursorLeft = 30 + previousMove.X * 2;
+
+                    if (previousMove.X > 2)
+                    {
+                        System.Console.CursorLeft += 2;
+                    }
+
+                    if (previousMove.X > 5)
+                    {
+                        System.Console.CursorLeft += 2;
+                    }
+
+                    System.Console.Write(previousMove.Remove ? " " : previousMove.Value.ToString());
+                }
+
+                previousMove = move;
+
+                System.Console.CursorTop = 0;
+
+                step++;
+
+                var stepText = $"Step: {step:N0}/{solution.Count:N0}";
+
+                System.Console.CursorLeft = 40 - stepText.Length / 2;
+
+                System.Console.Write(stepText);
+
+                var tried = false;
+
+                for (var i = 1; i < 10; i++)
+                {
+                    System.Console.CursorLeft = 54;
+
+                    System.Console.CursorTop = i + 2;
+
+                    if (move.Remove)
+                    {
+                        System.Console.Write(' ');
+                        
+                        continue;
+                    }
+
+                    if (move.Candidates.Contains(i))
+                    {
+                        if (move.Value == i)
+                        {
+                            System.Console.ForegroundColor = ConsoleColor.Magenta;
+
+                            tried = true;
+                        }
+                        else
+                        {
+                            if (! tried)
+                            {
+                                System.Console.ForegroundColor = ConsoleColor.Blue;
+                            }
+                        }
+
+                        System.Console.Write(i);
+
+                        System.Console.ForegroundColor = color;
+                    }
+                    else
+                    {
+                        System.Console.Write(' ');
+                    }
+                }
+
+                Thread.Sleep(10);
             }
-
-            if (sleep)
-            {
-                Thread.Sleep(500);
-            }
-
-            System.Console.ForegroundColor = color;
-
-            yIncrement = 0;
-            
-            if (move.Y > 2)
-            {
-                yIncrement++;
-            }
-
-            if (move.Y > 5)
-            {
-                yIncrement++;
-            }
-
-            System.Console.CursorTop = move.Y + 2 + yIncrement;
-
-            System.Console.CursorLeft = 30 + move.X * 2;
-            
-            if (move.X > 2)
-            {
-                System.Console.CursorLeft += 2;
-            }
-
-            if (move.X > 5)
-            {
-                System.Console.CursorLeft += 2;
-            }
-
-            System.Console.Write(move.Value);
         }
 
         System.Console.CursorTop = 30;
@@ -421,7 +549,8 @@ public class BulkSolver
 
         _output.Clear();
 
-        _output.AppendLine(" \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510  \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510");
+        _output.AppendLine(
+            " \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510  \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510");
 
         for (var y = 0; y < 9; y++)
         {
@@ -445,7 +574,7 @@ public class BulkSolver
             }
 
             _output.Append(" \u2502  \u2502");
-            
+
             for (var x = 0; x < 9; x++)
             {
                 if (right[x + y * 9] == 0)
@@ -464,33 +593,38 @@ public class BulkSolver
             }
 
             _output.Append(" \u2502");
-            
+
             _output.AppendLine();
 
             if (y is 2 or 5)
             {
-                _output.AppendLine(" \u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524  \u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524");
+                _output.AppendLine(
+                    " \u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524  \u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524");
             }
         }
 
-        _output.AppendLine(" \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518  \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518");
-        
+        _output.AppendLine(
+            " \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518  \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518");
+
         if (solved > 0)
         {
             _output.AppendLine($"\n Solved: {solved:N0}/{_puzzleCount:N0} puzzles ({solved / _stopwatch.Elapsed.TotalSeconds:N0} puzzles/sec).       \n");
 
             var mean = _elapsed.Total / solved;
 
-            _output.AppendLine($" Timings...\n  Minimum: {_elapsed.Minimum:N0}μs          \n  Mean:    {mean:N0}μs          \n  Maximum: {_elapsed.Maximum:N0}μs (Puzzle #{_maxTimePuzzleNumber:N0})         \n");
-            
-            _output.AppendLine($" Combinations...\n  Minimum: {_steps.Minimum:N0}          \n  Mean:    {_steps.Total / solved:N0}          \n  Maximum: {_steps.Maximum:N0} (Puzzle #{_maxStepsPuzzleNumber:N0}, Clues: {_mostStepsClues})           \n");
+            _output.AppendLine(
+                $" Timings...\n  Minimum: {_elapsed.Minimum:N0}μs          \n  Mean:    {mean:N0}μs          \n  Maximum: {_elapsed.Maximum:N0}μs (Puzzle #{_maxTimePuzzleNumber:N0})         \n");
+
+            _output.AppendLine(
+                $" Combinations...\n  Minimum: {_steps.Minimum:N0}          \n  Mean:    {_steps.Total / (solved + 1):N0}          \n  Maximum: {_steps.Maximum:N0} (Puzzle #{_maxStepsPuzzleNumber:N0}, Clues: {_mostStepsClues})           \n");
 
             var meanTime = _stopwatch.Elapsed.TotalSeconds / solved;
-            
+
             var eta = TimeSpan.FromSeconds((_puzzles.Length - solved) * meanTime);
-            
-            _output.AppendLine($" Elapsed time: {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}    Estimated remaining: {eta.Hours:N0}:{eta.Minutes:D2}:{eta.Seconds:D2}          \n");
-            
+
+            _output.AppendLine(
+                $" Elapsed time: {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}    Estimated remaining: {eta.Hours:N0}:{eta.Minutes:D2}:{eta.Seconds:D2}          \n");
+
             var percent = 100 - (_puzzleCount - solved) * 100d / _puzzleCount;
 
             _output.AppendLine($" Solved: {Math.Floor(percent):N0}%\n");
@@ -508,9 +642,9 @@ public class BulkSolver
         }
 
         System.Console.CursorTop = 1;
-    
+
         System.Console.Write(_output.ToString());
-        
+
         Monitor.Exit(_consoleLock);
     }
 }
