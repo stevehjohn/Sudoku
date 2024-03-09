@@ -494,7 +494,14 @@ public class BulkSolver
 
                         if (move.Candidates.Contains(i))
                         {
+                            if (move.Value == i)
+                            {
+                                System.Console.ForegroundColor = ConsoleColor.Magenta;
+                            }
+
                             System.Console.Write(i);
+
+                            System.Console.ForegroundColor = color;
                         }
                         else
                         {
