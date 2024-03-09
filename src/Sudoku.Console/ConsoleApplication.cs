@@ -13,6 +13,11 @@ public class ConsoleApplication
 
     public void Run()
     {
+        var v = new ConsoleSolveVisualiser(null, null);
+        
+        v.Visualise();
+        
+        return;
         while (true)
         {
             Clear();
