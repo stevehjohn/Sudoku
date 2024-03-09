@@ -18,7 +18,7 @@ public class ConsoleSolveVisualiser
 
     private readonly ConsoleColor _consoleColor;
 
-    private readonly int[] _speeds = [ 2000, 1000, 500, 150, 100, 10, 0 ];
+    private readonly int[] _speeds = [ 2000, 1000, 500, 150, 100, 50, 10, 0 ];
 
     private int _speedIndex = 1;
     
