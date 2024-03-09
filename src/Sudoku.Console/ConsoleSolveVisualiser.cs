@@ -18,7 +18,7 @@ public class ConsoleSolveVisualiser
 
     private readonly ConsoleColor _consoleColor;
 
-    private readonly int[] _speeds = [ 2000, 1000, 500, 150, 100, 50, 10, 0 ];
+    private readonly int[] _speeds = [ 2000, 1000, 500, 250, 100, 50, 10, 0 ];
 
     private int _speedIndex = 1;
     
@@ -111,7 +111,7 @@ public class ConsoleSolveVisualiser
             
             Out.ForegroundColor = _consoleColor;
             
-            ShowText($"Step {step:N0}/{_history.Count:N0}");
+            ShowText($"Step {step:N0}/{_history.Count:N0}  ({1_000d / _speeds[_speedIndex]:N1} fps)");
 
             Thread.Sleep(_speeds[_speedIndex]);
 
@@ -256,6 +256,6 @@ public class ConsoleSolveVisualiser
 
         Out.ForegroundColor = _consoleColor;
         
-        Out.Write("      Press < or > to adjust visualisation speed");
+        Out.Write("           < or > adjust visualisation speed");
     }
 }
