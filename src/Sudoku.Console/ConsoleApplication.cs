@@ -27,7 +27,11 @@ public class ConsoleApplication
 
             foreach (var file in _files)
             {
-                Out($"  {count,2}: {Path.GetFileNameWithoutExtension(file)}");
+                var name = Path.GetFileName(file);
+
+                name = name[..name.IndexOf('.')];
+                
+                Out($"  {count,2}: {name}");
 
                 count++;
             }
