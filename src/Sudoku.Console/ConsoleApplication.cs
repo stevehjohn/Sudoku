@@ -360,7 +360,7 @@ public class ConsoleApplication
 
     private static (int[] Puzzle, int Clues)[] LoadPuzzles(string filename)
     {
-        if (Path.GetExtension(filename).ToLower() != ".zip")
+        if (Path.GetExtension(filename).ToLower() == ".txt")
         {
             var data = File.ReadAllLines(filename);
 
