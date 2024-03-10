@@ -141,6 +141,48 @@ public class Solver
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void FindHiddenSingles()
     {
+        for (var yO = 0; yO < 81; yO += 27)
+        {
+            for (var xO = 0; xO < 9; xO += 3)
+            {
+                var oneMask = 0;
+    
+                var twoMask = 0;
+    
+                var start = yO + xO;
+    
+                for (var y = 0; y < 3; y++)
+                {
+                    var y9 = (y << 3) + y;
+                    
+                    for (var x = 0; x < 3; x++)
+                    {
+                        twoMask |= oneMask & _cellCandidates[start + y9 + x];
+    
+                        oneMask |= _cellCandidates[start + y9 + x];
+                    }
+                }
+    
+                var once = oneMask & ~twoMask;
+    
+                if (BitOperations.PopCount((uint) once) == 1)
+                {
+                    for (var y = 0; y < 3; y++)
+                    {
+                        for (var x = 0; x < 3; x++)
+                        {
+                            if ((_cellCandidates[start + (y << 3) + y + x] & once) > 0)
+                            {
+                                _cellCandidates[start + (y << 3) + y + x] = once;
+                            }
+                        }
+                    }
+    
+                    return;
+                }
+            }
+        }
+        
         for (var y = 0; y < 9; y++)
         {
             var oneMaskRow = 0;
@@ -192,48 +234,6 @@ public class Solver
                 }
     
                 return;
-            }
-        }
-    
-        for (var yO = 0; yO < 81; yO += 27)
-        {
-            for (var xO = 0; xO < 9; xO += 3)
-            {
-                var oneMask = 0;
-    
-                var twoMask = 0;
-    
-                var start = yO + xO;
-    
-                for (var y = 0; y < 3; y++)
-                {
-                    var y9 = (y << 3) + y;
-                    
-                    for (var x = 0; x < 3; x++)
-                    {
-                        twoMask |= oneMask & _cellCandidates[start + y9 + x];
-    
-                        oneMask |= _cellCandidates[start + y9 + x];
-                    }
-                }
-    
-                var once = oneMask & ~twoMask;
-    
-                if (BitOperations.PopCount((uint) once) == 1)
-                {
-                    for (var y = 0; y < 3; y++)
-                    {
-                        for (var x = 0; x < 3; x++)
-                        {
-                            if ((_cellCandidates[start + (y << 3) + y + x] & once) > 0)
-                            {
-                                _cellCandidates[start + (y << 3) + y + x] = once;
-                            }
-                        }
-                    }
-    
-                    return;
-                }
             }
         }
     }
