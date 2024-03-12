@@ -29,7 +29,7 @@ public class Solver
         _unique = checkForUniqueness;
     }
 
-    public (int[] Solution, int Steps, double Microseconds, List<Move> History, List<int>[] InitialCandidates, string Message) Solve(int[] puzzle)
+    public SudokuResult Solve(int[] puzzle)
     {
         _solutionCount = 0;
         
@@ -55,7 +55,7 @@ public class Solver
         {
             stopwatch.Stop();
             
-            return (null, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, $"Insufficient number of clues: {81 - _score}");
+            return new SudokuResult(null, false, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, $"Insufficient number of clues: {81 - _score}");
         }
 
         _history = _historyType != HistoryType.None ? new List<Move>() : null;
@@ -93,15 +93,15 @@ public class Solver
 
         if (! SolveStep(span, candidates) && _solutionCount == 0)
         {
-            return (null, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, "Unsolvable");
+            return new SudokuResult(null, false, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, "Unsolvable");
         }
 
         if (_solutionCount > 1)
         {
-            return (null, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, $"Multiple solutions: {_solutionCount}");
+            return new SudokuResult(null, false, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, $"Multiple solutions: {_solutionCount}");
         }
 
-        return (_solution, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, "Solved");
+        return new SudokuResult(_solution, true, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, "Solved");
     }
 
     private bool SolveStep(Span<int> puzzle, (Candidates Row, Candidates Column, Candidates Box) candidates)
