@@ -38,14 +38,16 @@ public class SolverTests
                 input[i] = parts[0][i] - '0';
             }
 
-            var solution = solver.Solve(input, HistoryType.None, true).Solution;
+            var solution = solver.Solve(input, HistoryType.None, true);
+        
+            _testOutputHelper.WriteLine($"Puzzle {count}: {solution.Message}");
 
-            if (solution != null)
+            if (solution.Solution != null)
             {
                 // ReSharper disable once Xunit.XunitTestWithConsoleOutput
                 Console.Write($"Puzzle {count} was solved.");
                 
-                solution.DumpToConsole(1);
+                solution.Solution.DumpToConsole(1);
                 
                 Assert.Fail($"Puzzle {count} was solved.");
             }
