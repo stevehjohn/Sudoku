@@ -82,7 +82,7 @@ Output:
 ```csharp
 var generator = new Generator();
 
-var puzzle = generator.Generate(60); // Will remove 60 cells, leaving a puzzle with 21 clues.
+var puzzle = generator.Generate(50); // Will remove 60 cells, leaving a puzzle with 31 clues. Anything under ~28 clues can take a while.
 
 puzzle.DumpToConsole(1);
 ```
