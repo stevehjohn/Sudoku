@@ -16,7 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Puzzles", "Puzzles", "{7231
 		..\Puzzles\2 Million.zip = ..\Puzzles\2 Million.zip
 		..\Puzzles\Hard.zip = ..\Puzzles\Hard.zip
 		..\Puzzles\Easy.zip = ..\Puzzles\Easy.zip
-		..\Puzzles\Most Steps.zip = ..\Puzzles\Most Steps.zip
 		..\Puzzles\Benchmarks.zip = ..\Puzzles\Benchmarks.zip
 		..\Puzzles\Euler.zip = ..\Puzzles\Euler.zip
 		..\Puzzles\Minimum Clues.zip = ..\Puzzles\Minimum Clues.zip
