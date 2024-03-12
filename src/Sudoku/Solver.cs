@@ -339,7 +339,10 @@ public class Solver
             {
                 solutionCount--;
 
-                return solutionCount == 0;
+                if (solutionCount == 0)
+                {
+                    return true;
+                }
             }
 
             steps++;
