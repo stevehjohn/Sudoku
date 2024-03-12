@@ -72,7 +72,7 @@ public class BulkSolver
                 {
                     lock (_statsLock)
                     {
-                        var totalMicroseconds = solution.Microseconds;
+                        var totalMicroseconds = solution.ElapsedMicroseconds;
 
                         var clues = _puzzles[i].Clues;
 
@@ -83,7 +83,7 @@ public class BulkSolver
                             _timings[clues] = value;
                         }
 
-                        _timings[clues] = (value.Count + 1, value.Elapsed + solution.Microseconds);
+                        _timings[clues] = (value.Count + 1, value.Elapsed + solution.ElapsedMicroseconds);
 
                         _elapsed.Total += totalMicroseconds;
 
@@ -117,7 +117,7 @@ public class BulkSolver
                 {
                     lock (_statsLock)
                     {
-                        var totalMicroseconds = solution.Microseconds;
+                        var totalMicroseconds = solution.ElapsedMicroseconds;
 
                         var clues = _puzzles[i].Clues;
 
@@ -128,7 +128,7 @@ public class BulkSolver
                             _timings[clues] = value;
                         }
 
-                        _timings[clues] = (value.Count + 1, value.Elapsed + solution.Microseconds);
+                        _timings[clues] = (value.Count + 1, value.Elapsed + solution.ElapsedMicroseconds);
 
                         _elapsed.Total += totalMicroseconds;
 

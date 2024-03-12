@@ -8,7 +8,7 @@ public class SudokuResult
     
     public int Steps { get; }
 
-    public double ElapsedMilliseconds { get; }
+    public double ElapsedMicroseconds { get; }
     
     public List<Move> History { get; }
     
@@ -24,7 +24,7 @@ public class SudokuResult
         
         Steps = steps;
         
-        ElapsedMilliseconds = elapsedMilliseconds;
+        ElapsedMicroseconds = elapsedMilliseconds;
         
         History = history;
         
