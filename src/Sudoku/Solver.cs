@@ -14,6 +14,8 @@ public class Solver
 
     private readonly bool _unique;
 
+    private List<Move> _history;
+
     public Solver(HistoryType historyType, bool checkForUniqueness = false)
     {
         _historyType = historyType;
@@ -50,7 +52,7 @@ public class Solver
             return (null, steps, stopwatch.Elapsed.TotalMicroseconds, null, null, $"Insufficient number of clues: {81 - score}");
         }
 
-        var history = _historyType != HistoryType.None ? new List<Move>() : null;
+        _history = _historyType != HistoryType.None ? new List<Move>() : null;
 
         var span = new Span<int>(workingCopy);
 
@@ -83,22 +85,20 @@ public class Solver
 
         stopwatch.Stop();
 
-        if (! SolveStep(span, score, candidates, ref steps, ref solutionCount, history) && solutionCount == 0)
+        if (! SolveStep(span, score, candidates, ref steps, ref solutionCount) && solutionCount == 0)
         {
-            return (null, steps, stopwatch.Elapsed.TotalMicroseconds, history, initialCandidates, "Unsolvable");
+            return (null, steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, "Unsolvable");
         }
 
         if (solutionCount > 1)
         {
-            history?.Clear();
-            
-            return (null, steps, stopwatch.Elapsed.TotalMicroseconds, history, initialCandidates, $"Multiple solutions: {solutionCount}");
+            return (null, steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, $"Multiple solutions: {solutionCount}");
         }
 
-        return (_solution, steps, stopwatch.Elapsed.TotalMicroseconds, history, initialCandidates, "Solved");
+        return (_solution, steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, "Solved");
     }
 
-    private bool SolveStep(Span<int> puzzle, int score, (Candidates Row, Candidates Column, Candidates Box) candidates, ref int steps, ref int solutionCount, List<Move> history)
+    private bool SolveStep(Span<int> puzzle, int score, (Candidates Row, Candidates Column, Candidates Box) candidates, ref int steps, ref int solutionCount)
     {
         GetCellCandidates(puzzle, candidates);
 
@@ -109,7 +109,7 @@ public class Solver
 
         var move = FindLowestMove(puzzle);
 
-        return CreateNextSteps(puzzle, move, score, candidates, ref steps, ref solutionCount, history);
+        return CreateNextSteps(puzzle, move, score, candidates, ref steps, ref solutionCount);
     }
 
     private static (Candidates Row, Candidates Column, Candidates Box) GetSectionCandidates(Span<int> puzzle)
@@ -304,7 +304,7 @@ public class Solver
         return (position, values, valueCount);
     }
 
-    private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, int score, (Candidates Row, Candidates Column, Candidates Box) candidates, ref int steps, ref int solutionCount, List<Move> history)
+    private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, int score, (Candidates Row, Candidates Column, Candidates Box) candidates, ref int steps, ref int solutionCount)
     {
         var cell = move.Position.X + (move.Position.Y << 3) + move.Position.Y;
             
@@ -345,7 +345,7 @@ public class Solver
 
                 historyMove.Candidates = historyCandidates.ToArray();
 
-                history?.Add(historyMove);
+                _history?.Add(historyMove);
             }
 
             if (score == 0)
@@ -368,7 +368,7 @@ public class Solver
 
             steps++;
 
-            if (SolveStep(puzzle, score, candidates, ref steps, ref solutionCount, history))
+            if (SolveStep(puzzle, score, candidates, ref steps, ref solutionCount))
             {
                 return true;
             }
@@ -381,11 +381,11 @@ public class Solver
             {
                 if (_historyType == HistoryType.SolutionOnly)
                 {
-                    history?.RemoveAt(history.Count - 1);
+                    _history?.RemoveAt(_history.Count - 1);
                 }
                 else
                 {
-                    history?.Add(new Move(move.Position.X, move.Position.Y, i, true));
+                    _history?.Add(new Move(move.Position.X, move.Position.Y, i, true));
                 }
             }
 
