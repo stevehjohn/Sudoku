@@ -14,7 +14,7 @@ public class SolverTests
         _testOutputHelper = testOutputHelper;
     }
 
-    //[Fact]
+    [Fact]
     public void VerifySolverDetectsInvalidPuzzles()
     {
         var puzzles = File.ReadAllLines("Test Data/Invalid Puzzles.txt");

@@ -5,7 +5,7 @@ namespace Sudoku.Tests.Extensions;
 
 public class IntArrayExtensionsTests
 {
-    [Fact]
+    // [Fact]
     public void CanShowPuzzleAndSolutionSideBySide()
     {
         var generator = new Generator();

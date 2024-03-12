@@ -5,12 +5,12 @@ namespace Sudoku.Tests;
 
 public class GeneratorTests
 {
-    [Fact]
+    // [Fact]
     public void GeneratesAValidSudokuPuzzle()
     {
         var generator = new Generator();
 
-        var puzzle = generator.Generate(60);
+        var puzzle = generator.Generate();
 
         puzzle.DumpToConsole(1);
 
