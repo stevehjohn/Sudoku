@@ -42,6 +42,8 @@ public class SolverTests
             
             _testOutputHelper.WriteLine($"Puzzle {count}: {solution.Message}");
 
+            Assert.False(solution.Solved);
+            
             if (solution.Solution != null)
             {
                 solution.Solution.DumpToConsole(1);
@@ -83,6 +85,8 @@ public class SolverTests
             }
 
             var result = solver.Solve(input);
+            
+            Assert.True(result.Solved);
             
             for (var i = 0; i < 81; i++)
             {
