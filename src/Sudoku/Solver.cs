@@ -61,7 +61,10 @@ public class Solver
             }
         }
 
-        SolveStep(span, score, candidates, ref steps, ref solutionCount, historyType, history);
+        if (! SolveStep(span, score, candidates, ref steps, ref solutionCount, historyType, history))
+        {
+            return (null, steps, stopwatch.Elapsed.TotalMicroseconds, history, initialCandidates);
+        }
 
         stopwatch.Stop();
 
