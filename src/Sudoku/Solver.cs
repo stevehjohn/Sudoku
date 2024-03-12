@@ -16,6 +16,10 @@ public class Solver
 
     private List<Move> _history;
 
+    private int _steps;
+
+    private int _solutionCount;
+    
     public Solver(HistoryType historyType, bool checkForUniqueness = false)
     {
         _historyType = historyType;
@@ -25,9 +29,9 @@ public class Solver
 
     public (int[] Solution, int Steps, double Microseconds, List<Move> History, List<int>[] InitialCandidates, string Message) Solve(int[] puzzle)
     {
-        var solutionCount = 0;
+        _solutionCount = 0;
         
-        var steps = 0;
+        _steps = 0;
 
         var stopwatch = Stopwatch.StartNew();
 
@@ -49,7 +53,7 @@ public class Solver
         {
             stopwatch.Stop();
             
-            return (null, steps, stopwatch.Elapsed.TotalMicroseconds, null, null, $"Insufficient number of clues: {81 - score}");
+            return (null, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, $"Insufficient number of clues: {81 - score}");
         }
 
         _history = _historyType != HistoryType.None ? new List<Move>() : null;
@@ -85,20 +89,20 @@ public class Solver
 
         stopwatch.Stop();
 
-        if (! SolveStep(span, score, candidates, ref steps, ref solutionCount) && solutionCount == 0)
+        if (! SolveStep(span, score, candidates) && _solutionCount == 0)
         {
-            return (null, steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, "Unsolvable");
+            return (null, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, "Unsolvable");
         }
 
-        if (solutionCount > 1)
+        if (_solutionCount > 1)
         {
-            return (null, steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, $"Multiple solutions: {solutionCount}");
+            return (null, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, $"Multiple solutions: {_solutionCount}");
         }
 
-        return (_solution, steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, "Solved");
+        return (_solution, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, "Solved");
     }
 
-    private bool SolveStep(Span<int> puzzle, int score, (Candidates Row, Candidates Column, Candidates Box) candidates, ref int steps, ref int solutionCount)
+    private bool SolveStep(Span<int> puzzle, int score, (Candidates Row, Candidates Column, Candidates Box) candidates)
     {
         GetCellCandidates(puzzle, candidates);
 
@@ -109,7 +113,7 @@ public class Solver
 
         var move = FindLowestMove(puzzle);
 
-        return CreateNextSteps(puzzle, move, score, candidates, ref steps, ref solutionCount);
+        return CreateNextSteps(puzzle, move, score, candidates);
     }
 
     private static (Candidates Row, Candidates Column, Candidates Box) GetSectionCandidates(Span<int> puzzle)
@@ -304,7 +308,7 @@ public class Solver
         return (position, values, valueCount);
     }
 
-    private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, int score, (Candidates Row, Candidates Column, Candidates Box) candidates, ref int steps, ref int solutionCount)
+    private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, int score, (Candidates Row, Candidates Column, Candidates Box) candidates)
     {
         var cell = move.Position.X + (move.Position.Y << 3) + move.Position.Y;
             
@@ -350,7 +354,7 @@ public class Solver
 
             if (score == 0)
             {
-                if (solutionCount == 0)
+                if (_solutionCount == 0)
                 {
                     for (var j = 0; j < 81; j++)
                     {
@@ -363,12 +367,12 @@ public class Solver
                     return true;
                 }
 
-                solutionCount++;
+                _solutionCount++;
             }
 
-            steps++;
+            _steps++;
 
-            if (SolveStep(puzzle, score, candidates, ref steps, ref solutionCount))
+            if (SolveStep(puzzle, score, candidates))
             {
                 return true;
             }
