@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Sudoku.Extensions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -37,9 +38,11 @@ public class SolverTests
                 input[i] = parts[0][i] - '0';
             }
 
+            int[] solution;
+            
             try
             {
-                solver.Solve(input, HistoryType.None, true);
+                solution = solver.Solve(input, HistoryType.None, true).Solution;
             }
             catch
             {
@@ -47,6 +50,8 @@ public class SolverTests
                 
                 continue;
             }
+            
+            solution.DumpToConsole(1);
 
             Assert.Fail($"Puzzle {count} was 'solved'.");
         }
