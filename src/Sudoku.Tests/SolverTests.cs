@@ -46,13 +46,7 @@ public class SolverTests
                 continue;
             }
 
-            for (var i = 0; i < 81; i++)
-            {
-                if (result.Solution[i] != parts[1][i] - '0')
-                {
-                    Assert.Fail();
-                }
-            }
+            Assert.Fail();
         }
         
         stopwatch.Stop();
