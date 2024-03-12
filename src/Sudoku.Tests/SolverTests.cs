@@ -51,6 +51,13 @@ public class SolverTests
                 
                 Assert.Fail($"Puzzle {count} was solved.");
             }
+
+            Assert.Contains(parts[2], solution.Message.ToLower());
+
+            if (parts[1] != "0")
+            {
+                Assert.Contains(parts[1], solution.Message.ToLower());
+            }
         }
         
         stopwatch.Stop();

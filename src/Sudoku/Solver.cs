@@ -79,7 +79,7 @@ public class Solver
         {
             history?.Clear();
             
-            return (null, steps, stopwatch.Elapsed.TotalMicroseconds, history, initialCandidates, $"More than one solution: {solutionCount}");
+            return (null, steps, stopwatch.Elapsed.TotalMicroseconds, history, initialCandidates, $"Multiple solutions: {solutionCount}");
         }
 
         return (workingCopy, steps, stopwatch.Elapsed.TotalMicroseconds, history, initialCandidates, "Solved");
