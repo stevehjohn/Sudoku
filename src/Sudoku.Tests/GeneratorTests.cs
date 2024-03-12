@@ -5,7 +5,7 @@ namespace Sudoku.Tests;
 
 public class GeneratorTests
 {
-    // [Fact]
+    [Fact]
     public void GeneratesAValidSudokuPuzzle()
     {
         var generator = new Generator();
