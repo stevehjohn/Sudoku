@@ -248,7 +248,7 @@ public class ConsoleApplication
 
                 var generator = new Generator();
 
-                var puzzle = generator.Generate(81 - clues);
+                var puzzle = generator.Generate(clues);
 
                 lock (recentLock)
                 {

@@ -8,7 +8,7 @@ public class Generator
 
     private readonly Solver _solver = new(HistoryType.None, true);
     
-    public int[] Generate(int cellsToRemove = 51)
+    public int[] Generate(int cluesToLeave = 30)
     {
         var puzzle = new int[81];
         
@@ -16,7 +16,7 @@ public class Generator
 
         CreateSolvedPuzzle(puzzle);
 
-        RemoveCells(puzzle, cellsToRemove);
+        RemoveCells(puzzle, 81 - cluesToLeave);
 
         return puzzle;
     }
