@@ -30,6 +30,13 @@ public class Solver
             }
         }
 
+        if (score > 64)
+        {
+            stopwatch.Stop();
+            
+            return (null, steps, stopwatch.Elapsed.TotalMicroseconds, null, null);
+        }
+
         var history = historyType != HistoryType.None ? new List<Move>() : null;
 
         var span = new Span<int>(workingCopy);
