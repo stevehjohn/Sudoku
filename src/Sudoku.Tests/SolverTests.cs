@@ -21,9 +21,13 @@ public class SolverTests
         var solver = new Solver();
 
         var stopwatch = Stopwatch.StartNew();
+
+        var count = 0;
         
         foreach (var puzzle in puzzles)
         {
+            count++;
+            
             var parts = puzzle.Split(',');
 
             var input = new int[81];
@@ -35,7 +39,7 @@ public class SolverTests
 
             try
             {
-                solver.Solve(input);
+                solver.Solve(input, HistoryType.None, true);
             }
             catch
             {
@@ -44,7 +48,7 @@ public class SolverTests
                 continue;
             }
 
-            Assert.Fail();
+            Assert.Fail($"Puzzle {count} was 'solved'.");
         }
         
         stopwatch.Stop();
