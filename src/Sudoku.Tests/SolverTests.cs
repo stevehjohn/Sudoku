@@ -19,7 +19,7 @@ public class SolverTests
     {
         var puzzles = File.ReadAllLines("Test Data/Invalid Puzzles.txt");
 
-        var solver = new Solver();
+        var solver = new Solver(HistoryType.None, true);
 
         var stopwatch = Stopwatch.StartNew();
 
@@ -38,7 +38,7 @@ public class SolverTests
                 input[i] = parts[0][i] - '0';
             }
 
-            var solution = solver.Solve(input, HistoryType.None, true);
+            var solution = solver.Solve(input);
             
             _testOutputHelper.WriteLine($"Puzzle {count}: {solution.Message}");
 
@@ -67,7 +67,7 @@ public class SolverTests
     {
         var puzzles = File.ReadAllLines("Test Data/Puzzles With Answers.txt");
 
-        var solver = new Solver();
+        var solver = new Solver(HistoryType.None, true);
 
         var stopwatch = Stopwatch.StartNew();
         
@@ -82,7 +82,7 @@ public class SolverTests
                 input[i] = parts[0][i] - '0';
             }
 
-            var result = solver.Solve(input, HistoryType.None, true);
+            var result = solver.Solve(input);
             
             for (var i = 0; i < 81; i++)
             {

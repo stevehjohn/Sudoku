@@ -14,7 +14,7 @@ public class IntArrayExtensionsTests
 
         var y = Console.CursorTop;
 
-        var solver = new Solver();
+        var solver = new Solver(HistoryType.None);
 
         var result = solver.Solve(puzzle);
         

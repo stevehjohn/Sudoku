@@ -159,9 +159,9 @@ public class ConsoleApplication
     {
         var puzzle = LoadPuzzles("Puzzles/Most Steps.txt")[0];
 
-        var solver = new Solver();
+        var solver = new Solver(HistoryType.AllSteps);
 
-        var result = solver.Solve(puzzle.Puzzle, HistoryType.AllSteps);
+        var result = solver.Solve(puzzle.Puzzle);
 
         var visualiser = new ConsoleSolveVisualiser(puzzle.Puzzle, result.Solution, result.History, result.InitialCandidates);
         

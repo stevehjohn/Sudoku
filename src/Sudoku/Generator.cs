@@ -6,7 +6,7 @@ public class Generator
 
     private readonly Random _rng = Random.Shared;
 
-    private readonly Solver _solver = new();
+    private readonly Solver _solver = new(HistoryType.None, true);
     
     public int[] Generate(int cellsToRemove = 51)
     {
@@ -48,7 +48,7 @@ public class Generator
                 puzzle[cell] = 0;
             }
 
-            if (_solver.Solve(puzzle, HistoryType.None, true).Solution != null)
+            if (_solver.Solve(puzzle).Solution != null)
             {
                 return;
             }
