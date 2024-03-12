@@ -39,17 +39,11 @@ public class SolverTests
             }
 
             var solution = solver.Solve(input, HistoryType.None, true);
-        
-            // ReSharper disable once Xunit.XunitTestWithConsoleOutput
-            Console.WriteLine($"Puzzle {count}: {solution.Message}");
             
             _testOutputHelper.WriteLine($"Puzzle {count}: {solution.Message}");
 
             if (solution.Solution != null)
             {
-                // ReSharper disable once Xunit.XunitTestWithConsoleOutput
-                Console.Write($"Puzzle {count} was solved.");
-                
                 solution.Solution.DumpToConsole(1);
                 
                 Assert.Fail($"Puzzle {count} was solved.");
