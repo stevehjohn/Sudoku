@@ -46,6 +46,8 @@ public class SolverTests
                 Console.Write($"Puzzle {count} was solved.");
                 
                 solution.DumpToConsole(1);
+                
+                Assert.Fail($"Puzzle {count} was solved.");
             }
         }
         
