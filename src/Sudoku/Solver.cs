@@ -10,7 +10,7 @@ public class Solver
 
     public (int[] Solution, int Steps, double Microseconds, List<Move> History, List<int>[] InitialCandidates, string Message) Solve(int[] puzzle, HistoryType historyType = HistoryType.None, bool unique = false)
     {
-        var solutionCount = unique ? 2 : 1;
+        var solutionCount = 0;
         
         var steps = 0;
 
@@ -68,24 +68,24 @@ public class Solver
             }
         }
 
-        if (! SolveStep(span, score, candidates, ref steps, ref solutionCount, historyType, history))
+        stopwatch.Stop();
+
+        if (! SolveStep(span, score, candidates, ref steps, ref solutionCount, unique, historyType, history) && solutionCount == 0)
         {
             return (null, steps, stopwatch.Elapsed.TotalMicroseconds, history, initialCandidates, "Unsolvable");
         }
 
-        stopwatch.Stop();
-
-        if (unique && solutionCount == 0)
+        if (solutionCount > 1)
         {
             history?.Clear();
             
-            return (null, steps, stopwatch.Elapsed.TotalMicroseconds, history, initialCandidates, "More than one solution");
+            return (null, steps, stopwatch.Elapsed.TotalMicroseconds, history, initialCandidates, $"More than one solution: {solutionCount}");
         }
 
         return (workingCopy, steps, stopwatch.Elapsed.TotalMicroseconds, history, initialCandidates, "Solved");
     }
 
-    private bool SolveStep(Span<int> puzzle, int score, (Candidates Row, Candidates Column, Candidates Box) candidates, ref int steps, ref int solutionCount, HistoryType historyType, List<Move> history)
+    private bool SolveStep(Span<int> puzzle, int score, (Candidates Row, Candidates Column, Candidates Box) candidates, ref int steps, ref int solutionCount, bool unique, HistoryType historyType, List<Move> history)
     {
         GetCellCandidates(puzzle, candidates);
 
@@ -96,7 +96,7 @@ public class Solver
 
         var move = FindLowestMove(puzzle);
 
-        return CreateNextSteps(puzzle, move, score, candidates, ref steps, ref solutionCount, historyType, history);
+        return CreateNextSteps(puzzle, move, score, candidates, ref steps, ref solutionCount, unique, historyType, history);
     }
 
     private static (Candidates Row, Candidates Column, Candidates Box) GetSectionCandidates(Span<int> puzzle)
@@ -291,7 +291,7 @@ public class Solver
         return (position, values, valueCount);
     }
 
-    private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, int score, (Candidates Row, Candidates Column, Candidates Box) candidates, ref int steps, ref int solutionCount, HistoryType historyType, List<Move> history)
+    private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, int score, (Candidates Row, Candidates Column, Candidates Box) candidates, ref int steps, ref int solutionCount, bool unique, HistoryType historyType, List<Move> history)
     {
         var cell = move.Position.X + (move.Position.Y << 3) + move.Position.Y;
             
@@ -337,17 +337,17 @@ public class Solver
 
             if (score == 0)
             {
-                solutionCount--;
-
-                if (solutionCount == 0)
+                if (! unique)
                 {
                     return true;
                 }
+
+                solutionCount++;
             }
 
             steps++;
 
-            if (SolveStep(puzzle, score, candidates, ref steps, ref solutionCount, historyType, history))
+            if (SolveStep(puzzle, score, candidates, ref steps, ref solutionCount, unique, historyType, history))
             {
                 return true;
             }
