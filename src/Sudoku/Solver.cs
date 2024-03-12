@@ -339,17 +339,17 @@ public class Solver
 
             if (score == 0)
             {
-                if (! unique)
-                {
-                    return true;
-                }
-
                 if (solutionCount == 0)
                 {
                     for (var j = 0; j < 81; j++)
                     {
                         _solution[j] = puzzle[j];
                     }
+                }
+
+                if (! unique)
+                {
+                    return true;
                 }
 
                 solutionCount++;
