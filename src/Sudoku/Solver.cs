@@ -8,6 +8,8 @@ public class Solver
 {
     private readonly int[] _cellCandidates = new int[81];
 
+    private readonly int[] _solution = new int[81];
+
     public (int[] Solution, int Steps, double Microseconds, List<Move> History, List<int>[] InitialCandidates, string Message) Solve(int[] puzzle, HistoryType historyType = HistoryType.None, bool unique = false)
     {
         var solutionCount = 0;
@@ -82,7 +84,7 @@ public class Solver
             return (null, steps, stopwatch.Elapsed.TotalMicroseconds, history, initialCandidates, $"Multiple solutions: {solutionCount}");
         }
 
-        return (workingCopy, steps, stopwatch.Elapsed.TotalMicroseconds, history, initialCandidates, "Solved");
+        return (_solution, steps, stopwatch.Elapsed.TotalMicroseconds, history, initialCandidates, "Solved");
     }
 
     private bool SolveStep(Span<int> puzzle, int score, (Candidates Row, Candidates Column, Candidates Box) candidates, ref int steps, ref int solutionCount, bool unique, HistoryType historyType, List<Move> history)
@@ -340,6 +342,14 @@ public class Solver
                 if (! unique)
                 {
                     return true;
+                }
+
+                if (solutionCount == 0)
+                {
+                    for (var j = 0; j < 81; j++)
+                    {
+                        _solution[j] = puzzle[j];
+                    }
                 }
 
                 solutionCount++;

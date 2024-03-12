@@ -82,7 +82,7 @@ public class SolverTests
                 input[i] = parts[0][i] - '0';
             }
 
-            var result = solver.Solve(input);
+            var result = solver.Solve(input, HistoryType.None, true);
             
             for (var i = 0; i < 81; i++)
             {
