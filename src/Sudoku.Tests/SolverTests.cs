@@ -33,13 +33,17 @@ public class SolverTests
                 input[i] = parts[0][i] - '0';
             }
 
+            (int[] Solution, int Steps, double Microseconds, List<Move> History, List<int>[] InitialCandidates) result;
+            
             try
             {
-                var result = solver.Solve(input);
+                result = solver.Solve(input);
             }
             catch
             {
                 //
+                
+                continue;
             }
 
             for (var i = 0; i < 81; i++)
