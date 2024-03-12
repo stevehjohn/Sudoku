@@ -7,6 +7,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{352A9E06-0873-404C-A668-42EE642093F0}"
 	ProjectSection(SolutionItems) = preProject
 		..\README.md = ..\README.md
+		..\Notes.md = ..\Notes.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Puzzles", "Puzzles", "{72316191-5E40-4936-A5D5-EBB6E9FCF6D7}"
@@ -24,6 +25,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Puzzles", "Puzzles", "{7231
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.Tests", "Sudoku.Tests\Sudoku.Tests.csproj", "{E05213CF-2295-4E44-8488-DB5458042766}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{E2234965-A40A-4B24-BC80-95FF5C821FF1}"
+	ProjectSection(SolutionItems) = preProject
+		..\debug.sh = ..\debug.sh
+		..\run.bat = ..\run.bat
+		..\run.sh = ..\run.sh
+		..\test.bat = ..\test.bat
+		..\test.sh = ..\test.sh
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
