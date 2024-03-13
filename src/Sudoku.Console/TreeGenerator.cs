@@ -7,7 +7,7 @@ public class TreeGenerator
 {
     private const string Numbers = "➊➋➌➍➎➏➐➑➒";
     
-    private const string NodeTemplate = "<li><a class='{class}' href='#'><pre>{puzzle}</pre></a>{children}</li>"; 
+    private const string NodeTemplate = "<li><a class='{class}' href='#'>{puzzle}</a>{children}</li>"; 
         
     public void Generate(int[] puzzle, string filename)
     {
@@ -32,22 +32,21 @@ public class TreeGenerator
 
         var puzzle = new StringBuilder();
 
+        puzzle.Append("<table><tr>");
+        
         for (var i = 0; i < 81; i++)
         {
-            if (i > 0 && i % 9 == 0)
+            if (i % 9 == 0)
             {
-                puzzle.Append("<br/>");
-            }
-            else
-            {
-                puzzle.Append(' ');
+                if (i > 0)
+                {
+                    puzzle.Append("</tr><tr>");
+                }
             }
 
-            if (node[i] == 0)
-            {
-                puzzle.Append(' ');
-            }
-            else
+            puzzle.Append("<td>");
+            
+            if (node[i] != 0)
             {
                 if (i == node.Move.X + node.Move.Y * 9)
                 {
@@ -58,7 +57,15 @@ public class TreeGenerator
                     puzzle.Append(node[i]);
                 }
             }
+            else
+            {
+                puzzle.Append("<pre>&nbsp;</pre>");
+            }
+
+            puzzle.Append("</td>");
         }
+
+        puzzle.Append("</tr></table>");
 
         content = content.Replace("{puzzle}", puzzle.ToString());
 

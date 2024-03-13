@@ -1,7 +1,7 @@
 ﻿* {
     margin: 0;
     padding: 0;
-    font-family: 'Google Sans', arial, verdana, tahoma;
+    font-family: 'Lucida Console', monospace;
 }
 
 body {
@@ -12,10 +12,6 @@ body {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-}
-
-pre {
-    font-family: 'Lucida Console', monospace;
 }
 
 .title {
@@ -106,6 +102,7 @@ pre {
     transition: all 0.5s;
     -webkit-transition: all 0.5s;
     -moz-transition: all 0.5s;
+    font-family: 'Lucida Console', monospace;
 }
 
 .tree li a:hover, .tree li a:hover + ul li a {
