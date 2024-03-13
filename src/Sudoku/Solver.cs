@@ -57,8 +57,13 @@ public class Solver
         if (_score == 0)
         {
             stopwatch.Stop();
-            
-            return new SudokuResult(workingCopy, span.IsValidSudoku(), _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, $"Full board: {span.IsValidSudoku()}");
+
+            if (span.IsValidSudoku())
+            {
+                return new SudokuResult(workingCopy, true, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, $"Full valid board");
+            }
+
+            return new SudokuResult(null, false, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, $"Full invalid board");
         }
 
         if (_score > 64)
