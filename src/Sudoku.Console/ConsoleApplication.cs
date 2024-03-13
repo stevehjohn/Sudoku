@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.IO.Compression;
+using Sudoku.Extensions;
 
 namespace Sudoku.Console;
 
@@ -40,6 +41,8 @@ public class ConsoleApplication
 
             Out("   V: Visualise last most steps");
 
+            Out("   L: See log of last most steps");
+
             Out("   E: Enter manually");
 
             Out("   T: Test suite");
@@ -64,6 +67,19 @@ public class ConsoleApplication
                 if (response == "v")
                 {
                     VisualiseMostSteps();
+                    
+                    Out();
+
+                    Out("Press any key to continue.");
+
+                    System.Console.ReadKey();
+                    
+                    break;
+                }
+
+                if (response == "l")
+                {
+                    DumpMostStepsLog();
                     
                     Out();
 
@@ -153,6 +169,47 @@ public class ConsoleApplication
                 Out("Unknown command, please try again.\n");
             }
         }
+    }
+
+    private static void DumpMostStepsLog()
+    {
+        System.Console.Clear();
+        
+        var puzzle = LoadPuzzles("Puzzles/Most Steps.txt")[0];
+
+        puzzle.Puzzle.DumpToConsole(1);
+        
+        var solver = new Solver(HistoryType.AllSteps);
+
+        var result = solver.Solve(puzzle.Puzzle);
+
+        Out();
+
+        foreach (var move in result.History)
+        {
+            switch (move.Type)
+            {
+                case MoveType.Backtrack:
+                    Out($"Backtracking guess of {move.Value} at ({move.X}, {move.Y})");
+                    break;
+
+                case MoveType.LastPossibleNumber:
+                    Out($"Last possible number {move.Value} at ({move.X}, {move.Y})");
+                    break;
+                
+                case MoveType.HiddenSingle:
+                    Out($"Hidden single {move.Value} at ({move.X}, {move.Y})");
+                    break;
+                
+                default:
+                    Out($"Guess of {move.Value} at ({move.X}, {move.Y})");
+                    break;
+            }
+        }
+
+        Out();
+        
+        result.DumpToConsole(1);
     }
 
     private static void VisualiseMostSteps()
