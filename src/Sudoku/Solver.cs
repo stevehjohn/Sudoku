@@ -219,11 +219,11 @@ public class Solver
                                 _cellCandidates[start + (y << 3) + y + x] = once;
 
                                 _moveType = MoveType.HiddenSingle;
+                    
+                                return;
                             }
                         }
                     }
-                    
-                    return;
                 }
             }
         }
@@ -264,10 +264,10 @@ public class Solver
                         _cellCandidates[y9 + x] = onceRow;
     
                         _moveType = MoveType.HiddenSingle;
+
+                        return;
                     }
                 }
-
-                return;
             }
     
             if (BitOperations.PopCount((uint) onceColumn) == 1)
@@ -279,10 +279,10 @@ public class Solver
                         _cellCandidates[(x << 3) + x + y] = onceColumn;
     
                         _moveType = MoveType.HiddenSingle;
+
+                        return;
                     }
                 }
-
-                return;
             }
         }
     }
