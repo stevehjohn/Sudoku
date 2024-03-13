@@ -1,3 +1,5 @@
+using Sudoku.Extensions;
+
 namespace Sudoku.Console.Supporting_Files;
 
 public class Node
@@ -9,6 +11,10 @@ public class Node
     public Move Move { get; }
 
     public Node Parent { get; }
+    
+    public bool OnSolvedPath { get; set; }
+
+    public bool Solved => _puzzleState.All(cell => cell != 0);
 
     public IReadOnlyList<Node> Children => _children;
 

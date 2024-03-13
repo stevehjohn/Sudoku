@@ -32,15 +32,6 @@ public class TreeGenerator
 
         for (var i = 0; i < 81; i++)
         {
-            if (node[i] == 0)
-            {
-                puzzle.Append(' ');
-            }
-            else
-            {
-                puzzle.Append(node[i]);
-            }
-
             if (i % 9 == 0)
             {
                 puzzle.Append("<br/>");
@@ -49,9 +40,20 @@ public class TreeGenerator
             {
                 puzzle.Append(' ');
             }
+
+            if (node[i] == 0)
+            {
+                puzzle.Append(' ');
+            }
+            else
+            {
+                puzzle.Append(node[i]);
+            }
         }
 
         content = content.Replace("{puzzle}", puzzle.ToString());
+
+        content = content.Replace("{class}", node.OnSolvedPath ? "solvePath" : string.Empty);
 
         if (node.Children.Count == 0)
         {
@@ -72,11 +74,13 @@ public class TreeGenerator
         return content;
     }
 
-    private Node GenerateNodes(int[] puzzle, SudokuResult result)
+    private static Node GenerateNodes(int[] puzzle, SudokuResult result)
     {
         var node = new Node(puzzle);
 
         var root = node;
+
+        Node solved = node;
         
         foreach (var move in result.History)
         {
@@ -88,7 +92,21 @@ public class TreeGenerator
             }
             
             node = node.AddChild(move);
+
+            if (node.Solved)
+            {
+                solved = node;
+            }
         }
+
+        while (solved.Parent != null)
+        {
+            solved.OnSolvedPath = true;
+
+            solved = solved.Parent;
+        }
+
+        solved.OnSolvedPath = true;
 
         return root;
     }

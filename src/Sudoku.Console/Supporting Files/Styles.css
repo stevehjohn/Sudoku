@@ -120,7 +120,7 @@ pre {
 .tree li a:hover + ul::before,
 .tree li a:hover + ul ul::before { border-color: #94a0b4; }
 
-.tree li a.leaf {
+.tree li a.solvePath {
     background-color: #b0d0b0;
 }
 
