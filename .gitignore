@@ -304,4 +304,5 @@ Thumbs.db
 .DS_Store
 Puzzles/Generated.txt
 Puzzles/Most Steps.txt
+Puzzles/Least Steps.txt
 *.html
