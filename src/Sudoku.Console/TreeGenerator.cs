@@ -32,7 +32,7 @@ public class TreeGenerator
 
         for (var i = 0; i < 81; i++)
         {
-            if (i % 9 == 0)
+            if (i > 0 && i % 9 == 0)
             {
                 puzzle.Append("<br/>");
             }

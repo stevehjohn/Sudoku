@@ -124,7 +124,7 @@ pre {
     background-color: #b0d0b0;
 }
 
-.tree li a.added {
+.tree li a span.added {
     background-color: coral;
 }
 
