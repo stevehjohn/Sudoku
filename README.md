@@ -54,6 +54,8 @@ foreach (var move in result.History)
 Console.WriteLine(result.Message);
 ```
 
+For an example of log output, see [here](Example%20Log.md).
+
 Output:
 
 ```
@@ -100,4 +102,4 @@ Output:
  │       │       │ 4 8   │
  │       │       │       │
  └───────┴───────┴───────┘
-```
+```~~~~
