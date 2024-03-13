@@ -125,10 +125,8 @@ public class TreeGenerator
             if (node.Solved)
             {
                 solved = node;
-
-                solved.AddChild(new Move(0, 0, 0, MoveType.None));
-
-                solved.OnSolvedPath = true;
+                
+                solved.AddChild(new Move(0, 0, 0, MoveType.None), true);
             }
         }
 

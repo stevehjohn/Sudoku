@@ -45,9 +45,12 @@ public class Node
 
     public int this[int index] => _puzzleState[index];
 
-    public Node AddChild(Move child)
+    public Node AddChild(Move child, bool onSolvedPath = false)
     {
-        var node = new Node(child, this);
+        var node = new Node(child, this)
+        {
+            OnSolvedPath = onSolvedPath
+        };
         
         _children.Add(node);
 
