@@ -47,7 +47,14 @@ public class TreeGenerator
             }
             else
             {
-                puzzle.Append(node[i]);
+                if (i == node.Move.X + node.Move.Y * 9)
+                {
+                    puzzle.Append($"<span class='added'>{node[i]}</span>");
+                }
+                else
+                {
+                    puzzle.Append(node[i]);
+                }
             }
         }
 

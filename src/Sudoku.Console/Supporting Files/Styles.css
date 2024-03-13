@@ -124,6 +124,10 @@ pre {
     background-color: #b0d0b0;
 }
 
+.tree li a.added {
+    background-color: coral;
+}
+
 .tooltip:before {
     content: attr(data-text);
     position: absolute;
