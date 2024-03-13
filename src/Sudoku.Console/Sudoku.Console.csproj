@@ -12,7 +12,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Supporting Files\" />
+      <None Update="Supporting Files\Styles.css">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Supporting Files\Template.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>
