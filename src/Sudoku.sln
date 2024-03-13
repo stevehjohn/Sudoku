@@ -32,6 +32,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{E223
 		..\run.sh = ..\run.sh
 		..\test.bat = ..\test.bat
 		..\test.sh = ..\test.sh
+		..\debug.bat = ..\debug.bat
 	EndProjectSection
 EndProject
 Global
