@@ -22,6 +22,8 @@ public class Solver
     private int _solutionCount;
 
     private int _score;
+
+    private MoveType _moveType;
     
     public Solver(HistoryType historyType, bool checkForUniqueness = false)
     {
@@ -121,6 +123,8 @@ public class Solver
     {
         GetCellCandidates(puzzle, candidates);
 
+        _moveType = MoveType.Guess;
+
         if (_score > 27)
         {
             FindHiddenSingles();
@@ -219,7 +223,9 @@ public class Solver
                             }
                         }
                     }
-    
+
+                    _moveType = MoveType.HiddenSingle;
+                    
                     return;
                 }
             }
@@ -262,6 +268,8 @@ public class Solver
                     }
                 }
     
+                _moveType = MoveType.HiddenSingle;
+
                 return;
             }
     
@@ -275,6 +283,8 @@ public class Solver
                     }
                 }
     
+                _moveType = MoveType.HiddenSingle;
+
                 return;
             }
         }
@@ -314,6 +324,8 @@ public class Solver
 
                     if (count == 1)
                     {
+                        _moveType = MoveType.LastPossibleNumber;
+                        
                         return (position, values, valueCount);
                     }
                 }
@@ -350,7 +362,7 @@ public class Solver
 
             if (_historyType != HistoryType.None)
             {
-                var historyMove = new Move(move.Position.X, move.Position.Y, i, MoveType.Guess);
+                var historyMove = new Move(move.Position.X, move.Position.Y, i, _moveType);
 
                 var historyCandidates = new List<int>();
                 
