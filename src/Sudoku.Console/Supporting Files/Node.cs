@@ -4,11 +4,11 @@ public class Node
 {
     private readonly List<Node> _children = [];
 
-    private readonly Node _parent;
-
     private readonly int[] _puzzleState = new int[81];
     
     public Move Move { get; }
+
+    public Node Parent { get; }
 
     public IReadOnlyList<Node> Children => _children;
 
@@ -24,7 +24,7 @@ public class Node
     {
         Move = move;
 
-        _parent = parent;
+        Parent = parent;
 
         for (var i = 0; i < 81; i++)
         {
@@ -36,13 +36,12 @@ public class Node
 
     public int this[int index] => _puzzleState[index];
 
-    public void AddChild(Move child)
+    public Node AddChild(Move child)
     {
-        _children.Add(new Node(child, this));
-    }
+        var node = new Node(child, this);
+        
+        _children.Add(node);
 
-    public Node Parent()
-    {
-        return _parent;
+        return node;
     }
 }

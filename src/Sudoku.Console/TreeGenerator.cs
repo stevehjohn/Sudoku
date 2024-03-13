@@ -33,7 +33,14 @@ public class TreeGenerator
         
         foreach (var move in result.History)
         {
+            if (move.Type == MoveType.Backtrack)
+            {
+                node = node.Parent;
+                
+                continue;
+            }
             
+            node = node.AddChild(move);
         }
     }
 }
