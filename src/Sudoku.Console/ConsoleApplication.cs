@@ -38,6 +38,8 @@ public class ConsoleApplication
             }
 
             Out();
+            
+            Out("   B: Generate tree branch diagram for last most steps");
 
             Out("   V: Visualise last most steps");
 
@@ -62,6 +64,19 @@ public class ConsoleApplication
                     Out("Thanks for playing. Bye.\n");
 
                     return;
+                }
+
+                if (response == "b")
+                {
+                    TreeMostSteps();
+                    
+                    Out();
+
+                    Out("Press any key to continue.");
+
+                    System.Console.ReadKey();
+                    
+                    break;
                 }
 
                 if (response == "v")
@@ -169,6 +184,27 @@ public class ConsoleApplication
                 Out("Unknown command, please try again.\n");
             }
         }
+    }
+
+    private static void TreeMostSteps()
+    {
+        System.Console.Clear();
+        
+        var puzzle = LoadPuzzles("Puzzles/Most Steps.txt")[0];
+
+        var generator = new TreeGenerator();
+
+        var filename = $"Tree {DateTime.UtcNow:yy-MM-dd hh-mm-ss}";
+        
+        generator.Generate(puzzle.Puzzle, filename);
+        
+        Out($"Tree file saved to {filename}.html");
+        
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = $"{filename}.html",
+            UseShellExecute = true
+        });
     }
 
     private static void DumpMostStepsLog()
