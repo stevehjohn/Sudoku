@@ -125,7 +125,10 @@ public class Solver
 
         _moveType = MoveType.Guess;
 
-        FindHiddenSingles();
+        if (_score > 27)
+        {
+            FindHiddenSingles();
+        }
 
         var move = FindLowestMove(puzzle);
 
