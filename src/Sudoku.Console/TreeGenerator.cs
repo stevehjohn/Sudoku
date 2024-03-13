@@ -5,7 +5,7 @@ namespace Sudoku.Console;
 
 public class TreeGenerator
 {
-    private const string NodeTemplate = "<li><a href='#'>{move}<pre>{puzzle}</pre></a>{children}</li>"; 
+    private const string NodeTemplate = "<li><a class='{class}' href='#'><pre>{puzzle}</pre></a>{children}</li>"; 
         
     public void Generate(int[] puzzle, string filename)
     {
@@ -26,15 +26,33 @@ public class TreeGenerator
 
     private static string ProcessNode(Node node)
     {
-        var type = node.Move.Type switch
-        {
-            MoveType.HiddenSingle => "Hidden Single",
-            MoveType.LastPossibleNumber => "Last Possible",
-            _ => "Guess"
-        };
+        var content = NodeTemplate;
 
-        var content = NodeTemplate.Replace("{move}", type);
-        
+        var puzzle = new StringBuilder();
+
+        for (var i = 0; i < 81; i++)
+        {
+            if (node[i] == 0)
+            {
+                puzzle.Append(' ');
+            }
+            else
+            {
+                puzzle.Append(node[i]);
+            }
+
+            if (i % 9 == 0)
+            {
+                puzzle.Append("<br/>");
+            }
+            else
+            {
+                puzzle.Append(' ');
+            }
+        }
+
+        content = content.Replace("{puzzle}", puzzle.ToString());
+
         if (node.Children.Count == 0)
         {
             content = content.Replace("{children}", string.Empty);
