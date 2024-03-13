@@ -40,14 +40,7 @@ public class TreeGenerator
             {
                 if (i % 9 == 0)
                 {
-                    if (i / 9 is 3 or 6)
-                    {
-                        puzzle.Append("</tr><tr><td class='divider' colspan='9'>──────┼──────┼──────</td></tr><tr>");
-                    }
-                    else
-                    {
-                        puzzle.Append("</tr><tr>");
-                    }
+                    puzzle.Append("</tr><tr>");
                 }
             }
 
