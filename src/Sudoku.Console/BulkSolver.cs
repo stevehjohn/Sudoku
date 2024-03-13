@@ -98,7 +98,12 @@ public class BulkSolver
 
                         _steps.Total += solution.Steps;
 
-                        _steps.Minimum = Math.Min(_steps.Minimum, solution.Steps);
+                        if (solution.Steps < _steps.Minimum)
+                        {
+                            _steps.Minimum = solution.Steps;
+                            
+                            File.WriteAllText("Puzzles/Least Steps.txt", string.Join(string.Empty, _puzzles[i].Puzzle).Replace('0', '.'));
+                        }
 
                         if (solution.Steps > _steps.Maximum)
                         {
