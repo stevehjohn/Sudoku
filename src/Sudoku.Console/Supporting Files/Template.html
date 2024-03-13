@@ -2,7 +2,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <title>Sudoko Solve Steps</title>
+    <title>Sudoku Solve Steps</title>
     <style>
 {css}
     </style>
@@ -15,12 +15,6 @@
                 };
             };
         };
-        var zoom = 1.0;
-        window.addEventListener('wheel', function(e) {
-            zoom -= Math.sign(e.deltaY) / 10;
-            document.getElementsByTagName('body')[0].style.transform = `scale(${zoom})`;
-            e.preventDefault();
-        }, { passive: false });
         var prevMouseX = 0;
         var prevMouseY = 0;
         var dragging = false;
@@ -46,7 +40,7 @@
 <body>
     <div class="tree">
         <div class="title">
-            Huffman Tree Visualisation for {document}
+            Sudoku Solve Steps
         </div>
 {nodes}
     </div>
