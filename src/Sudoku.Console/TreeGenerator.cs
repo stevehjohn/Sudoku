@@ -1,5 +1,4 @@
 using System.Text;
-using Sudoku.Console.Supporting_Files;
 
 namespace Sudoku.Console;
 

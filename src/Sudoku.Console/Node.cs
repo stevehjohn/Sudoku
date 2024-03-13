@@ -1,4 +1,4 @@
-namespace Sudoku.Console.Supporting_Files;
+namespace Sudoku.Console;
 
 public class Node
 {
