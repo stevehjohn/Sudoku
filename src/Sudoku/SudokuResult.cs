@@ -63,15 +63,15 @@ public class SudokuResult
             switch (move.Type)
             {
                 case MoveType.LastPossibleNumber:
-                    Console.WriteLine($"- Last possible number {move.Value} at ({move.X}, {move.Y})");
+                    Console.WriteLine($" - Last possible number {move.Value} at ({move.X}, {move.Y})");
                     break;
 
                 case MoveType.HiddenSingle:
-                    Console.WriteLine($"- Hidden single {move.Value} at ({move.X}, {move.Y})");
+                    Console.WriteLine($" - Hidden single {move.Value} at ({move.X}, {move.Y})");
                     break;
 
                 default:
-                    Console.WriteLine($"- Guess of {move.Value} at ({move.X}, {move.Y})");
+                    Console.WriteLine($" - Guess of {move.Value} at ({move.X}, {move.Y})");
                     break;
             }
         }
