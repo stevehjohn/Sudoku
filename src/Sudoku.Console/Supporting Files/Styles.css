@@ -120,10 +120,6 @@ body {
     background-color: #b0d0b0;
 }
 
-.character {
-    font-size: 20px;
-}
-
 .tooltip:before {
     content: attr(data-text);
     position: absolute;

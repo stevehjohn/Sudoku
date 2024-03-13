@@ -4,32 +4,42 @@ namespace Sudoku.Console;
 
 public class TreeGenerator
 {
-    private string _visualisation;
-
-    private Node _root;
-    
+    private const string NodeTemplate = "<li><a href='#'>{move}<pre>{puzzle}</pre></a></li>"; 
+        
     public void Generate(int[] puzzle, string filename)
     {
         var solver = new Solver(HistoryType.AllSteps, true);
 
         var result = solver.Solve(puzzle);
         
-        GenerateNodes(puzzle, result);
+        var root = GenerateNodes(puzzle, result);
         
-        _visualisation = File.ReadAllText("Supporting Files\\Template.html");
+        var visualisation = File.ReadAllText("Supporting Files\\Template.html");
 
-        _visualisation = _visualisation.Replace("{css}", File.ReadAllText("Supporting Files\\Styles.css"));
+        visualisation = visualisation.Replace("{css}", File.ReadAllText("Supporting Files\\Styles.css"));
 
-        //_visualisation = _visualisation.Replace("{nodes}", $"<ul>{ProcessNode(_tree.Root)}</ul>");
+        visualisation = visualisation.Replace("{nodes}", $"<ul>{ProcessNode(root)}</ul>");
 
-        File.WriteAllText($"{filename}.html", _visualisation);
+        File.WriteAllText($"{filename}.html", visualisation);
     }
 
-    private void GenerateNodes(int[] puzzle, SudokuResult result)
+    private static string ProcessNode(Node node)
+    {
+        var type = node.Move.Type switch
+        {
+            MoveType.HiddenSingle => "Hidden Single",
+            MoveType.LastPossibleNumber => "Last Possible",
+            _ => "Guess"
+        };
+        
+        return NodeTemplate.Replace("{move}", type);
+    }
+
+    private Node GenerateNodes(int[] puzzle, SudokuResult result)
     {
         var node = new Node(puzzle);
 
-        _root = node;
+        var root = node;
         
         foreach (var move in result.History)
         {
@@ -42,5 +52,7 @@ public class TreeGenerator
             
             node = node.AddChild(move);
         }
+
+        return root;
     }
 }
