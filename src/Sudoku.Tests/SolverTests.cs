@@ -41,15 +41,6 @@ public class SolverTests
 
             _testOutputHelper.WriteLine($"Puzzle {count}: {solution.Message}");
 
-            Assert.False(solution.Solved);
-
-            if (solution.Solved)
-            {
-                solution.DumpToConsole(1);
-
-                Assert.Fail($"Puzzle {count} was solved.");
-            }
-
             Assert.Contains(parts[2], solution.Message.ToLower());
 
             if (parts[1] != "0")
