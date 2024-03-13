@@ -315,7 +315,7 @@ public class BulkSolver
 
         var step = 0;
 
-        var previousMove = new Move(-1, -1, -1, false);
+        var previousMove = new Move(-1, -1, -1, MoveType.Guess);
 
         foreach (var move in solution)
         {
@@ -438,7 +438,7 @@ public class BulkSolver
 
                 System.Console.ForegroundColor = ConsoleColor.Magenta;
 
-                System.Console.Write(move.Remove ? " " : move.Value.ToString());
+                System.Console.Write(move.Type == MoveType.Backtrack ? " " : move.Value.ToString());
 
                 System.Console.ForegroundColor = color;
 
@@ -470,7 +470,7 @@ public class BulkSolver
                         System.Console.CursorLeft += 2;
                     }
 
-                    System.Console.Write(previousMove.Remove ? " " : previousMove.Value.ToString());
+                    System.Console.Write(previousMove.Type == MoveType.Backtrack ? " " : previousMove.Value.ToString());
                 }
 
                 previousMove = move;
@@ -493,7 +493,7 @@ public class BulkSolver
 
                     System.Console.CursorTop = i + 2;
 
-                    if (move.Remove)
+                    if (move.Type == MoveType.Backtrack)
                     {
                         System.Console.Write(' ');
                         

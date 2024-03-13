@@ -8,11 +8,11 @@ public struct Move
     
     public int Value { get; }
     
-    public bool Remove { get; }
+    public MoveType Type { get; }
     
     public int[] Candidates { get; set; }
 
-    public Move(int x, int y, int value, bool remove)
+    public Move(int x, int y, int value, MoveType moveType)
     {
         X = x;
         
@@ -20,6 +20,6 @@ public struct Move
         
         Value = value;
 
-        Remove = remove;
+        Type = moveType;
     }
 }

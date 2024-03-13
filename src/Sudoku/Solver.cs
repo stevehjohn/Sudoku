@@ -350,7 +350,7 @@ public class Solver
 
             if (_historyType != HistoryType.None)
             {
-                var historyMove = new Move(move.Position.X, move.Position.Y, i, false);
+                var historyMove = new Move(move.Position.X, move.Position.Y, i, MoveType.Guess);
 
                 var historyCandidates = new List<int>();
                 
@@ -404,7 +404,7 @@ public class Solver
                 }
                 else
                 {
-                    _history?.Add(new Move(move.Position.X, move.Position.Y, i, true));
+                    _history?.Add(new Move(move.Position.X, move.Position.Y, i, MoveType.Backtrack));
                 }
             }
 

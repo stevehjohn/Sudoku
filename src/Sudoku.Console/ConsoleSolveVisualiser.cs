@@ -86,7 +86,7 @@ public class ConsoleSolveVisualiser
             
             SetCursorPosition(move.X, move.Y, move.Value);
 
-            if (move.Remove)
+            if (move.Type == MoveType.Backtrack)
             {
                 Out.ForegroundColor = ConsoleColor.Blue;
             }
