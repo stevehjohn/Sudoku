@@ -80,8 +80,8 @@ public class TreeGenerator
                     content = content.Replace("{class}", "guess");
                     break;
 
-                case MoveType.HiddenSingle:
-                    content = content.Replace("{class}", "hidden");
+                case MoveType.LastPossibleNumber:
+                    content = content.Replace("{class}", "lastPossible");
                     break;
 
                 default:

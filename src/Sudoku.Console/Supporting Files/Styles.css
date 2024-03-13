@@ -128,7 +128,7 @@ body {
     background-color: lightblue;
 }
 
-.tree li a.hidden {
+.tree li a.lastPossible {
     background-color: bisque;
 }
 
