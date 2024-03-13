@@ -1,8 +1,12 @@
+using Sudoku.Console.Supporting_Files;
+
 namespace Sudoku.Console;
 
 public class TreeGenerator
 {
     private string _visualisation;
+
+    private Node _root;
     
     public void Generate(int[] puzzle, string filename)
     {
@@ -10,7 +14,7 @@ public class TreeGenerator
 
         var result = solver.Solve(puzzle);
         
-        GenerateNodes(result);
+        GenerateNodes(puzzle, result);
         
         _visualisation = File.ReadAllText("Supporting Files\\Template.html");
 
@@ -21,8 +25,12 @@ public class TreeGenerator
         File.WriteAllText($"{filename}.html", _visualisation);
     }
 
-    private void GenerateNodes(SudokuResult result)
+    private void GenerateNodes(int[] puzzle, SudokuResult result)
     {
+        var node = new Node(puzzle);
+
+        _root = node;
+        
         foreach (var move in result.History)
         {
             

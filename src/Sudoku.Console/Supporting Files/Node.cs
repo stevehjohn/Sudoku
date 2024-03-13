@@ -19,17 +19,19 @@ public class Node
             _puzzleState[i] = puzzleState[i];
         }
     }
-
-    public Node(Move move)
-    {
-        Move = move;
-    }
-
+    
     private Node(Move move, Node parent)
     {
         Move = move;
 
         _parent = parent;
+
+        for (var i = 0; i < 81; i++)
+        {
+            _puzzleState[i] = parent._puzzleState[i];
+        }
+
+        _puzzleState[move.X + move.Y * 9] = move.Type == MoveType.Backtrack ? 0 : move.Value;
     }
 
     public int this[int index] => _puzzleState[index];
