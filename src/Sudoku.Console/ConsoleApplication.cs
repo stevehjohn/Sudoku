@@ -196,7 +196,7 @@ public class ConsoleApplication
 
         var filename = $"Tree {DateTime.UtcNow:yy-MM-dd hh-mm-ss}";
         
-        generator.Generate(puzzle.Puzzle, filename);
+        TreeGenerator.Generate(puzzle.Puzzle, filename);
         
         Out($"Tree file saved to {filename}.html");
         

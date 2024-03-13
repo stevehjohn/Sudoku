@@ -1,5 +1,3 @@
-using Sudoku.Extensions;
-
 namespace Sudoku.Console.Supporting_Files;
 
 public class Node
@@ -20,6 +18,8 @@ public class Node
 
     public Node(int[] puzzleState)
     {
+        Move = new Move(0, 0, 0, MoveType.None);
+        
         for (var i = 0; i < 81; i++)
         {
             _puzzleState[i] = puzzleState[i];
@@ -37,7 +37,10 @@ public class Node
             _puzzleState[i] = parent._puzzleState[i];
         }
 
-        _puzzleState[move.X + move.Y * 9] = move.Type == MoveType.Backtrack ? 0 : move.Value;
+        if (move.Type != MoveType.None)
+        {
+            _puzzleState[move.X + move.Y * 9] = move.Type == MoveType.Backtrack ? 0 : move.Value;
+        }
     }
 
     public int this[int index] => _puzzleState[index];

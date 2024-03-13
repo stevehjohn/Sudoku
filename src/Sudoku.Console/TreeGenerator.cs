@@ -9,7 +9,7 @@ public class TreeGenerator
     
     private const string NodeTemplate = "<li><a class='{class}' href='#'>{puzzle}</a>{children}</li>"; 
         
-    public void Generate(int[] puzzle, string filename)
+    public static void Generate(int[] puzzle, string filename)
     {
         var solver = new Solver(HistoryType.AllSteps, true);
 
@@ -48,7 +48,7 @@ public class TreeGenerator
             
             if (node[i] != 0)
             {
-                if (i == node.Move.X + node.Move.Y * 9)
+                if (node.Move.Type != MoveType.None && i == node.Move.X + node.Move.Y * 9)
                 {
                     puzzle.Append($"<span class='added'>{Numbers[node[i] - 1]}</span>");
                 }
@@ -125,6 +125,10 @@ public class TreeGenerator
             if (node.Solved)
             {
                 solved = node;
+
+                solved.AddChild(new Move(0, 0, 0, MoveType.None));
+
+                solved.OnSolvedPath = true;
             }
         }
 
