@@ -48,7 +48,7 @@ public class Generator
                 puzzle[cell] = 0;
             }
 
-            if (_solver.Solve(puzzle).Solution != null)
+            if (_solver.Solve(puzzle).Solved)
             {
                 return;
             }

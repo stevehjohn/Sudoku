@@ -6,7 +6,7 @@ public class ConsoleSolveVisualiser
 {
     private readonly int[] _puzzle;
 
-    private readonly int[] _solution;
+    private readonly SudokuResult _solution;
 
     private readonly List<Move> _history;
 
@@ -22,7 +22,7 @@ public class ConsoleSolveVisualiser
 
     private int _speedIndex = 1;
     
-    public ConsoleSolveVisualiser(int[] puzzle, int[] solution, List<Move> history, List<int>[] initialCandidates)
+    public ConsoleSolveVisualiser(int[] puzzle, SudokuResult solution, List<Move> history, List<int>[] initialCandidates)
     {
         _puzzle = puzzle;
 

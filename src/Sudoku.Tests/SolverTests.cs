@@ -44,9 +44,9 @@ public class SolverTests
 
             Assert.False(solution.Solved);
             
-            if (solution.Solution != null)
+            if (solution.Solved)
             {
-                solution.Solution.DumpToConsole(1);
+                solution.DumpToConsole(1);
                 
                 Assert.Fail($"Puzzle {count} was solved.");
             }
@@ -90,7 +90,7 @@ public class SolverTests
             
             for (var i = 0; i < 81; i++)
             {
-                if (result.Solution[i] != parts[1][i] - '0')
+                if (result[i] != parts[1][i] - '0')
                 {
                     Assert.Fail();
                 }

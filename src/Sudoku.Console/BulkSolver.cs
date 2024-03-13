@@ -165,7 +165,7 @@ public class BulkSolver
                 }
                 else
                 {
-                    Dump(_puzzles[i].Puzzle, solution.Solution, solved);
+                    Dump(_puzzles[i].Puzzle, solution, solved);
                 }
 
                 if (historyType != HistoryType.None)
@@ -533,7 +533,7 @@ public class BulkSolver
         System.Console.CursorTop = 30;
     }
 
-    private void Dump(int[] left, int[] right, int solved)
+    private void Dump(int[] left, SudokuResult right, int solved)
     {
         if (solved != _puzzleCount)
         {

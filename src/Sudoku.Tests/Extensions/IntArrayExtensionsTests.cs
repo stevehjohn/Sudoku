@@ -20,7 +20,7 @@ public class IntArrayExtensionsTests
         
         puzzle.DumpToConsole(1, y);
         
-        result.Solution.DumpToConsole(30, y);
+        result.DumpToConsole(30, y);
         
         // This test is asserted by your eyes.
     }
