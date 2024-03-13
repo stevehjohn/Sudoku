@@ -44,7 +44,7 @@ result.Steps; // How many steps were explored to find the answer.
 
 result.Microseconds; // How long it took to solve.
 
-solver.Solve(puzzle);
+result.LogToConsole(); // Dump the steps taken to solve the puzzle.
 
 foreach (var move in result.History)
 {
@@ -100,4 +100,4 @@ Output:
  │       │       │ 4 8   │
  │       │       │       │
  └───────┴───────┴───────┘
-```
+```~~~~
