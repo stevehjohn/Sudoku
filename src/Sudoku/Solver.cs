@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using Sudoku.Extensions;
 
 namespace Sudoku;
 
@@ -51,6 +52,15 @@ public class Solver
             }
         }
 
+        var span = new Span<int>(workingCopy);
+
+        if (_score == 0)
+        {
+            stopwatch.Stop();
+            
+            return new SudokuResult(workingCopy, span.IsValidSudoku(), _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, $"Full board: {span.IsValidSudoku()}");
+        }
+
         if (_score > 64)
         {
             stopwatch.Stop();
@@ -59,8 +69,6 @@ public class Solver
         }
 
         _history = _historyType != HistoryType.None ? new List<Move>() : null;
-
-        var span = new Span<int>(workingCopy);
 
         var candidates = GetSectionCandidates(span);
 
