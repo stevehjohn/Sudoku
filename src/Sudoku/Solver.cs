@@ -217,11 +217,11 @@ public class Solver
                             if ((_cellCandidates[start + (y << 3) + y + x] & once) > 0)
                             {
                                 _cellCandidates[start + (y << 3) + y + x] = once;
+
+                                _moveType = MoveType.HiddenSingle;
                             }
                         }
                     }
-
-                    _moveType = MoveType.HiddenSingle;
                     
                     return;
                 }
@@ -262,10 +262,10 @@ public class Solver
                     if ((_cellCandidates[y9 + x] & onceRow) > 0)
                     {
                         _cellCandidates[y9 + x] = onceRow;
+    
+                        _moveType = MoveType.HiddenSingle;
                     }
                 }
-    
-                _moveType = MoveType.HiddenSingle;
 
                 return;
             }
@@ -277,10 +277,10 @@ public class Solver
                     if ((_cellCandidates[(x << 3) + x + y] & onceColumn) > 0)
                     {
                         _cellCandidates[(x << 3) + x + y] = onceColumn;
+    
+                        _moveType = MoveType.HiddenSingle;
                     }
                 }
-    
-                _moveType = MoveType.HiddenSingle;
 
                 return;
             }

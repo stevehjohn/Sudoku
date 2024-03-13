@@ -6,7 +6,7 @@ public class TreeGenerator
 {
     private const string Numbers = "➊➋➌➍➎➏➐➑➒";
     
-    private const string NodeTemplate = "<li><a class='{class}' href='#'>{puzzle}</a>{children}</li>"; 
+    private const string NodeTemplate = "<li><a class='{class}' href='#'><span class='title'>{type}</span>{puzzle}</a>{children}</li>"; 
         
     public static void Generate(int[] puzzle, string filename)
     {
@@ -70,22 +70,26 @@ public class TreeGenerator
 
         if (! node.OnSolvedPath && node.Children.Count == 0)
         {
-            content = content.Replace("{class}", "deadEnd");
+            content = content.Replace("{class}", "deadEnd").Replace("{type}", "Unsolvable");
         }
         else
         {
             switch (node.Move.Type)
             {
+                case MoveType.None:
+                    content = content.Replace("{class}", "solvePath").Replace("{type}", node.Children.Count == 0 ? "Puzzle" : "Answer");
+                    break;
+                    
                 case MoveType.Guess:
-                    content = content.Replace("{class}", "guess");
+                    content = content.Replace("{class}", "guess").Replace("{type}", "Guess");
                     break;
 
                 case MoveType.LastPossibleNumber:
-                    content = content.Replace("{class}", "lastPossible");
+                    content = content.Replace("{class}", "lastPossible").Replace("{type}", "Last");
                     break;
 
                 default:
-                    content = content.Replace("{class}", node.OnSolvedPath ? "solvePath" : string.Empty);
+                    content = content.Replace("{class}", node.OnSolvedPath ? "solvePath" : string.Empty).Replace("{type}", "Single");
                     break;
             }
         }

@@ -132,6 +132,11 @@ body {
     background-color: bisque;
 }
 
+.title {
+    font-weight: bold;
+    font-size: 13px;
+}
+
 .tree li a.deadEnd {
     background-color: lightpink;
 }
