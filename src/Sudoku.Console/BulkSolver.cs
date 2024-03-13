@@ -264,7 +264,7 @@ public class BulkSolver
         Monitor.Exit(_consoleLock);
     }
 
-    private static void DumpHistory(int[] puzzle, List<Move> solution, HistoryType historyType)
+    private static void DumpHistory(int[] puzzle, IReadOnlyList<Move> solution, HistoryType historyType)
     {
         int yIncrement;
 

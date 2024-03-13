@@ -10,7 +10,7 @@ public class SudokuResult
 
     public double ElapsedMicroseconds { get; }
     
-    public List<Move> History { get; }
+    public IReadOnlyList<Move> History { get; }
     
     public List<int>[] InitialCandidates { get; }
     
