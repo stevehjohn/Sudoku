@@ -3,7 +3,9 @@ namespace Sudoku;
 public class SudokuResult
 {
     private readonly int[] _solution;
-    
+
+    private readonly List<int>[] _initialCandidates;
+
     public bool Solved { get; }
     
     public int Steps { get; }
@@ -11,8 +13,6 @@ public class SudokuResult
     public double ElapsedMicroseconds { get; }
     
     public IReadOnlyList<Move> History { get; }
-    
-    public List<int>[] InitialCandidates { get; }
     
     public string Message { get; }
 
@@ -30,11 +30,16 @@ public class SudokuResult
         
         History = history;
         
-        InitialCandidates = initialCandidates;
+        _initialCandidates = initialCandidates;
         
         Message = message;
     }
-    
+
+    public IReadOnlyList<int> GetInitialCandidates(int index)
+    {
+        return _initialCandidates[index];
+    }
+
     public void DumpToConsole(int left = -1, int top = -1)
     {
         SetPosition(left, top, 0);

@@ -8,10 +8,6 @@ public class ConsoleSolveVisualiser
 
     private readonly SudokuResult _solution;
 
-    private readonly IReadOnlyList<Move> _history;
-
-    private readonly List<int>[] _initialCandidates;
-
     private int _left;
 
     private int _top;
@@ -22,15 +18,11 @@ public class ConsoleSolveVisualiser
 
     private int _speedIndex = 1;
     
-    public ConsoleSolveVisualiser(int[] puzzle, SudokuResult solution, IReadOnlyList<Move> history, List<int>[] initialCandidates)
+    public ConsoleSolveVisualiser(int[] puzzle, SudokuResult solution)
     {
         _puzzle = puzzle;
 
         _solution = solution;
-        
-        _history = history;
-
-        _initialCandidates = initialCandidates;
 
         _consoleColor = Out.ForegroundColor;
     }
@@ -88,7 +80,7 @@ public class ConsoleSolveVisualiser
     {
         var step = 0;
         
-        foreach (var move in _history)
+        foreach (var move in _solution.History)
         {
             step++;
             
@@ -111,7 +103,7 @@ public class ConsoleSolveVisualiser
             
             Out.ForegroundColor = _consoleColor;
             
-            ShowText($"Step {step:N0}/{_history.Count:N0}  ({1_000d / _speeds[_speedIndex]:N1} fps)");
+            ShowText($"Step {step:N0}/{_solution.History.Count:N0}  ({1_000d / _speeds[_speedIndex]:N1} fps)");
 
             Thread.Sleep(_speeds[_speedIndex]);
 
@@ -151,9 +143,9 @@ public class ConsoleSolveVisualiser
         {
             for (var x = 0; x < 9; x++)
             {
-                if (_initialCandidates[x + y * 9] != null)
+                if (_solution.GetInitialCandidates(x + y * 9) != null)
                 {
-                    foreach (var candidate in _initialCandidates[x + y * 9])
+                    foreach (var candidate in _solution.GetInitialCandidates(x + y * 9))
                     {
                         SetCursorPosition(x, y, candidate);
                         
