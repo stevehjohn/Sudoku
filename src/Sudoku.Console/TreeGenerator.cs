@@ -77,7 +77,7 @@ public class TreeGenerator
             switch (node.Move.Type)
             {
                 case MoveType.None:
-                    content = content.Replace("{class}", "solvePath").Replace("{type}", node.Children.Count == 0 ? "Puzzle" : "Answer");
+                    content = content.Replace("{class}", "solvePath").Replace("{type}", node.Children.Count > 0 ? "Puzzle" : "Answer");
                     break;
                     
                 case MoveType.Guess:
