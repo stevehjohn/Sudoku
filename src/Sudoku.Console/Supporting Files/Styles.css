@@ -121,11 +121,15 @@ body {
 }
 
 .tree li a.guess {
-    background-color: lightpink;
+    background-color: lightblue;
 }
 
 .tree li a.hidden {
-    background-color: lightblue;
+    background-color: lightgray;
+}
+
+.tree li a.deadEnd {
+    background-color: lightpink;
 }
 
 .tree li a span.added {

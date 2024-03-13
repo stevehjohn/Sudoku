@@ -69,19 +69,26 @@ public class TreeGenerator
 
         content = content.Replace("{puzzle}", puzzle.ToString());
 
-        switch (node.Move.Type)
+        if (! node.OnSolvedPath && node.Children.Count == 0)
         {
-            case MoveType.Guess:
-                content = content.Replace("{class}", "guess");
-                break;
+            content = content.Replace("{class}", "deadEnd");
+        }
+        else
+        {
+            switch (node.Move.Type)
+            {
+                case MoveType.Guess:
+                    content = content.Replace("{class}", "guess");
+                    break;
 
-            case MoveType.HiddenSingle:
-                content = content.Replace("{class}", "hidden");
-                break;
-            
-            default:
-                content = content.Replace("{class}", node.OnSolvedPath ? "solvePath" : string.Empty);
-                break;
+                case MoveType.HiddenSingle:
+                    content = content.Replace("{class}", "hidden");
+                    break;
+
+                default:
+                    content = content.Replace("{class}", node.OnSolvedPath ? "solvePath" : string.Empty);
+                    break;
+            }
         }
 
         if (node.Children.Count == 0)
