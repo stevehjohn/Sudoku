@@ -38,6 +38,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{E223
 		..\debug.bat = ..\debug.bat
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Visualisations", "Visualisations", "{82F9E46D-1196-4814-9BCB-67E40CEC61F8}"
+	ProjectSection(SolutionItems) = preProject
+		..\Visualisations\1.html = ..\Visualisations\1.html
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
