@@ -420,6 +420,8 @@ public class Solver
                 }
             }
 
+            //_moveType = MoveType.Guess;
+
             _score++;
         }
 

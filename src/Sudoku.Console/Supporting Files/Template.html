@@ -11,7 +11,7 @@
             if (document.readyState === 'complete') {
                 const w = parseInt(window.getComputedStyle(document.getElementsByClassName('tree')[0]).width);
                 if (w > window.innerWidth) {
-                    window.scrollBy((w - window.innerWidth) / 4, 0);
+                    window.scrollBy((w - window.innerWidth) / 2, 0);
                 }
             }
         };

@@ -65,11 +65,11 @@ public class TreeGenerator
         switch (node.Move.Type)
         {
             case MoveType.Guess:
-                content = content.Replace("{class}", node.OnSolvedPath ? "guess" : string.Empty);
+                content = content.Replace("{class}", "guess");
                 break;
 
             case MoveType.HiddenSingle:
-                content = content.Replace("{class}", node.OnSolvedPath ? "hidden" : string.Empty);
+                content = content.Replace("{class}", "hidden");
                 break;
             
             default:
