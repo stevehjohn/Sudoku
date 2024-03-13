@@ -4,9 +4,9 @@ A fast Sudoku solver written in C#. Can also act as a Sudoku generator.
 
 ## Visualisations of Solving Process
 
-[1](https://html-preview.github.io/?url=https://github.com/stevehjohn/Sudoku/blob/master/Visualisations/1.html"),
-[2](https://html-preview.github.io/?url=https://github.com/stevehjohn/Sudoku/blob/master/Visualisations/2.html"),
-[3](https://html-preview.github.io/?url=https://github.com/stevehjohn/Sudoku/blob/master/Visualisations/3.html")
+[1](https://html-preview.github.io/?url=https://github.com/stevehjohn/Sudoku/blob/master/Visualisations/1.html),
+[2](https://html-preview.github.io/?url=https://github.com/stevehjohn/Sudoku/blob/master/Visualisations/2.html),
+[3](https://html-preview.github.io/?url=https://github.com/stevehjohn/Sudoku/blob/master/Visualisations/3.html)
 
 ## Usage in Code
 
