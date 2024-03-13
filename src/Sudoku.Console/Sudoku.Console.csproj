@@ -11,4 +11,8 @@
       <ProjectReference Include="..\Sudoku\Sudoku.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Supporting Files\" />
+    </ItemGroup>
+
 </Project>
