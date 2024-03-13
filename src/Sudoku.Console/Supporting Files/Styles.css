@@ -129,7 +129,7 @@ body {
 }
 
 .tree li a.hidden {
-    background-color: lightgray;
+    background-color: bisque;
 }
 
 .tree li a.deadEnd {
