@@ -198,7 +198,7 @@ public class ConsoleApplication
 
             if (backtrackCount > 0)
             {
-                Out($"Backtracking {backtrackCount} guess{(backtrackCount > 1 ? "es" : string.Empty)}");
+                Out($"- Backtracking {backtrackCount} guess{(backtrackCount > 1 ? "es" : string.Empty)}");
 
                 backtrackCount = 0;
             }
@@ -206,20 +206,22 @@ public class ConsoleApplication
             switch (move.Type)
             {
                 case MoveType.LastPossibleNumber:
-                    Out($"Last possible number {move.Value} at ({move.X}, {move.Y})");
+                    Out($"- Last possible number {move.Value} at ({move.X}, {move.Y})");
                     break;
                 
                 case MoveType.HiddenSingle:
-                    Out($"Hidden single {move.Value} at ({move.X}, {move.Y})");
+                    Out($"- Hidden single {move.Value} at ({move.X}, {move.Y})");
                     break;
                 
                 default:
-                    Out($"Guess of {move.Value} at ({move.X}, {move.Y})");
+                    Out($"- Guess of {move.Value} at ({move.X}, {move.Y})");
                     break;
             }
         }
 
         Out();
+        
+        Out($"Solved in {result.ElapsedMicroseconds:N0}μs with {result.History.Count:N0} steps taken.\n");
         
         result.DumpToConsole(1);
     }
