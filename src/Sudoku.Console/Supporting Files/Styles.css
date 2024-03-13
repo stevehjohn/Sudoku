@@ -93,7 +93,7 @@ body {
     border: 1px solid #ccc;
     padding: 5px 10px;
     text-decoration: none;
-    color: #666;
+    color: #333;
     font-size: 11px;
     display: inline-block;
     border-radius: 5px;
@@ -103,6 +103,10 @@ body {
     -webkit-transition: all 0.5s;
     -moz-transition: all 0.5s;
     font-family: 'Lucida Console', monospace;
+}
+
+.divider {
+    color: #666;
 }
 
 .tree li a:hover, .tree li a:hover + ul li a {
