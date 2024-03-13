@@ -124,8 +124,17 @@ pre {
     background-color: #b0d0b0;
 }
 
+.tree li a.guess {
+    background-color: lightpink;
+}
+
+.tree li a.hidden {
+    background-color: lightblue;
+}
+
 .tree li a span.added {
-    background-color: coral;
+    font-weight: bold;
+    font-size: large;
 }
 
 .tooltip:before {
