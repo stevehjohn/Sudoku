@@ -192,8 +192,6 @@ public class ConsoleApplication
         
         var puzzle = LoadPuzzles("Puzzles/Most Steps.txt")[0];
 
-        var generator = new TreeGenerator();
-
         var filename = $"Tree {DateTime.UtcNow:yy-MM-dd hh-mm-ss}";
         
         TreeGenerator.Generate(puzzle.Puzzle, filename);
