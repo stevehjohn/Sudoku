@@ -121,7 +121,10 @@ public class Solver
 
     private bool SolveStep(Span<int> puzzle, (Candidates Row, Candidates Column, Candidates Box) candidates)
     {
-        GetCellCandidates(puzzle, candidates);
+        if (! GetCellCandidates(puzzle, candidates))
+        {
+            return false;
+        }
 
         _moveType = MoveType.Guess;
 
@@ -159,7 +162,7 @@ public class Solver
         return (rowCandidates, columnCandidates, boxCandidates);
     }
 
-    private void GetCellCandidates(Span<int> puzzle, (Candidates Row, Candidates Column, Candidates Box) candidates)
+    private bool GetCellCandidates(Span<int> puzzle, (Candidates Row, Candidates Column, Candidates Box) candidates)
     {
         for (var y = 0; y < 9; y++)
         {
@@ -172,6 +175,11 @@ public class Solver
                 if (puzzle[x + (y << 3) + y] == 0)
                 {
                     _cellCandidates[cell] = candidates.Column[x] & candidates.Row[y] & candidates.Box[boxY + x / 3];
+
+                    if (_cellCandidates[cell] == 0)
+                    {
+                        return false;
+                    }
                 }
                 else
                 {
@@ -179,6 +187,8 @@ public class Solver
                 }
             }
         }
+
+        return true;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
