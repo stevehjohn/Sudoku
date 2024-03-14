@@ -1,6 +1,6 @@
 # Sudoku
 
-A fast Sudoku solver written in C#. Can also act as a Sudoku generator.
+A fast Sudoku solver written in C#. Can also act as a Sudoku generator. https://github.com/stevehjohn/Sudoku
 
 ## Visualisations of Solving Process
 
