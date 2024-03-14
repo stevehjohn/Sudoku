@@ -2,7 +2,7 @@ using System.Text;
 
 namespace Sudoku.Console;
 
-public class TreeGenerator
+public static class TreeGenerator
 {
     private const string Numbers = "➊➋➌➍➎➏➐➑➒";
     
