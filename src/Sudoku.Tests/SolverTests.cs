@@ -18,7 +18,7 @@ public class SolverTests
     {
         var puzzles = File.ReadAllLines("Test Data/Invalid Puzzles.txt");
 
-        var solver = new Solver(HistoryType.None, SolveMethod.CountAll);
+        var solver = new Solver(HistoryType.None, SolveMethod.FindUnique);
 
         var stopwatch = Stopwatch.StartNew();
 
