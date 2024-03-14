@@ -18,6 +18,22 @@ td {
     padding: 4px;
 }
 
+.tl {
+    border-top-left-radius: 5px;
+}
+
+.tr {
+    border-top-right-radius: 5px;
+}
+
+.bl {
+    border-bottom-left-radius: 5px;
+}
+
+.br {
+    border-bottom-right-radius: 5px;
+}
+
 .guess{
     padding: 0;
 }
