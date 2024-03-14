@@ -156,9 +156,10 @@ td {
     background-color: bisque;
 }
 
-.title {
+.cellTitle {
     font-weight: bold;
     font-size: 13px;
+    padding-bottom: 5px;
 }
 
 .tree li a.deadEnd {

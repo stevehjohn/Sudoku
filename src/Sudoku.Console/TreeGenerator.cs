@@ -6,7 +6,7 @@ public static class TreeGenerator
 {
     private const string Numbers = "➊➋➌➍➎➏➐➑➒";
     
-    private const string NodeTemplate = "<li><a class='{class}' href='#'><span class='title'>{type}</span>{puzzle}</a>{children}</li>"; 
+    private const string NodeTemplate = "<li><a class='{class}' href='#'><div class='cellTitle'>{type}</div>{puzzle}</a>{children}</li>"; 
         
     public static void Generate(int[] puzzle, string filename)
     {
@@ -96,7 +96,14 @@ public static class TreeGenerator
             }
             else
             {
-                puzzle.Append("<pre>&nbsp;</pre>");
+                if (node.Move.Type == MoveType.NoCandidates && node.Move.X == x && node.Move.Y == y)
+                {
+                    puzzle.Append("<span class='added'>ⓧ</span>");
+                }
+                else
+                {
+                    puzzle.Append("<pre>&nbsp;</pre>");
+                }
             }
 
             puzzle.Append("</td>");
@@ -106,7 +113,7 @@ public static class TreeGenerator
 
         content = content.Replace("{puzzle}", puzzle.ToString());
 
-        if (! node.OnSolvedPath && node.Children.Count == 0)
+        if (! node.OnSolvedPath && node.Children.Count == 0 && node.Move.Type != MoveType.NoCandidates)
         {
             content = content.Replace("{class}", "deadEnd").Replace("{type}", "Unsolvable");
         }
@@ -123,11 +130,15 @@ public static class TreeGenerator
                     break;
 
                 case MoveType.LastPossibleNumber:
-                    content = content.Replace("{class}", "lastPossible").Replace("{type}", "Last");
+                    content = content.Replace("{class}", "lastPossible").Replace("{type}", "Last Candidate");
+                    break;
+                
+                case MoveType.NoCandidates:
+                    content = content.Replace("{class}", "deadEnd").Replace("{type}", $"No Candidate");
                     break;
 
                 default:
-                    content = content.Replace("{class}", node.OnSolvedPath ? "solvePath" : string.Empty).Replace("{type}", "Single");
+                    content = content.Replace("{class}", node.OnSolvedPath ? "solvePath" : string.Empty).Replace("{type}", "Hidden Single");
                     break;
             }
         }
