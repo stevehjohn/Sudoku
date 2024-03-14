@@ -9,8 +9,8 @@ public struct Move
     public int Value { get; }
     
     public MoveType Type { get; }
-    
-    public int[] Candidates { get; set; }
+
+    public int[] Candidates { get; set; } = [];
 
     public Move(int x, int y, int value, MoveType moveType)
     {
