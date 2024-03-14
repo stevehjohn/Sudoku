@@ -50,16 +50,25 @@ public static class TreeGenerator
             var box = y / 3 * 3 + x / 3;
 
             var isGuess = node.Move.Type != MoveType.None && i == node.Move.X + node.Move.Y * 9;
+
+            var radius = i switch
+            {
+                0 or 6 or 30 or 54 or 60 => " tl",
+                2 or 8 or 32 or 56 or 62 => " tr",
+                18 or 24 or 48 or 72 or 78 => " bl",
+                20 or 26 or 50 or 74 or 80 => " br",
+                _ => string.Empty
+            };
             
             if (box % 2 == 0)
             {
                 if (isGuess)
                 {
-                    puzzle.Append("<td class='guess' style='background-color: #e0e0e0;'>");
+                    puzzle.Append($"<td class='guess{radius}' style='background-color: #e0e0e0;'>");
                 }
                 else
                 {
-                    puzzle.Append("<td style='background-color: #e0e0e0;'>");
+                    puzzle.Append($"<td class='{radius}' style='background-color: #e0e0e0;'>");
                 }
             }
             else
