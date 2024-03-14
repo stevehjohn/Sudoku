@@ -6,5 +6,6 @@ public enum MoveType
     LastPossibleNumber,
     HiddenSingle,
     Guess,
-    Backtrack
+    Backtrack,
+    NoCandidates
 }

@@ -69,6 +69,10 @@ public class SudokuResult
                 case MoveType.HiddenSingle:
                     Console.WriteLine($" - Hidden single {move.Value} at ({move.X}, {move.Y})");
                     break;
+                
+                case MoveType.NoCandidates:
+                    Console.WriteLine($" - No candidates at ({move.X}, {move.Y})");
+                    break;
 
                 default:
                     Console.WriteLine($" - Guess of {move.Value} at ({move.X}, {move.Y})");

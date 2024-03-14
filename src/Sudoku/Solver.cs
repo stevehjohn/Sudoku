@@ -178,6 +178,11 @@ public class Solver
 
                     if (_cellCandidates[cell] == 0)
                     {
+                        if (_historyType == HistoryType.AllSteps)
+                        {
+                            _history.Add(new Move(x, y, 0, MoveType.NoCandidates));
+                        }
+
                         return false;
                     }
                 }
