@@ -6,7 +6,7 @@ public static class IntArrayExtensions
     {
         SetPosition(left, top, 0);
         
-        Console.WriteLine("\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510");
+        Console.WriteLine("┌───────┬───────┬───────┐");
 
         var line = 1;
         
@@ -14,7 +14,7 @@ public static class IntArrayExtensions
         {
             SetPosition(left, top, line++);
             
-            Console.Write("\u2502");
+            Console.Write("│");
 
             for (var x = 0; x < 9; x++)
             {
@@ -29,23 +29,23 @@ public static class IntArrayExtensions
 
                 if (x is 2 or 5)
                 {
-                    Console.Write(" \u2502");
+                    Console.Write(" │");
                 }
             }
 
-            Console.WriteLine(" \u2502");
+            Console.WriteLine(" │");
             
             if (y is 2 or 5)
             {
                 SetPosition(left, top, line++);
             
-                Console.WriteLine("\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524");
+                Console.WriteLine("├───────┼───────┼───────┤");
             }
         }
         
         SetPosition(left, top, line);
 
-        Console.WriteLine("\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518");
+        Console.WriteLine("└───────┴───────┴───────┘");
     }
 
     private static void SetPosition(int left, int top, int y)
