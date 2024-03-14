@@ -18,7 +18,7 @@ public class SolverTests
     {
         var puzzles = File.ReadAllLines("Test Data/Invalid Puzzles.txt");
 
-        var solver = new Solver(HistoryType.None, true);
+        var solver = new Solver(HistoryType.None, SolveMethod.CountAll);
 
         var stopwatch = Stopwatch.StartNew();
 
@@ -70,7 +70,7 @@ public class SolverTests
     {
         var puzzles = File.ReadAllLines(filename);
 
-        var solver = new Solver(HistoryType.None, true);
+        var solver = new Solver(HistoryType.None, SolveMethod.FindFirst);
 
         var stopwatch = Stopwatch.StartNew();
 

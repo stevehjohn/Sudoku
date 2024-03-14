@@ -13,7 +13,7 @@ public class Solver
 
     private readonly HistoryType _historyType;
 
-    private readonly bool _unique;
+    private readonly SolveMethod _solveMethod;
 
     private List<Move> _history;
 
@@ -25,11 +25,11 @@ public class Solver
 
     private MoveType _moveType;
     
-    public Solver(HistoryType historyType, bool checkForUniqueness = false)
+    public Solver(HistoryType historyType, SolveMethod solveMethod)
     {
         _historyType = historyType;
-        
-        _unique = checkForUniqueness;
+
+        _solveMethod = solveMethod;
     }
 
     public SudokuResult Solve(int[] puzzle)
@@ -389,12 +389,17 @@ public class Solver
                     }
                 }
 
-                if (! _unique)
+                if (_solveMethod == SolveMethod.FindFirst)
                 {
                     return true;
                 }
 
                 _solutionCount++;
+
+                if (_solveMethod == SolveMethod.FindUnique)
+                {
+                    return true;
+                }
             }
 
             _steps++;

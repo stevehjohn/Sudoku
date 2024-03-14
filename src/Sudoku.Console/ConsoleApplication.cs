@@ -213,7 +213,7 @@ public class ConsoleApplication
 
         puzzle.Puzzle.DumpToConsole(1);
         
-        var solver = new Solver(HistoryType.AllSteps);
+        var solver = new Solver(HistoryType.AllSteps, SolveMethod.FindFirst);
 
         var result = solver.Solve(puzzle.Puzzle);
 
@@ -232,7 +232,7 @@ public class ConsoleApplication
     {
         var puzzle = LoadPuzzles("Puzzles/Most Steps.txt")[0];
 
-        var solver = new Solver(HistoryType.AllSteps);
+        var solver = new Solver(HistoryType.AllSteps, SolveMethod.FindFirst);
 
         var result = solver.Solve(puzzle.Puzzle);
 

@@ -10,7 +10,7 @@ public static class TreeGenerator
         
     public static void Generate(int[] puzzle, string filename)
     {
-        var solver = new Solver(HistoryType.AllSteps, true);
+        var solver = new Solver(HistoryType.AllSteps, SolveMethod.FindUnique);
 
         var result = solver.Solve(puzzle);
         
