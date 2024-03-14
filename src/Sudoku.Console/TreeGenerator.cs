@@ -31,7 +31,7 @@ public static class TreeGenerator
 
         var puzzle = new StringBuilder();
 
-        puzzle.Append("<table><tr>");
+        puzzle.Append("<table cellspacing='0'><tr>");
         
         for (var i = 0; i < 81; i++)
         {
@@ -43,11 +43,40 @@ public static class TreeGenerator
                 }
             }
 
-            puzzle.Append("<td>");
+            var x = i % 9;
+
+            var y = i / 9;
+
+            var box = y / 3 * 3 + x / 3;
+
+            var isGuess = node.Move.Type != MoveType.None && i == node.Move.X + node.Move.Y * 9;
             
+            if (box % 2 == 0)
+            {
+                if (isGuess)
+                {
+                    puzzle.Append("<td class='guess' style='background-color: #e0e0e0;'>");
+                }
+                else
+                {
+                    puzzle.Append("<td style='background-color: #e0e0e0;'>");
+                }
+            }
+            else
+            {
+                if (isGuess)
+                {
+                    puzzle.Append("<td class='guess'>");
+                }
+                else
+                {
+                    puzzle.Append("<td>");
+                }
+            }
+
             if (node[i] != 0)
             {
-                if (node.Move.Type != MoveType.None && i == node.Move.X + node.Move.Y * 9)
+                if (isGuess)
                 {
                     puzzle.Append($"<span class='added'>{Numbers[node[i] - 1]}</span>");
                 }
