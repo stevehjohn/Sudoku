@@ -27,10 +27,11 @@ var puzzle = new int[81];
   This is most performant.
   If you want the solution steps, select HistoryType.SolutionOnly.
   If you want all the steps attempted, select HistoryType.AllSteps.
-  If you want to check the puzzle has only 1 solution, specify true.
+  If you want to check the puzzle has only 1 solution, specify SolveMethod.FindUnique.
+  If you want a count of the number of solutions, specify SolveMethod.FindAll.
 */
 
-var solver = new Solver(HistoryType.None, false);
+var solver = new Solver(HistoryType.None, SolveMethod.FindFirst);
 
 var result = solver.Solve(puzzle);
         
@@ -61,6 +62,8 @@ foreach (var move in result.History)
 Console.WriteLine(result.Message);
 ```
 
+For an example of log output, see [here](Example%20Log.md).
+
 Output:
 
 ```
@@ -86,7 +89,7 @@ Output:
 ```csharp
 var generator = new Generator();
 
-var puzzle = generator.Generate(30); // Will generate a puzzle with 30 clues. Can get quite slow below 25~~~~.
+var puzzle = generator.Generate(30); // Will generate a puzzle with 30 clues. Can get quite slow below 25.
 
 puzzle.DumpToConsole(1);
 ```
