@@ -6,7 +6,7 @@ public static class TreeGenerator
 {
     private const string Numbers = "➊➋➌➍➎➏➐➑➒";
     
-    private const string NodeTemplate = "<li><a {id} class='{class}' href='#'><div class='cellTitle'>{type}</div>{puzzle}</a>{children}</li>"; 
+    private const string NodeTemplate = "<li data-solution-path='{onSolutionPath}'><a {id} class='{class}'><div class='cellTitle'>{type}</div>{puzzle}</a>{children}</li>"; 
         
     public static void Generate(int[] puzzle, string filename)
     {
@@ -29,6 +29,8 @@ public static class TreeGenerator
     {
         var content = NodeTemplate;
 
+        content = content.Replace("{onSolutionPath}", node.OnSolvedPath.ToString().ToLower());
+        
         var puzzle = new StringBuilder();
 
         puzzle.Append("<table cellspacing='0'><tr>");
