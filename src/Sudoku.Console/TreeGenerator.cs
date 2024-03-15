@@ -169,16 +169,27 @@ public static class TreeGenerator
         var root = node;
 
         Node solved = node;
+
+        var backtracking = false;
         
         foreach (var move in result.History)
         {
             if (move.Type == MoveType.Backtrack)
             {
                 node = node.Parent;
+
+                backtracking = true;
                 
                 continue;
             }
-            
+
+            if (backtracking)
+            {
+                node = node.Parent;
+
+                backtracking = false;
+            }
+
             node = node.AddChild(move);
 
             if (node.Solved)
