@@ -71,7 +71,7 @@ public class SolverTests
     {
         var puzzles = File.ReadAllLines(filename);
 
-        var solver = new Solver(HistoryType.None, SolveMethod.FindFirst);
+        var solver = new Solver(HistoryType.AllSteps, SolveMethod.FindUnique);
 
         var stopwatch = Stopwatch.StartNew();
 
