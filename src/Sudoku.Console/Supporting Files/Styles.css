@@ -150,25 +150,3 @@ td {
     font-weight: bold;
     font-size: large;
 }
-
-.tooltip:before {
-    content: attr(data-text);
-    position: absolute;
-    top: 0;
-    transform: translateY(-50%);
-    text-align: center;
-    padding: 10px;
-    left: -71px;
-    border-radius: 10px;
-    background: #000;
-    color: #fff;
-    text-align: center;
-    display: none;
-    z-index: 1;
-    font-family: 'Lucida Console', monospace;
-    width: 180px;
-}
-
-.tooltip:hover:before {
-    display: block;
-}

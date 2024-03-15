@@ -129,6 +129,10 @@ public static class TreeGenerator
                     {
                         content = content.Replace("{id}", "id='answer'");
                     }
+                    else
+                    {
+                        content = content.Replace("{id}", "id='puzzle'");
+                    }
 
                     break;
                     
