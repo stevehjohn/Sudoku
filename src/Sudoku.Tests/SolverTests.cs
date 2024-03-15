@@ -48,6 +48,11 @@ public class SolverTests
             {
                 Assert.Contains(parts[1], solution.Message.ToLower());
             }
+            
+            // ReSharper disable once Xunit.XunitTestWithConsoleOutput
+            Console.WriteLine($"\n {solution.Message}");
+            
+            solution.DumpToConsole(1);
         }
 
         stopwatch.Stop();
@@ -58,16 +63,16 @@ public class SolverTests
     [Fact]
     public void VerifySolverProducesCorrectResults()
     {
-        VerifyAgainstFile("Test Data/Puzzles With Answers.txt");
+        VerifyAgainstFile("Test Data/Puzzles With Answers.txt", false);
     }
 
     [Fact]
     public void VerifyAgainstSudopediaTests()
     {
-        VerifyAgainstFile("Test Data/Sudopedia Tests.txt");
+        VerifyAgainstFile("Test Data/Sudopedia Tests.txt", true);
     }
 
-    private void VerifyAgainstFile(string filename)
+    private void VerifyAgainstFile(string filename, bool dump)
     {
         var puzzles = File.ReadAllLines(filename);
 
@@ -92,10 +97,12 @@ public class SolverTests
 
             for (var i = 0; i < 81; i++)
             {
-                if (result[i] != parts[1][i] - '0')
-                {
-                    Assert.Fail();
-                }
+                Assert.False(result[i] != parts[1][i] - '0');
+            }
+
+            if (dump)
+            {
+                result.DumpToConsole(1);
             }
         }
 

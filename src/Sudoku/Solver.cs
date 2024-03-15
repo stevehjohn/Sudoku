@@ -65,14 +65,14 @@ public class Solver
                 return new SudokuResult(workingCopy, true, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, $"Full valid board");
             }
 
-            return new SudokuResult(null, false, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, $"Full invalid board");
+            return new SudokuResult(workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, $"Full invalid board");
         }
 
         if (_score > 64)
         {
             stopwatch.Stop();
             
-            return new SudokuResult(null, false, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, $"Insufficient number of clues: {81 - _score}");
+            return new SudokuResult(workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, $"Insufficient number of clues: {81 - _score}");
         }
 
         _history = _historyType != HistoryType.None ? new List<Move>() : null;
@@ -108,12 +108,12 @@ public class Solver
 
         if (! SolveStep(span, candidates) && _solutionCount == 0)
         {
-            return new SudokuResult(null, false, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, "Unsolvable");
+            return new SudokuResult(workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, "Unsolvable");
         }
 
         if (_solutionCount > 1)
         {
-            return new SudokuResult(null, false, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, $"Multiple solutions: {_solutionCount}");
+            return new SudokuResult(workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, $"Multiple solutions: {_solutionCount}");
         }
 
         return new SudokuResult(_solution, true, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, "Solved");
