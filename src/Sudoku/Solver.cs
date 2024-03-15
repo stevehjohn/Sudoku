@@ -338,7 +338,7 @@ public class Solver
                     {
                         if (_moveType != MoveType.HiddenSingle)
                         {
-                            _moveType = MoveType.LastPossibleNumber;
+                            _moveType = MoveType.NakedSingle;
                         }
 
                         return (position, values, valueCount);

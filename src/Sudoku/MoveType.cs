@@ -3,7 +3,7 @@ namespace Sudoku;
 public enum MoveType
 {
     None,
-    LastPossibleNumber,
+    NakedSingle,
     HiddenSingle,
     Guess,
     Backtrack,

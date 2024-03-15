@@ -62,7 +62,7 @@ public class SudokuResult
 
             switch (move.Type)
             {
-                case MoveType.LastPossibleNumber:
+                case MoveType.NakedSingle:
                     Console.WriteLine($" - Last possible number {move.Value} at ({move.X}, {move.Y})");
                     break;
 

@@ -134,8 +134,8 @@ public static class TreeGenerator
                     content = content.Replace("{class}", "guess").Replace("{type}", "Guess");
                     break;
 
-                case MoveType.LastPossibleNumber:
-                    content = content.Replace("{class}", "lastPossible").Replace("{type}", "Last Candidate");
+                case MoveType.NakedSingle:
+                    content = content.Replace("{class}", "lastPossible").Replace("{type}", "Naked Single");
                     break;
                 
                 case MoveType.NoCandidates:
