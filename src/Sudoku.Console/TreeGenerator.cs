@@ -16,9 +16,9 @@ public static class TreeGenerator
         
         var root = GenerateNodes(puzzle, result);
         
-        var visualisation = File.ReadAllText("src/Sudoku.Console/Supporting Files/Template.html");
+        var visualisation = File.ReadAllText($"{FileHelper.GetSupportingFilesPath()}/Template.html");
 
-        visualisation = visualisation.Replace("{css}", File.ReadAllText("src/Sudoku.Console/Supporting Files/Styles.css"));
+        visualisation = visualisation.Replace("{css}", File.ReadAllText($"{FileHelper.GetSupportingFilesPath()}/Styles.css"));
 
         visualisation = visualisation.Replace("{nodes}", $"<ul>{ProcessNode(root)}</ul>");
 

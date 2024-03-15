@@ -13,4 +13,16 @@ public static class FileHelper
 
         return path;
     }
+
+    public static string GetSupportingFilesPath()
+    {
+        const string path = "Supporting Files";
+
+        if (Path.Exists(path))
+        {
+            return path;
+        }
+
+        return $"src/Sudoku.Console/{path}";
+    }
 }
