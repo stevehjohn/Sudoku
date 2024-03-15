@@ -15,6 +15,27 @@ public class SolverTests
     }
 
     [Fact]
+    public void VerifyLogToConsole()
+    {
+        var puzzles = File.ReadAllLines("Test Data/Puzzles With Answers.txt");
+
+        var puzzle = new int[81];
+
+        for (var i = 0; i < 81; i++)
+        {
+            puzzle[i] = puzzles[9_999][i] - '0';
+        }
+
+        var solver = new Solver(HistoryType.AllSteps, SolveMethod.FindFirst);
+
+        var result = solver.Solve(puzzle);
+
+        result.LogToConsole();
+        
+        _testOutputHelper.WriteLine($" Solved in {result.ElapsedMicroseconds:N0}μs, {result.Steps} steps taken.");
+    }
+
+    [Fact]
     public void VerifySolverDetectsInvalidPuzzles()
     {
         var puzzles = File.ReadAllLines("Test Data/Invalid Puzzles.txt");
@@ -76,7 +97,7 @@ public class SolverTests
     {
         var puzzles = File.ReadAllLines(filename);
 
-        var solver = new Solver(HistoryType.AllSteps, SolveMethod.FindUnique);
+        var solver = new Solver(HistoryType.SolutionOnly, SolveMethod.FindUnique);
 
         var stopwatch = Stopwatch.StartNew();
 

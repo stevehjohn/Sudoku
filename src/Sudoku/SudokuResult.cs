@@ -75,7 +75,7 @@ public class SudokuResult
                     break;
 
                 default:
-                    Console.WriteLine($" - Guess of {move.Value} at ({move.X}, {move.Y})");
+                    Console.WriteLine($" - Guess of {move.Value} at ({move.X}, {move.Y}). Candidates: {string.Join(", ", move.Candidates)}");
                     break;
             }
         }
