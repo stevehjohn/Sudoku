@@ -190,7 +190,7 @@ public class ConsoleApplication
     {
         System.Console.Clear();
         
-        var puzzle = LoadPuzzles("Puzzles/Most Steps.txt")[0];
+        var puzzle = LoadPuzzles($"{FileHelper.GetPuzzlesPath()}/Most Steps.txt")[0];
 
         var filename = $"Tree {DateTime.UtcNow:yy-MM-dd hh-mm-ss}";
         
@@ -209,7 +209,7 @@ public class ConsoleApplication
     {
         System.Console.Clear();
         
-        var puzzle = LoadPuzzles("Puzzles/Most Steps.txt")[0];
+        var puzzle = LoadPuzzles($"{FileHelper.GetPuzzlesPath()}/Most Steps.txt")[0];
 
         puzzle.Puzzle.DumpToConsole(1);
         
@@ -230,7 +230,7 @@ public class ConsoleApplication
 
     private static void VisualiseMostSteps()
     {
-        var puzzle = LoadPuzzles("Puzzles/Most Steps.txt")[0];
+        var puzzle = LoadPuzzles($"{FileHelper.GetPuzzlesPath()}/Most Steps.txt")[0];
 
         var solver = new Solver(HistoryType.AllSteps, SolveMethod.FindFirst);
 
@@ -283,7 +283,7 @@ public class ConsoleApplication
 
         System.Console.CursorVisible = false;
 
-        const string filename = "Puzzles/Generated.txt";
+        var filename = $"{FileHelper.GetPuzzlesPath()}/Generated.txt";
 
         if (File.Exists(filename))
         {
@@ -364,7 +364,7 @@ public class ConsoleApplication
 
         System.Console.Write(" Warming up...");
 
-        var solver = new BulkSolver(LoadPuzzles("Puzzles/Easy.zip"));
+        var solver = new BulkSolver(LoadPuzzles($"{FileHelper.GetPuzzlesPath()}/Easy.zip"));
 
         solver.Solve(true, true);
 
@@ -374,7 +374,7 @@ public class ConsoleApplication
         {
             System.Console.Write(" Loading...");
 
-            solver = new BulkSolver(LoadPuzzles($"Puzzles/{file}.zip"));
+            solver = new BulkSolver(LoadPuzzles($"{FileHelper.GetPuzzlesPath()}/{file}.zip"));
 
             System.Console.CursorLeft = 0;
 
@@ -579,14 +579,7 @@ public class ConsoleApplication
 
     private void EnumeratePuzzleFiles()
     {
-        if (Debugger.IsAttached)
-        {
-            _files = Directory.EnumerateFiles("/Users/steve.john/Git/Sudoku/Puzzles", "*").Order().ToList();
-        }
-        else
-        {
-            _files = Directory.EnumerateFiles("Puzzles", "*").Order().ToList();
-        }
+        _files = Directory.EnumerateFiles(FileHelper.GetPuzzlesPath(), "*").Order().ToList();
 
         _files.RemoveAll(f => f.Contains(".DS_"));
 

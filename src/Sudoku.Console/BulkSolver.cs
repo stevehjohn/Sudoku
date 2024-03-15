@@ -102,7 +102,7 @@ public class BulkSolver
                         {
                             _steps.Minimum = solution.Steps;
                             
-                            File.WriteAllText("Puzzles/Least Steps.txt", string.Join(string.Empty, _puzzles[i].Puzzle).Replace('0', '.'));
+                            File.WriteAllText($"{FileHelper.GetPuzzlesPath()}/Least Steps.txt", string.Join(string.Empty, _puzzles[i].Puzzle).Replace('0', '.'));
                         }
 
                         if (solution.Steps > _steps.Maximum)
@@ -113,7 +113,7 @@ public class BulkSolver
 
                             _mostStepsClues = clues;
 
-                            File.WriteAllText("Puzzles/Most Steps.txt", string.Join(string.Empty, _puzzles[i].Puzzle).Replace('0', '.'));
+                            File.WriteAllText($"{FileHelper.GetPuzzlesPath()}/Most Steps.txt", string.Join(string.Empty, _puzzles[i].Puzzle).Replace('0', '.'));
                         }
                     }
                 }
