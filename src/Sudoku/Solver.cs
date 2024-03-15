@@ -375,6 +375,11 @@ public class Solver
             
             _score--;
 
+            if (move.ValueCount > 1)
+            {
+                _moveType = MoveType.Guess;
+            }
+
             if (_historyType != HistoryType.None)
             {
                 var historyMove = new Move(move.Position.X, move.Position.Y, i, _moveType);
