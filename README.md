@@ -26,7 +26,7 @@ var puzzle = new int[81];
 /*
   This is most performant.
   If you want the solution steps, select HistoryType.SolutionOnly.
-  If you want all th~~~~e steps attempted, select HistoryType.AllSteps.
+  If you want all the steps attempted, select HistoryType.AllSteps.
   If you want to check the puzzle has only 1 solution, specify SolveMethod.FindUnique.
   If you want a count of the number of solutions, specify SolveMethod.FindAll.
 */
