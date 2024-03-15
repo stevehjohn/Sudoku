@@ -134,10 +134,10 @@ public static class TreeGenerator
                     break;
                 
                 case MoveType.NoCandidates:
-                    content = content.Replace("{class}", "deadEnd").Replace("{type}", $"No Candidate");
+                    content = content.Replace("{class}", "deadEnd").Replace("{type}", "No Candidate");
                     break;
 
-                default:
+                case MoveType.HiddenSingle:
                     content = content.Replace("{class}", node.OnSolvedPath ? "solvePath" : string.Empty).Replace("{type}", "Hidden Single");
                     break;
             }
