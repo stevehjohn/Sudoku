@@ -3,6 +3,7 @@ using Xunit;
 
 namespace Sudoku.Tests;
 
+[Collection("Non-parallel")]
 public class GeneratorTests
 {
     [Fact]

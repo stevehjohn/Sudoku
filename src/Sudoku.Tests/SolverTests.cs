@@ -4,6 +4,7 @@ using Xunit.Abstractions;
 
 namespace Sudoku.Tests;
 
+[Collection("Non-parallel")]
 public class SolverTests
 {
     private readonly ITestOutputHelper _testOutputHelper;

@@ -3,6 +3,7 @@ using Xunit;
 
 namespace Sudoku.Tests.Extensions;
 
+[Collection("Non-parallel")]
 public class IntArrayExtensionsTests
 {
     [Fact]
