@@ -6,7 +6,7 @@ public static class TreeGenerator
 {
     private const string Numbers = "➊➋➌➍➎➏➐➑➒";
     
-    private const string NodeTemplate = "<li><a class='{class}' href='#'><div class='cellTitle'>{type}</div>{puzzle}</a>{children}</li>"; 
+    private const string NodeTemplate = "<li><a {id} class='{class}' href='#'><div class='cellTitle'>{type}</div>{puzzle}</a>{children}</li>"; 
         
     public static void Generate(int[] puzzle, string filename)
     {
@@ -123,6 +123,11 @@ public static class TreeGenerator
             {
                 case MoveType.None:
                     content = content.Replace("{class}", "solvePath").Replace("{type}", node.Children.Count > 0 ? "Puzzle" : "Answer");
+                    if (node.Children.Count == 0)
+                    {
+                        content = content.Replace("{id}", "id='answer'");
+                    }
+
                     break;
                     
                 case MoveType.Guess:
@@ -142,6 +147,8 @@ public static class TreeGenerator
                     break;
             }
         }
+
+        content = content.Replace("{id}", string.Empty);
 
         if (node.Children.Count == 0)
         {
