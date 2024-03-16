@@ -44,6 +44,11 @@ public class SudokuResult
     {
         var backtrackCount = 0;
 
+        if (_initialCandidates != null)
+        {
+            Console.WriteLine($" - Candidate count: {_initialCandidates.Sum(c => c?.Count)}");
+        }
+
         foreach (var move in History)
         {
             if (move.Type == MoveType.Backtrack)

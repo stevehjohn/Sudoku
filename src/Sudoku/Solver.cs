@@ -24,7 +24,7 @@ public class Solver
     private int _score;
 
     private MoveType _moveType;
-    
+
     public Solver(HistoryType historyType, SolveMethod solveMethod)
     {
         _historyType = historyType;
@@ -35,7 +35,7 @@ public class Solver
     public SudokuResult Solve(int[] puzzle)
     {
         _solutionCount = 0;
-        
+
         _steps = 0;
 
         _score = 81;
@@ -71,7 +71,7 @@ public class Solver
         if (_score > 64)
         {
             stopwatch.Stop();
-            
+
             return new SudokuResult(workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, $"Insufficient number of clues: {81 - _score}");
         }
 
@@ -80,11 +80,11 @@ public class Solver
         var candidates = GetSectionCandidates(span);
 
         List<int>[] initialCandidates = null;
-        
+
         if (_historyType == HistoryType.AllSteps)
         {
             initialCandidates = new List<int>[81];
-            
+
             GetCellCandidates(puzzle, candidates);
 
             for (var i = 0; i < 81; i++)
@@ -92,7 +92,7 @@ public class Solver
                 if (_cellCandidates[i] > 0)
                 {
                     initialCandidates[i] = [];
-                    
+
                     for (var j = 1; j < 10; j++)
                     {
                         if ((_cellCandidates[i] & 1 << (j - 1)) > 0)
@@ -148,13 +148,13 @@ public class Solver
             var y9 = (y << 3) + y;
 
             var y3 = y / 3 * 3;
-            
+
             for (var x = 0; x < 9; x++)
             {
                 rowCandidates.Remove(y, puzzle[x + y9]);
 
                 columnCandidates.Remove(y, puzzle[y + (x << 3) + x]);
-                
+
                 boxCandidates.Remove(y3 + x / 3, puzzle[x + y9]);
             }
         }
@@ -167,11 +167,11 @@ public class Solver
         for (var y = 0; y < 9; y++)
         {
             var boxY = y / 3 * 3;
-            
+
             for (var x = 0; x < 9; x++)
             {
                 var cell = x + (y << 3) + y;
-                
+
                 if (puzzle[x + (y << 3) + y] == 0)
                 {
                     _cellCandidates[cell] = candidates.Column[x] & candidates.Row[y] & candidates.Box[boxY + x / 3];
@@ -204,27 +204,26 @@ public class Solver
             for (var xO = 0; xO < 9; xO += 3)
             {
                 var oneMask = 0;
-    
+
                 var twoMask = 0;
-    
+
                 var start = yO + xO;
-    
+
                 for (var y = 0; y < 3; y++)
                 {
                     var y9 = (y << 3) + y;
-                    
+
                     for (var x = 0; x < 3; x++)
                     {
                         twoMask |= oneMask & _cellCandidates[start + y9 + x];
-    
+
                         oneMask |= _cellCandidates[start + y9 + x];
                     }
                 }
-    
+
                 var once = oneMask & ~twoMask;
-    
+
                 if (BitOperations.PopCount((uint) once) == 1)
-                {
                     for (var y = 0; y < 3; y++)
                     {
                         for (var x = 0; x < 3; x++)
@@ -234,71 +233,66 @@ public class Solver
                                 _cellCandidates[start + (y << 3) + y + x] = once;
 
                                 _moveType = MoveType.HiddenSingle;
-                    
+
                                 return;
                             }
                         }
                     }
-                }
             }
         }
-        
+
         for (var y = 0; y < 9; y++)
         {
             var oneMaskRow = 0;
-    
+
             var twoMaskRow = 0;
-    
+
             var oneMaskColumn = 0;
-    
+
             var twoMaskColumn = 0;
-    
+
             var y9 = (y << 3) + y;
-            
+
             for (var x = 0; x < 9; x++)
             {
                 twoMaskRow |= oneMaskRow & _cellCandidates[y9 + x];
-    
+
                 oneMaskRow |= _cellCandidates[y9 + x];
-    
+
                 twoMaskColumn |= oneMaskColumn & _cellCandidates[(x << 3) + x + y];
-    
+
                 oneMaskColumn |= _cellCandidates[(x << 3) + x + y];
             }
-    
+
             var onceRow = oneMaskRow & ~twoMaskRow;
-    
+
             var onceColumn = oneMaskColumn & ~twoMaskColumn;
-    
+
             if (BitOperations.PopCount((uint) onceRow) == 1)
-            {
                 for (var x = 0; x < 9; x++)
                 {
                     if ((_cellCandidates[y9 + x] & onceRow) > 0)
                     {
                         _cellCandidates[y9 + x] = onceRow;
-    
+
                         _moveType = MoveType.HiddenSingle;
 
                         return;
                     }
                 }
-            }
-    
+
             if (BitOperations.PopCount((uint) onceColumn) == 1)
-            {
                 for (var x = 0; x < 9; x++)
                 {
                     if ((_cellCandidates[(x << 3) + x + y] & onceColumn) > 0)
                     {
                         _cellCandidates[(x << 3) + x + y] = onceColumn;
-    
+
                         _moveType = MoveType.HiddenSingle;
 
                         return;
                     }
                 }
-            }
         }
     }
 
@@ -314,7 +308,7 @@ public class Solver
         for (var y = 0; y < 9; y++)
         {
             var y9 = (y << 3) + y;
-            
+
             for (var x = 0; x < 9; x++)
             {
                 if (puzzle[x + y9] != 0)
@@ -353,7 +347,7 @@ public class Solver
     private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, (Candidates Row, Candidates Column, Candidates Box) candidates)
     {
         var cell = move.Position.X + (move.Position.Y << 3) + move.Position.Y;
-            
+
         for (var i = 1; i < 10; i++)
         {
             var bit = 1 << (i - 1);
@@ -372,7 +366,7 @@ public class Solver
             candidates.Column.Remove(move.Position.X, i);
 
             candidates.Box.Remove(move.Position.Y / 3 * 3 + move.Position.X / 3, i);
-            
+
             _score--;
 
             if (move.ValueCount > 1)
@@ -385,7 +379,7 @@ public class Solver
                 var historyMove = new Move(move.Position.X, move.Position.Y, i, _moveType);
 
                 var historyCandidates = new List<int>();
-                
+
                 for (var j = 1; j < 10; j++)
                 {
                     if ((move.Values & 1 << (j - 1)) != 0)
