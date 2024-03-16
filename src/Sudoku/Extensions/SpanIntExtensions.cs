@@ -20,14 +20,14 @@ public static class SpanIntExtensions
 
             for (var x = 0; x < 9; x++)
             {
-                if (puzzle[x + y * 9] != 0)
+                if (puzzle[x + y * 9] > 0)
                 {
                     uniqueRow.Add(puzzle[x + y * 9]);
 
                     countRow++;
                 }
 
-                if (puzzle[y + x * 9] != 0)
+                if (puzzle[y + x * 9] > 0)
                 {
                     uniqueColumn.Add(puzzle[y + x * 9]);
 
@@ -55,7 +55,7 @@ public static class SpanIntExtensions
                 {
                     for (var y = 0; y < 3; y++)
                     {
-                        if (puzzle[(yO + y) * 9 + xO + x] != 0)
+                        if (puzzle[(yO + y) * 9 + xO + x] > 0)
                         {
                             uniqueBox.Add(puzzle[(yO + y) * 9 + xO + x]);
 

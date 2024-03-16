@@ -2,6 +2,11 @@ namespace Sudoku.Extensions;
 
 public static class IntArrayExtensions
 {
+    public static bool IsValidSudoku(this int[] puzzle)
+    {
+        return SpanIntExtensions.IsValidSudoku(puzzle);
+    }
+
     public static void DumpToConsole(this int[] array, int left = -1, int top = -1)
     {
         SetPosition(left, top, 0);
