@@ -4,7 +4,7 @@ A fast Sudoku solver written in C#. Can also act as a Sudoku generator.
 
 ## Visualisations of Solving Process
 
-Use + and - to zoom in and out. [Screenshot]()
+Use + and - to zoom in and out. [Screenshot](screenshot.png).
 
 - ["World's Hardest"](https://html-preview.github.io/?url=https://github.com/stevehjohn/Sudoku/blob/master/Visualisations/World%20Hardest.html)
 - [Random 1](https://html-preview.github.io/?url=https://github.com/stevehjohn/Sudoku/blob/master/Visualisations/1.html)
