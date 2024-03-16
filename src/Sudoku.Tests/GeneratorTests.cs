@@ -17,4 +17,15 @@ public class GeneratorTests
 
         // This test is asserted by your eyes.
     }
+    
+    [Fact]
+    public void GeneratesManyValidSudokuPuzzles()
+    {
+        for (var i = 0; i < 1000; i++)
+        {
+            var generator = new Generator();
+
+            generator.Generate();
+        }
+    }
 }

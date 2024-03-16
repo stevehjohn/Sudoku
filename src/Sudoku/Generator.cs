@@ -74,6 +74,11 @@ public class Generator
             }
         }
         
+        if (position == 0)
+        {
+            return false;
+        }
+
         _puzzle[cell] = -1;
 
         _candidates[cell] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
