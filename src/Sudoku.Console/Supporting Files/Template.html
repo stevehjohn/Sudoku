@@ -16,11 +16,19 @@
         };
         document.onkeyup = e => {
             if (e.key === '-' || e.key === '_') {
+                if (zoom > 10) {
                 zoom -= 10;
+                } else if (zoom > 1) {
+                    zoom--;
+                }
                 document.getElementsByTagName('body')[0].style.zoom = zoom + '%';
             }
             if (e.key === '+' || e.key === '=') {
-                zoom += 10;
+                if (zoom > 10) {
+                    zoom += 10;
+                } else {
+                    zoom++;
+                }
                 document.getElementsByTagName('body')[0].style.zoom = zoom + '%';
             }
         }
