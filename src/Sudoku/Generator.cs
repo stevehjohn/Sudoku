@@ -60,14 +60,9 @@ public class Generator
 
             if (_puzzle.IsValidSudoku())
             {
-                if (position + 1 == cluesToLeave)
+                if (position == cluesToLeave - 1)
                 {
-                    if (_solver.Solve(_puzzle).Solved)
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return _solver.Solve(_puzzle).Solved;
                 }
                 
                 return FillPositions(cluesToLeave, position + 1);
