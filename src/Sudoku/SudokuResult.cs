@@ -46,7 +46,14 @@ public class SudokuResult
 
         if (_initialCandidates != null)
         {
-            Console.WriteLine($" - Candidate count: {_initialCandidates.Sum(c => c?.Count)}");
+            var sum = 0;
+
+            for (var i = 0; i < 81; i++)
+            {
+                sum += GetInitialCandidates(i)?.Sum() ?? 0;
+            }
+
+            Console.WriteLine($" - Candidate count: {sum}");
         }
 
         foreach (var move in History)
