@@ -66,6 +66,8 @@ public class Generator
                     {
                         return true;
                     }
+
+                    return false;
                 }
                 
                 return FillPositions(cluesToLeave, position + 1);
