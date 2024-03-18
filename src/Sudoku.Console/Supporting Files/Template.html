@@ -22,6 +22,7 @@
                     zoom--;
                 }
                 document.getElementsByTagName('body')[0].style.zoom = zoom + '%';
+                document.getElementById('puzzle').scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
             }
             if (e.key === '+' || e.key === '=') {
                 if (zoom > 10) {
@@ -30,6 +31,7 @@
                     zoom++;
                 }
                 document.getElementsByTagName('body')[0].style.zoom = zoom + '%';
+                document.getElementById('puzzle').scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
             }
         }
     </script>

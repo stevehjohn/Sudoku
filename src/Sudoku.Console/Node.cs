@@ -56,4 +56,8 @@ public class Node
 
         return node;
     }
+
+    public void ReorderChildrenToCentreSolved()
+    {
+    }
 }

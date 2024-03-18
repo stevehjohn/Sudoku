@@ -222,6 +222,23 @@ public static class TreeGenerator
 
         solved.OnSolvedPath = true;
 
+        ReorderChildrenToCentreSolved(root, solved);
+        
         return root;
+    }
+
+    private static void ReorderChildrenToCentreSolved(Node root, Node solvedNode)
+    {
+        var node = solvedNode;
+
+        while (node != root)
+        {
+            if (node.Children.Count > 1)
+            {
+                node.ReorderChildrenToCentreSolved();
+            }
+
+            node = node.Parent;
+        }
     }
 }
