@@ -213,29 +213,35 @@ public static class TreeGenerator
             }
         }
 
-        while (solved.Parent != null)
+        node = solved;
+        
+        while (node.Parent != null)
         {
-            solved.OnSolvedPath = true;
+            node.OnSolvedPath = true;
 
-            solved = solved.Parent;
+            node = node.Parent;
         }
 
         solved.OnSolvedPath = true;
 
-        ReorderChildrenToCentreSolved(root, solved);
+        ReorderChildren(root, solved);
         
         return root;
     }
 
-    private static void ReorderChildrenToCentreSolved(Node root, Node solvedNode)
+    private static void ReorderChildren(Node root, Node solvedNode)
     {
         var node = solvedNode;
 
+        var left = false;
+        
         while (node != root)
         {
             if (node.Children.Count > 1)
             {
-                node.ReorderChildrenToCentreSolved();
+                node.ReorderChildren(left);
+
+                left = ! left;
             }
 
             node = node.Parent;

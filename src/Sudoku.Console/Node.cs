@@ -57,12 +57,19 @@ public class Node
         return node;
     }
 
-    public void ReorderChildrenToCentreSolved()
+    public void ReorderChildren(bool left)
     {
         var solved = _children.Single(c => c.OnSolvedPath);
 
         _children.Remove(solved);
         
-        _children.Insert(_children.Count / 2, solved);
+        if (left)
+        {
+            _children.Insert(0, solved);
+        }
+        else
+        {
+            _children.Add(solved);
+        }
     }
 }
