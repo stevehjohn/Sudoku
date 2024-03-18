@@ -104,9 +104,11 @@ public class Solver
             }
         }
 
+        var solved = SolveStep(span, candidates);
+        
         stopwatch.Stop();
 
-        if (! SolveStep(span, candidates) && _solutionCount == 0)
+        if (! solved && _solutionCount == 0)
         {
             return new SudokuResult(workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, "Unsolvable");
         }
