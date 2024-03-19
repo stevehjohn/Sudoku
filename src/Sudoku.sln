@@ -43,7 +43,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Visualisations", "Visualisa
 		..\Visualisations\1.html = ..\Visualisations\1.html
 		..\Visualisations\2.html = ..\Visualisations\2.html
 		..\Visualisations\3.html = ..\Visualisations\3.html
-		..\Visualisations\4.html = ..\Visualisations\4.html
 		..\Visualisations\World Hardest.html = ..\Visualisations\World Hardest.html
 	EndProjectSection
 EndProject
