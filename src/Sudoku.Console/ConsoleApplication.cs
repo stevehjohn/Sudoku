@@ -304,8 +304,6 @@ public class ConsoleApplication
             {
                 lock (_consoleLock)
                 {
-                    count++;
-
                     System.Console.CursorTop = 3;
 
                     System.Console.WriteLine($" Puzzle {count:N0}/{puzzleCount:N0}.               \n");
