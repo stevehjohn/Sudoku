@@ -50,14 +50,16 @@ public class Generator
 
         var cell = _positions[position];
 
+        var removed = new List<(int Cell, int Value)>();
+        
         while (_candidates[cell].Count > 0)
         {
             var index = _rng.Next(_candidates[cell].Count);
 
             _puzzle[cell] = _candidates[cell][index];
             
-            _candidates[cell].RemoveAt(index);
-
+            Remove(cell, _candidates[cell][index], removed);
+            
             if (_puzzle.IsValidSudoku())
             {
                 if (position == cluesToLeave - 1)
@@ -74,11 +76,19 @@ public class Generator
             return false;
         }
 
+        foreach (var item in removed)
+        {
+            _candidates[item.Cell].Add(item.Value);
+        }
+        
         _puzzle[cell] = -1;
 
-        _candidates[cell] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
         return FillPositions(cluesToLeave, position - 1);
+    }
+
+    private void Remove(int cell, int value, List<(int, int)> list)
+    {
+        _candidates[cell].Remove(value);
     }
 
     private void InitialiseCandidates()
