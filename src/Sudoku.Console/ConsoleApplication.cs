@@ -333,6 +333,23 @@ public class ConsoleApplication
                     }
                 }
 
+                lock (_consoleLock)
+                {
+                    count++;
+
+                    System.Console.CursorTop = 3;
+
+                    System.Console.WriteLine($" Puzzle {count:N0}/{puzzleCount:N0}.               \n");
+
+                    lock (recentLock)
+                    {
+                        foreach (var item in recent)
+                        {
+                            System.Console.WriteLine($" {string.Join(string.Empty, item).Replace('0', '.')}");
+                        }
+                    }
+                }
+                
                 lock (_outputFileLock)
                 {
                     File.AppendAllText(filename, $"{string.Join(string.Empty, puzzle).Replace('0', '.')}\n");
