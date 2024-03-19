@@ -56,4 +56,20 @@ public class Node
 
         return node;
     }
+
+    public void ReorderChildren(bool left)
+    {
+        var solved = _children.Single(c => c.OnSolvedPath);
+
+        _children.Remove(solved);
+        
+        if (left)
+        {
+            _children.Insert(0, solved);
+        }
+        else
+        {
+            _children.Add(solved);
+        }
+    }
 }

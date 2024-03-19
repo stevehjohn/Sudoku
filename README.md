@@ -10,7 +10,6 @@ Use + and - to zoom in and out. [Screenshot](screenshot.png).
 - [Random 1](https://html-preview.github.io/?url=https://github.com/stevehjohn/Sudoku/blob/master/Visualisations/1.html)
 - [Random 2](https://html-preview.github.io/?url=https://github.com/stevehjohn/Sudoku/blob/master/Visualisations/2.html)
 - [Random 3](https://html-preview.github.io/?url=https://github.com/stevehjohn/Sudoku/blob/master/Visualisations/3.html)
-- [Random 4](https://html-preview.github.io/?url=https://github.com/stevehjohn/Sudoku/blob/master/Visualisations/4.html)
 
 ## Usage in Code
 
