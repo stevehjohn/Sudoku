@@ -88,15 +88,25 @@ public class Generator
 
     private void Remove(int cell, int value, List<(int, int)> list)
     {
+        var x = cell % 9;
+
+        var y = cell / 9;
+
+        var box = y / 3 * 27 + x / 3;
+        
         for (var i = 0; i < 9; i++)
         {
-            _candidates[cell % 9 + i * 9].Remove(value);
+            _candidates[x + i * 9].Remove(value);
 
-            list.Add((cell % 9 + i * 9, value));
+            list.Add((x + i * 9, value));
             
-            _candidates[cell / 9 + i].Remove(value);
+            _candidates[y + i].Remove(value);
             
-            list.Add((cell / 9 + i, value));
+            list.Add((y + i, value));
+            
+            _candidates[box + i % 3 + i / 3 * 9].Remove(value);
+            
+            list.Add((box + i % 3 + i / 3 * 9, value));
         }
     }
 
