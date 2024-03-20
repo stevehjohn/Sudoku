@@ -40,10 +40,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{E223
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Visualisations", "Visualisations", "{82F9E46D-1196-4814-9BCB-67E40CEC61F8}"
 	ProjectSection(SolutionItems) = preProject
-		..\Visualisations\1.html = ..\Visualisations\1.html
-		..\Visualisations\2.html = ..\Visualisations\2.html
-		..\Visualisations\3.html = ..\Visualisations\3.html
 		..\Visualisations\World Hardest.html = ..\Visualisations\World Hardest.html
+		..\Visualisations\vis-1.html = ..\Visualisations\vis-1.html
+		..\Visualisations\vis-2.html = ..\Visualisations\vis-2.html
+		..\Visualisations\vis-3.html = ..\Visualisations\vis-3.html
 	EndProjectSection
 EndProject
 Global
