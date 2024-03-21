@@ -109,7 +109,7 @@ public class Solver
         }
 
         var solved = SolveStep(span, candidates);
-        
+
         stopwatch.Stop();
 
         if (! solved && _solutionCount == 0)
@@ -311,38 +311,33 @@ public class Solver
 
         var valueCount = 0b11_1111_1111;
 
-        for (var y = 0; y < 9; y++)
+        for (var i = 0; i < 81; i++)
         {
-            var y9 = (y << 3) + y;
-
-            for (var x = 0; x < 9; x++)
+            if (puzzle[i] != 0)
             {
-                if (puzzle[x + y9] != 0)
+                continue;
+            }
+
+            var candidates = _cellCandidates[i];
+
+            var count = BitOperations.PopCount((uint) candidates);
+
+            if (count < valueCount)
+            {
+                position = (i % 9, i / 9);
+
+                values = candidates;
+
+                valueCount = count;
+
+                if (count == 1)
                 {
-                    continue;
-                }
-
-                var candidates = _cellCandidates[x + y9];
-
-                var count = BitOperations.PopCount((uint) candidates);
-
-                if (count < valueCount)
-                {
-                    position = (x, y);
-
-                    values = candidates;
-
-                    valueCount = count;
-
-                    if (count == 1)
+                    if (_moveType != MoveType.HiddenSingle)
                     {
-                        if (_moveType != MoveType.HiddenSingle)
-                        {
-                            _moveType = MoveType.NakedSingle;
-                        }
-
-                        return (position, values, valueCount);
+                        _moveType = MoveType.NakedSingle;
                     }
+
+                    return (position, values, valueCount);
                 }
             }
         }
