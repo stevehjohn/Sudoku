@@ -386,9 +386,7 @@ public class Solver
         return (position, (second, first), 2);
     }
 
-    private bool CreateNextSteps(Span<int> puzzle,
-        ((int X, int Y) Position, (int First, int Second) Values, int ValueCount) move,
-        (Candidates Row, Candidates Column, Candidates Box) candidates)
+    private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, (int First, int Second) Values, int ValueCount) move, (Candidates Row, Candidates Column, Candidates Box) candidates)
     {
         var cell = move.Position.X + (move.Position.Y << 3) + move.Position.Y;
 
