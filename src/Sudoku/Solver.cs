@@ -310,6 +310,12 @@ public class Solver
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private ((int X, int Y) Position, (int First, int Second) Values, int ValueCount) FindLowestMove(Span<int> puzzle)
     {
+        var first = 0;
+
+        var second = 0;
+
+        var position = (-1, -1);
+                    
         for (var y = 0; y < 9; y++)
         {
             var y9 = (y << 3) + y;
@@ -325,11 +331,9 @@ public class Solver
 
                 var count = BitOperations.PopCount((uint) candidates);
 
-                if (count == 2)
+                if (count > 0)
                 {
-                    var first = 0;
-
-                    var second = 0;
+                    position = (x, y);
                     
                     for (var i = 1; i < 10; i++)
                     {
@@ -343,6 +347,11 @@ public class Solver
                         if (first == 0)
                         {
                             first = i;
+
+                            if (count < 2)
+                            {
+                                break;
+                            }
                         }
                         else
                         {
@@ -353,23 +362,26 @@ public class Solver
             }
         }
 
-        throw new Exception("!");
+        if (second == 0)
+        {
+            return (position, (first, 0), 1);
+        }
+
+        if (_frequencies[first] < _frequencies[second])
+        {
+            return (position, (first, second), 1);
+        }
+
+        return (position, (second, first), 1);
     }
 
     private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, (int First, int Second) Values, int ValueCount) move, (Candidates Row, Candidates Column, Candidates Box) candidates)
     {
         var cell = move.Position.X + (move.Position.Y << 3) + move.Position.Y;
 
-        for (var i = 1; i < 10; i++)
+        for (var i = 0; i < move.ValueCount; i++)
         {
-            var bit = 1 << (i - 1);
-
-            if ((move.Values & bit) == 0)
-            {
-                continue;
-            }
-
-            puzzle[cell] = i;
+            puzzle[cell] = i == 0 ? move.Values.First : move.Values.Second;
 
             var oldCandidates = candidates;
 
@@ -390,14 +402,11 @@ public class Solver
             {
                 var historyMove = new Move(move.Position.X, move.Position.Y, i, _moveType);
 
-                var historyCandidates = new List<int>();
+                var historyCandidates = new List<int> { move.Values.First };
 
-                for (var j = 1; j < 10; j++)
+                if (move.ValueCount > 1)
                 {
-                    if ((move.Values & 1 << (j - 1)) != 0)
-                    {
-                        historyCandidates.Add(j);
-                    }
+                    historyCandidates.Add(move.Values.Second);
                 }
 
                 historyMove.Candidates = historyCandidates.ToArray();
