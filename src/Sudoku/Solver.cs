@@ -11,6 +11,8 @@ public class Solver
 
     private readonly int[] _solution = new int[81];
 
+    private readonly int[] _frequencies = new int[10];
+
     private readonly HistoryType _historyType;
 
     private readonly SolveMethod _solveMethod;
@@ -166,6 +168,11 @@ public class Solver
 
     private bool GetCellCandidates(Span<int> puzzle, (Candidates Row, Candidates Column, Candidates Box) candidates)
     {
+        for (var i = 1; i < 10; i++)
+        {
+            _frequencies[i] = 0;
+        }
+
         for (var y = 0; y < 9; y++)
         {
             var boxY = y / 3 * 3;
@@ -174,7 +181,7 @@ public class Solver
             {
                 var cell = x + (y << 3) + y;
 
-                if (puzzle[x + (y << 3) + y] == 0)
+                if (puzzle[cell] == 0)
                 {
                     _cellCandidates[cell] = candidates.Column[x] & candidates.Row[y] & candidates.Box[boxY + x / 3];
 
@@ -191,6 +198,8 @@ public class Solver
                 else
                 {
                     _cellCandidates[cell] = 0;
+
+                    _frequencies[puzzle[cell]]++;
                 }
             }
         }
@@ -299,14 +308,8 @@ public class Solver
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private ((int X, int Y) Position, int Values, int ValueCount) FindLowestMove(Span<int> puzzle)
+    private ((int X, int Y) Position, (int First, int Second) Values, int ValueCount) FindLowestMove(Span<int> puzzle)
     {
-        var position = (X: -1, Y: -1);
-
-        var values = 0;
-
-        var valueCount = 0b11_1111_1111;
-
         for (var y = 0; y < 9; y++)
         {
             var y9 = (y << 3) + y;
@@ -322,31 +325,38 @@ public class Solver
 
                 var count = BitOperations.PopCount((uint) candidates);
 
-                if (count < valueCount)
+                if (count == 2)
                 {
-                    position = (x, y);
+                    var first = 0;
 
-                    values = candidates;
-
-                    valueCount = count;
-
-                    if (count == 1)
+                    var second = 0;
+                    
+                    for (var i = 1; i < 10; i++)
                     {
-                        if (_moveType != MoveType.HiddenSingle)
+                        var bit = 1 << (i - 1);
+                        
+                        if ((candidates & bit) == 0)
                         {
-                            _moveType = MoveType.NakedSingle;
+                            continue;
                         }
 
-                        return (position, values, valueCount);
+                        if (first == 0)
+                        {
+                            first = i;
+                        }
+                        else
+                        {
+                            second = i;
+                        }
                     }
                 }
             }
         }
 
-        return (position, values, valueCount);
+        throw new Exception("!");
     }
 
-    private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, (Candidates Row, Candidates Column, Candidates Box) candidates)
+    private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, (int First, int Second) Values, int ValueCount) move, (Candidates Row, Candidates Column, Candidates Box) candidates)
     {
         var cell = move.Position.X + (move.Position.Y << 3) + move.Position.Y;
 
