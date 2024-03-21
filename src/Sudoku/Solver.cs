@@ -356,18 +356,16 @@ public class Solver
 
                             if (count < 2)
                             {
-                                break;
+                                second = 0;
+                                
+                                goto done;
                             }
                         }
                         else
                         {
                             second = i;
-
-                            break;
                         }
                     }
-
-                    goto done;
                 }
             }
         }
