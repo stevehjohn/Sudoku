@@ -149,20 +149,19 @@ public class Solver
 
         var boxCandidates = new Candidates();
 
-        for (var y = 0; y < 9; y++)
+        for (var i = 0; i < 81; i++)
         {
-            var y9 = (y << 3) + y;
+            var x = i % 9;
 
-            var y3 = y / 3 * 3;
+            var y = i / 9;
+            
+            var boxY = y / 3 * 3;
 
-            for (var x = 0; x < 9; x++)
-            {
-                rowCandidates.Remove(y, puzzle[x + y9]);
+            rowCandidates.Remove(y, puzzle[i]);
 
-                columnCandidates.Remove(y, puzzle[y + (x << 3) + x]);
+            columnCandidates.Remove(x, puzzle[i]);
 
-                boxCandidates.Remove(y3 + x / 3, puzzle[x + y9]);
-            }
+            boxCandidates.Remove(boxY + x / 3, puzzle[i]);
         }
 
         return (rowCandidates, columnCandidates, boxCandidates);
