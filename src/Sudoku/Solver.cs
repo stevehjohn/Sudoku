@@ -170,32 +170,31 @@ public class Solver
 
     private bool GetCellCandidates(Span<int> puzzle, (Candidates Row, Candidates Column, Candidates Box) candidates)
     {
-        for (var y = 0; y < 9; y++)
+        for (var i = 0; i < 81; i++)
         {
-            var boxY = y / 3 * 3;
-
-            for (var x = 0; x < 9; x++)
+            if (puzzle[i] == 0)
             {
-                var cell = x + (y << 3) + y;
+                var x = i % 9;
 
-                if (puzzle[x + (y << 3) + y] == 0)
+                var y = i / 9;
+            
+                var boxY = y / 3 * 3;
+
+                _cellCandidates[i] = candidates.Column[x] & candidates.Row[y] & candidates.Box[boxY + x / 3];
+
+                if (_cellCandidates[i] == 0)
                 {
-                    _cellCandidates[cell] = candidates.Column[x] & candidates.Row[y] & candidates.Box[boxY + x / 3];
-
-                    if (_cellCandidates[cell] == 0)
+                    if (_historyType == HistoryType.AllSteps)
                     {
-                        if (_historyType == HistoryType.AllSteps)
-                        {
-                            _history.Add(new Move(x, y, 0, MoveType.NoCandidates));
-                        }
-
-                        return false;
+                        _history.Add(new Move(x, y, 0, MoveType.NoCandidates));
                     }
+
+                    return false;
                 }
-                else
-                {
-                    _cellCandidates[cell] = 0;
-                }
+            }
+            else
+            {
+                _cellCandidates[i] = 0;
             }
         }
 
