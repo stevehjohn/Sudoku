@@ -64,17 +64,20 @@ public class Solver
 
             if (span.IsValidSudoku())
             {
-                return new SudokuResult(workingCopy, true, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, "Full valid board");
+                return new SudokuResult(workingCopy, true, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null,
+                    "Full valid board");
             }
 
-            return new SudokuResult(workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, "Full invalid board");
+            return new SudokuResult(workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null,
+                "Full invalid board");
         }
 
         if (_score > 64)
         {
             stopwatch.Stop();
 
-            return new SudokuResult(workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, $"Insufficient number of clues: {81 - _score}");
+            return new SudokuResult(workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null,
+                $"Insufficient number of clues: {81 - _score}");
         }
 
         _history = _historyType != HistoryType.None ? new List<Move>() : null;
@@ -107,20 +110,23 @@ public class Solver
         }
 
         var solved = SolveStep(span, candidates);
-        
+
         stopwatch.Stop();
 
         if (! solved && _solutionCount == 0)
         {
-            return new SudokuResult(workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, "Unsolvable");
+            return new SudokuResult(workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, _history,
+                initialCandidates, "Unsolvable");
         }
 
         if (_solutionCount > 1)
         {
-            return new SudokuResult(workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, $"Multiple solutions: {_solutionCount}");
+            return new SudokuResult(workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, _history,
+                initialCandidates, $"Multiple solutions: {_solutionCount}");
         }
 
-        return new SudokuResult(_solution, true, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, "Solved");
+        return new SudokuResult(_solution, true, _steps, stopwatch.Elapsed.TotalMicroseconds, _history,
+            initialCandidates, "Solved");
     }
 
     private bool SolveStep(Span<int> puzzle, (Candidates Row, Candidates Column, Candidates Box) candidates)
@@ -315,7 +321,7 @@ public class Solver
         var second = 0;
 
         var position = (-1, -1);
-                    
+
         for (var y = 0; y < 9; y++)
         {
             var y9 = (y << 3) + y;
@@ -334,11 +340,11 @@ public class Solver
                 if (count > 0)
                 {
                     position = (x, y);
-                    
+
                     for (var i = 1; i < 10; i++)
                     {
                         var bit = 1 << (i - 1);
-                        
+
                         if ((candidates & bit) == 0)
                         {
                             continue;
@@ -356,12 +362,17 @@ public class Solver
                         else
                         {
                             second = i;
+
+                            break;
                         }
                     }
+
+                    goto done;
                 }
             }
         }
 
+        done:
         if (second == 0)
         {
             return (position, (first, 0), 1);
@@ -369,27 +380,31 @@ public class Solver
 
         if (_frequencies[first] < _frequencies[second])
         {
-            return (position, (first, second), 1);
+            return (position, (first, second), 2);
         }
 
-        return (position, (second, first), 1);
+        return (position, (second, first), 2);
     }
 
-    private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, (int First, int Second) Values, int ValueCount) move, (Candidates Row, Candidates Column, Candidates Box) candidates)
+    private bool CreateNextSteps(Span<int> puzzle,
+        ((int X, int Y) Position, (int First, int Second) Values, int ValueCount) move,
+        (Candidates Row, Candidates Column, Candidates Box) candidates)
     {
         var cell = move.Position.X + (move.Position.Y << 3) + move.Position.Y;
 
         for (var i = 0; i < move.ValueCount; i++)
         {
-            puzzle[cell] = i == 0 ? move.Values.First : move.Values.Second;
+            var value = i == 0 ? move.Values.First : move.Values.Second;
+
+            puzzle[cell] = value; 
 
             var oldCandidates = candidates;
 
-            candidates.Row.Remove(move.Position.Y, i);
+            candidates.Row.Remove(move.Position.Y, value);
 
-            candidates.Column.Remove(move.Position.X, i);
+            candidates.Column.Remove(move.Position.X, value);
 
-            candidates.Box.Remove(move.Position.Y / 3 * 3 + move.Position.X / 3, i);
+            candidates.Box.Remove(move.Position.Y / 3 * 3 + move.Position.X / 3, value);
 
             _score--;
 
@@ -400,7 +415,7 @@ public class Solver
 
             if (_historyType != HistoryType.None)
             {
-                var historyMove = new Move(move.Position.X, move.Position.Y, i, _moveType);
+                var historyMove = new Move(move.Position.X, move.Position.Y, value, _moveType);
 
                 var historyCandidates = new List<int> { move.Values.First };
 
@@ -456,7 +471,7 @@ public class Solver
                 }
                 else
                 {
-                    _history?.Add(new Move(move.Position.X, move.Position.Y, i, MoveType.Backtrack));
+                    _history?.Add(new Move(move.Position.X, move.Position.Y, value, MoveType.Backtrack));
                 }
             }
 
