@@ -224,15 +224,9 @@ public class BulkSolver
             {
                 var perSecond = solved / _stopwatch.Elapsed.TotalSeconds;
 
-                if (_stopwatch.Elapsed.TotalSeconds < 1)
-                {
-                    System.Console.WriteLine($" puzzles solved in {_stopwatch.Elapsed.TotalMicroseconds:N0}μs, {perSecond:N0}/sec.");
-                }
-                else
-                {
-                    System.Console.WriteLine(
-                        $" puzzles solved in {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}.{_stopwatch.Elapsed.Milliseconds:N0}, {perSecond:N0}/sec.");
-                }
+                System.Console.WriteLine(_stopwatch.Elapsed.TotalSeconds < 1
+                    ? $" puzzles solved in {_stopwatch.Elapsed.TotalMicroseconds:N0}μs, {perSecond:N0}/sec."
+                    : $" puzzles solved in {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}.{_stopwatch.Elapsed.Milliseconds:N0}, {perSecond:N0}/sec.");
             }
         }
 
@@ -303,14 +297,7 @@ public class BulkSolver
                     System.Console.CursorLeft += 2;
                 }
 
-                if (puzzle[x + y * 9] == 0)
-                {
-                    System.Console.Write("  ");
-                }
-                else
-                {
-                    System.Console.Write($"{puzzle[x + y * 9]} ");
-                }
+                System.Console.Write(puzzle[x + y * 9] == 0 ? "  " : $"{puzzle[x + y * 9]} ");
             }
         }
 

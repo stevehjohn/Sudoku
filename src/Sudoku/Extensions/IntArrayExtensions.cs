@@ -18,14 +18,7 @@ public static class IntArrayExtensions
 
             for (var x = 0; x < 9; x++)
             {
-                if (array[x + y * 9] == 0)
-                {
-                    Console.Write("  ");
-                }
-                else
-                {
-                    Console.Write($" {array[x + y * 9]}");
-                }
+                Console.Write(array[x + y * 9] == 0 ? "  " : $" {array[x + y * 9]}");
 
                 if (x is 2 or 5)
                 {

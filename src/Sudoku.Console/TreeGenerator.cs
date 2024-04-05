@@ -75,14 +75,7 @@ public static class TreeGenerator
             }
             else
             {
-                if (isGuess)
-                {
-                    puzzle.Append("<td class='guess'>");
-                }
-                else
-                {
-                    puzzle.Append("<td>");
-                }
+                puzzle.Append(isGuess ? "<td class='guess'>" : "<td>");
             }
 
             if (node[i] != 0)
@@ -125,14 +118,7 @@ public static class TreeGenerator
             {
                 case MoveType.None:
                     content = content.Replace("{class}", "solvePath").Replace("{type}", node.Children.Count > 0 ? "Puzzle" : "Answer");
-                    if (node.Children.Count == 0)
-                    {
-                        content = content.Replace("{id}", "id='answer'");
-                    }
-                    else
-                    {
-                        content = content.Replace("{id}", "id='puzzle'");
-                    }
+                    content = content.Replace("{id}", node.Children.Count == 0 ? "id='answer'" : "id='puzzle'");
 
                     break;
                     
