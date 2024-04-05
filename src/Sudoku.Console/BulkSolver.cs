@@ -76,7 +76,7 @@ public class BulkSolver
 
                         var clues = _puzzles[i].Clues;
 
-                        if (! _timings.TryGetValue(clues, out (int Count, double Elapsed) value))
+                        if (! _timings.TryGetValue(clues, out var value))
                         {
                             value = (0, 0);
 
@@ -126,7 +126,7 @@ public class BulkSolver
 
                         var clues = _puzzles[i].Clues;
 
-                        if (! _timings.TryGetValue(clues, out (int Count, double Elapsed) value))
+                        if (! _timings.TryGetValue(clues, out var value))
                         {
                             value = (0, 0);
 

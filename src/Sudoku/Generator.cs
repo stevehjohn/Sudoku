@@ -81,12 +81,7 @@ public class Generator
 
             if (puzzle.IsValidSudoku())
             {
-                if (cell == 80)
-                {
-                    return true;
-                }
-                
-                return CreateSolvedPuzzle(puzzle, cell + 1);
+                return cell == 80 || CreateSolvedPuzzle(puzzle, cell + 1);
             }
         }
         

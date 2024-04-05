@@ -79,7 +79,7 @@ public class Solver
             return new SudokuResult(_workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, $"Insufficient number of clues: {81 - _score}");
         }
 
-        _history = _historyType != HistoryType.None ? new List<Move>() : null;
+        _history = _historyType != HistoryType.None ? [] : null;
 
         var candidates = GetSectionCandidates(span);
 

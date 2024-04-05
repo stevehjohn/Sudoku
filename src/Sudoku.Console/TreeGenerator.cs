@@ -167,7 +167,7 @@ public static class TreeGenerator
 
         var root = node;
 
-        Node solved = node;
+        var solved = node;
 
         var backtracking = false;
         
