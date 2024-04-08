@@ -205,12 +205,14 @@ public class BulkSolver
 
                 i++;
 
-                if (i == 4)
+                if (i != 4)
                 {
-                    System.Console.WriteLine();
-
-                    i = 0;
+                    continue;
                 }
+                
+                System.Console.WriteLine();
+
+                i = 0;
             }
 
             if (i > 0)
@@ -263,7 +265,7 @@ public class BulkSolver
         Monitor.Exit(_consoleLock);
     }
 
-    private static void DumpHistory(int[] puzzle, IReadOnlyList<Move> solution, HistoryType historyType)
+    private static void DumpHistory(int[] puzzle, IReadOnlyCollection<Move> solution, HistoryType historyType)
     {
         int yIncrement;
 

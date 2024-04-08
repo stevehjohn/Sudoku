@@ -18,11 +18,6 @@ public static class FileHelper
     {
         const string path = "Supporting Files";
 
-        if (Path.Exists(path))
-        {
-            return path;
-        }
-
-        return $"src/Sudoku.Console/{path}";
+        return Path.Exists(path) ? path : $"src/Sudoku.Console/{path}";
     }
 }

@@ -111,14 +111,14 @@ public class ConsoleSolveVisualiser
             {
                 var key = Out.ReadKey(true).KeyChar;
 
-                if (key is '<' or ',' && _speedIndex > 0)
+                switch (key)
                 {
-                    _speedIndex--;
-                }
-
-                if (key is '>' or '.' && _speedIndex < _speeds.Length - 1)
-                {
-                    _speedIndex++;
+                    case '<' or ',' when _speedIndex > 0:
+                        _speedIndex--;
+                        break;
+                    case '>' or '.' when _speedIndex < _speeds.Length - 1:
+                        _speedIndex++;
+                        break;
                 }
             }
         }

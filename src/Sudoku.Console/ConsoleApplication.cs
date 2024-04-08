@@ -254,7 +254,7 @@ public class ConsoleApplication
             return;
         }
 
-        if (clues < 17 || clues > 72)
+        if (clues is < 17 or > 72)
         {
             Out("\n Invalid input.");
 
