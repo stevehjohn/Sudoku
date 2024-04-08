@@ -498,7 +498,7 @@ public class ConsoleApplication
 
     private static (int[] Puzzle, int Clues)[] LoadPuzzlesInternal(string filename)
     {
-        if (Path.GetExtension(filename).ToLower() == ".txt")
+        if (Path.GetExtension(filename).Equals(".txt", StringComparison.InvariantCultureIgnoreCase))
         {
             var data = File.ReadAllLines(filename);
 
