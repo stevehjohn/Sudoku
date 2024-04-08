@@ -191,12 +191,14 @@ public static class TreeGenerator
 
             node = node.AddChild(move);
 
-            if (node.Solved)
+            if (! node.Solved)
             {
-                solved = node;
-                
-                solved.AddChild(new Move(0, 0, 0, MoveType.None), true);
+                continue;
             }
+            
+            solved = node;
+                
+            solved.AddChild(new Move(0, 0, 0, MoveType.None), true);
         }
 
         node = solved;

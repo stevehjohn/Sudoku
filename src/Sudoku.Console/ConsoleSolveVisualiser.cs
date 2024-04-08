@@ -66,12 +66,14 @@ public class ConsoleSolveVisualiser
         {
             for (var x = 0; x < 9; x++)
             {
-                if (_puzzle[x + y * 9] == 0)
+                if (_puzzle[x + y * 9] != 0)
                 {
-                    SetCursorPosition(x, y, _solution[x + y * 9]);
-
-                    Out.Write(_solution[x + y * 9]);
+                    continue;
                 }
+                
+                SetCursorPosition(x, y, _solution[x + y * 9]);
+
+                Out.Write(_solution[x + y * 9]);
             }
         }
     }
@@ -143,14 +145,16 @@ public class ConsoleSolveVisualiser
         {
             for (var x = 0; x < 9; x++)
             {
-                if (_solution.GetInitialCandidates(x + y * 9) != null)
+                if (_solution.GetInitialCandidates(x + y * 9) == null)
                 {
-                    foreach (var candidate in _solution.GetInitialCandidates(x + y * 9))
-                    {
-                        SetCursorPosition(x, y, candidate);
+                    continue;
+                }
+                
+                foreach (var candidate in _solution.GetInitialCandidates(x + y * 9))
+                {
+                    SetCursorPosition(x, y, candidate);
                         
-                        Out.Write(candidate);
-                    }
+                    Out.Write(candidate);
                 }
             }
         }
@@ -179,14 +183,16 @@ public class ConsoleSolveVisualiser
         {
             for (var x = 0; x < 9; x++)
             {
-                if (_puzzle[x + y * 9] != 0)
+                if (_puzzle[x + y * 9] == 0)
                 {
-                    Out.CursorTop = _top + 3 + y * 4;
-
-                    Out.CursorLeft = _left + 3 + x * 6;
-                    
-                    Out.Write(_puzzle[x + y * 9]);
+                    continue;
                 }
+                
+                Out.CursorTop = _top + 3 + y * 4;
+
+                Out.CursorLeft = _left + 3 + x * 6;
+                    
+                Out.Write(_puzzle[x + y * 9]);
             }
         }
     }
@@ -216,24 +222,28 @@ public class ConsoleSolveVisualiser
                     Out.Write("┃     │     │     ┃     │     │     ┃     │     │     ┃");
                 }
 
-                if (j < 2)
+                if (j >= 2)
                 {
-                    Out.CursorTop = top++;
-
-                    Out.CursorLeft = 1;
-
-                    Out.Write("┠─────┼─────┼─────╂─────┼─────┼─────╂─────┼─────┼─────┨");
+                    continue;
                 }
-            }
-
-            if (i < 2)
-            {
+                
                 Out.CursorTop = top++;
 
                 Out.CursorLeft = 1;
 
-                Out.Write("┣━━━━━┿━━━━━┿━━━━━╋━━━━━┿━━━━━┿━━━━━╋━━━━━┿━━━━━┿━━━━━┫");
+                Out.Write("┠─────┼─────┼─────╂─────┼─────┼─────╂─────┼─────┼─────┨");
             }
+
+            if (i >= 2)
+            {
+                continue;
+            }
+            
+            Out.CursorTop = top++;
+
+            Out.CursorLeft = 1;
+
+            Out.Write("┣━━━━━┿━━━━━┿━━━━━╋━━━━━┿━━━━━┿━━━━━╋━━━━━┿━━━━━┿━━━━━┫");
         }
 
         Out.CursorTop = top++;
