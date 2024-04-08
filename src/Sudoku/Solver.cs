@@ -90,16 +90,18 @@ public class Solver
 
             for (var i = 0; i < 81; i++)
             {
-                if (_cellCandidates[i] > 0)
+                if (_cellCandidates[i] <= 0)
                 {
-                    initialCandidates[i] = [];
+                    continue;
+                }
+                
+                initialCandidates[i] = [];
 
-                    for (var j = 1; j < 10; j++)
+                for (var j = 1; j < 10; j++)
+                {
+                    if ((_cellCandidates[i] & 1 << (j - 1)) > 0)
                     {
-                        if ((_cellCandidates[i] & 1 << (j - 1)) > 0)
-                        {
-                            initialCandidates[i].Add(j);
-                        }
+                        initialCandidates[i].Add(j);
                     }
                 }
             }
@@ -175,15 +177,17 @@ public class Solver
 
                 _cellCandidates[i] = candidates.Column[x] & candidates.Row[y] & candidates.Box[boxY + x / 3];
 
-                if (_cellCandidates[i] == 0)
+                if (_cellCandidates[i] != 0)
                 {
-                    if (_historyType == HistoryType.AllSteps)
-                    {
-                        _history.Add(new Move(x, y, 0, MoveType.NoCandidates));
-                    }
-
-                    return false;
+                    continue;
                 }
+                
+                if (_historyType == HistoryType.AllSteps)
+                {
+                    _history.Add(new Move(x, y, 0, MoveType.NoCandidates));
+                }
+
+                return false;
             }
             else
             {
@@ -330,24 +334,28 @@ public class Solver
 
             var count = BitOperations.PopCount((uint) candidates);
 
-            if (count < valueCount)
+            if (count >= valueCount)
             {
-                position = (i % 9, i / 9);
-
-                values = candidates;
-
-                valueCount = count;
-
-                if (count == 1)
-                {
-                    if (_moveType != MoveType.HiddenSingle)
-                    {
-                        _moveType = MoveType.NakedSingle;
-                    }
-
-                    return (position, values, valueCount);
-                }
+                continue;
             }
+            
+            position = (i % 9, i / 9);
+
+            values = candidates;
+
+            valueCount = count;
+
+            if (count != 1)
+            {
+                continue;
+            }
+            
+            if (_moveType != MoveType.HiddenSingle)
+            {
+                _moveType = MoveType.NakedSingle;
+            }
+
+            return (position, values, valueCount);
         }
 
         return (position, values, valueCount);
