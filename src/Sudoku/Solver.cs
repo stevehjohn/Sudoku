@@ -114,12 +114,9 @@ public class Solver
             return new SudokuResult(_workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, "Unsolvable");
         }
 
-        if (_solutionCount > 1)
-        {
-            return new SudokuResult(_workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, $"Multiple solutions: {_solutionCount}");
-        }
-
-        return new SudokuResult(_solution, true, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, "Solved");
+        return _solutionCount > 1 
+            ? new SudokuResult(_workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, $"Multiple solutions: {_solutionCount}") 
+            : new SudokuResult(_solution, true, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, "Solved");
     }
 
     private bool SolveStep(Span<int> puzzle, (Candidates Row, Candidates Column, Candidates Box) candidates)
