@@ -27,13 +27,15 @@ public static class IntArrayExtensions
             }
 
             Console.WriteLine(" │");
-            
-            if (y is 2 or 5)
+
+            if (y is not (2 or 5))
             {
-                SetPosition(left, top, line++);
-            
-                Console.WriteLine("├───────┼───────┼───────┤");
+                continue;
             }
+            
+            SetPosition(left, top, line++);
+            
+            Console.WriteLine("├───────┼───────┼───────┤");
         }
         
         SetPosition(left, top, line);

@@ -27,12 +27,14 @@ public static class SpanIntExtensions
                     countRow++;
                 }
 
-                if (puzzle[y + x * 9] != 0)
+                if (puzzle[y + x * 9] == 0)
                 {
-                    uniqueColumn.Add(puzzle[y + x * 9]);
-
-                    countColumn++;
+                    continue;
                 }
+                
+                uniqueColumn.Add(puzzle[y + x * 9]);
+
+                countColumn++;
             }
 
             if (uniqueRow.Count < countRow || uniqueColumn.Count < countColumn)
@@ -55,12 +57,14 @@ public static class SpanIntExtensions
                 {
                     for (var y = 0; y < 3; y++)
                     {
-                        if (puzzle[(yO + y) * 9 + xO + x] != 0)
+                        if (puzzle[(yO + y) * 9 + xO + x] == 0)
                         {
-                            uniqueBox.Add(puzzle[(yO + y) * 9 + xO + x]);
-
-                            countBox++;
+                            continue;
                         }
+                        
+                        uniqueBox.Add(puzzle[(yO + y) * 9 + xO + x]);
+
+                        countBox++;
                     }
                 }
 

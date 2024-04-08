@@ -57,12 +57,14 @@ public class Generator
 
             for (var i = 0; i < 81; i++)
             {
-                if (puzzle[i] == 0)
+                if (puzzle[i] != 0)
                 {
-                    filledCells.Add(i);
-
-                    puzzle[i] = copy[i];
+                    continue;
                 }
+                
+                filledCells.Add(i);
+
+                puzzle[i] = copy[i];
             }
         }
     }
