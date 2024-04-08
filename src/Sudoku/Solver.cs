@@ -60,20 +60,19 @@ public class Solver
 
         var span = new Span<int>(_workingCopy);
 
-        if (_score == 0)
+        switch (_score)
         {
-            stopwatch.Stop();
+            case 0:
+                stopwatch.Stop();
 
-            return span.IsValidSudoku()
-                ? new SudokuResult(_workingCopy, true, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, "Full valid board") 
-                : new SudokuResult(_workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, "Full invalid board");
-        }
+                return span.IsValidSudoku()
+                    ? new SudokuResult(_workingCopy, true, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, "Full valid board") 
+                    : new SudokuResult(_workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, "Full invalid board");
+            
+            case > 64:
+                stopwatch.Stop();
 
-        if (_score > 64)
-        {
-            stopwatch.Stop();
-
-            return new SudokuResult(_workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, $"Insufficient number of clues: {81 - _score}");
+                return new SudokuResult(_workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, $"Insufficient number of clues: {81 - _score}");
         }
 
         _history = _historyType != HistoryType.None ? [] : null;
@@ -189,10 +188,8 @@ public class Solver
 
                 return false;
             }
-            else
-            {
-                _cellCandidates[i] = 0;
-            }
+
+            _cellCandidates[i] = 0;
         }
 
         return true;

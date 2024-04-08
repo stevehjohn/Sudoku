@@ -547,14 +547,16 @@ public class ConsoleApplication
             {
                 var character = line[i];
 
-                if (character is > '0' and <= '9')
+                if (character is <= '0' or > '9')
                 {
-                    puzzles[count].Puzzle[i] = character - '0';
+                    continue;
+                }
+                
+                puzzles[count].Puzzle[i] = character - '0';
 
-                    if (character != '0')
-                    {
-                        clues++;
-                    }
+                if (character != '0')
+                {
+                    clues++;
                 }
             }
 
