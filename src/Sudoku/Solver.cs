@@ -221,21 +221,27 @@ public class Solver
 
                 var once = oneMask & ~twoMask;
 
-                if (BitOperations.PopCount((uint) once) == 1)
-                    for (var y = 0; y < 3; y++)
+                if (BitOperations.PopCount((uint) once) != 1)
+                {
+                    continue;
+                }
+
+                for (var y = 0; y < 3; y++)
+                {
+                    for (var x = 0; x < 3; x++)
                     {
-                        for (var x = 0; x < 3; x++)
+                        if ((_cellCandidates[start + (y << 3) + y + x] & once) <= 0)
                         {
-                            if ((_cellCandidates[start + (y << 3) + y + x] & once) > 0)
-                            {
-                                _cellCandidates[start + (y << 3) + y + x] = once;
-
-                                _moveType = MoveType.HiddenSingle;
-
-                                return start + (y << 3) + y + x;
-                            }
+                            continue;
                         }
+
+                        _cellCandidates[start + (y << 3) + y + x] = once;
+
+                        _moveType = MoveType.HiddenSingle;
+
+                        return start + (y << 3) + y + x;
                     }
+                }
             }
         }
 
@@ -269,28 +275,36 @@ public class Solver
             if (BitOperations.PopCount((uint) onceRow) == 1)
                 for (var x = 0; x < 9; x++)
                 {
-                    if ((_cellCandidates[y9 + x] & onceRow) > 0)
+                    if ((_cellCandidates[y9 + x] & onceRow) <= 0)
                     {
-                        _cellCandidates[y9 + x] = onceRow;
-
-                        _moveType = MoveType.HiddenSingle;
-
-                        return y9 + x;
+                        continue;
                     }
+                    
+                    _cellCandidates[y9 + x] = onceRow;
+
+                    _moveType = MoveType.HiddenSingle;
+
+                    return y9 + x;
                 }
 
-            if (BitOperations.PopCount((uint) onceColumn) == 1)
-                for (var x = 0; x < 9; x++)
+            if (BitOperations.PopCount((uint) onceColumn) != 1)
+            {
+                continue;
+            }
+            
+            for (var x = 0; x < 9; x++)
+            {
+                if ((_cellCandidates[(x << 3) + x + y] & onceColumn) <= 0)
                 {
-                    if ((_cellCandidates[(x << 3) + x + y] & onceColumn) > 0)
-                    {
-                        _cellCandidates[(x << 3) + x + y] = onceColumn;
-
-                        _moveType = MoveType.HiddenSingle;
-
-                        return (x << 3) + x + y;
-                    }
+                    continue;
                 }
+                
+                _cellCandidates[(x << 3) + x + y] = onceColumn;
+
+                _moveType = MoveType.HiddenSingle;
+
+                return (x << 3) + x + y;
+            }
         }
 
         return -1;
