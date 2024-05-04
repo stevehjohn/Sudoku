@@ -7,8 +7,10 @@
         <RootNamespace>Sudoku.Solver</RootNamespace>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Authors>Steve John</Authors>
-        <Version>1.2.11</Version>
+        <Version>1.2.12</Version>
         <RootNamespace>Sudoku</RootNamespace>
+        <Description>A dotnet Sudoku solver and generator.</Description>
+        <PackageProjectUrl>https://github.com/stevehjohn/Sudoku</PackageProjectUrl>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
