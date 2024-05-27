@@ -135,6 +135,8 @@ public static class TreeGenerator
                     break;
 
                 case MoveType.HiddenSingle:
+                case MoveType.Backtrack:
+                default:
                     content = content.Replace("{class}", node.OnSolvedPath ? "solvePath" : string.Empty).Replace("{type}", "Hidden Single");
                     break;
             }

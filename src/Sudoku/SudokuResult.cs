@@ -88,6 +88,9 @@ public class SudokuResult
                     Console.WriteLine($" - No candidates at ({move.X}, {move.Y})");
                     break;
 
+                case MoveType.None:
+                case MoveType.Guess:
+                case MoveType.Backtrack:
                 default:
                     Console.WriteLine($" - Guess of {move.Value} at ({move.X}, {move.Y}). Candidates: {string.Join(", ", move.Candidates)}");
                     break;
