@@ -38,6 +38,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{E223
 		..\test.bat = ..\test.bat
 		..\test.sh = ..\test.sh
 		..\debug.bat = ..\debug.bat
+		..\clean.bat = ..\clean.bat
+		..\clean.sh = ..\clean.sh
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Visualisations", "Visualisations", "{82F9E46D-1196-4814-9BCB-67E40CEC61F8}"
