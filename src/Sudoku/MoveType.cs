@@ -7,5 +7,6 @@ public enum MoveType
     HiddenSingle,
     Guess,
     Backtrack,
+    XWing,
     NoCandidates
 }
