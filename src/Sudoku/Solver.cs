@@ -135,7 +135,7 @@ public class Solver
 
         if (move.Values == 0)
         {
-            // TODO: X-Wing
+            FindXWing();
         }
 
         return CreateNextSteps(puzzle, move, candidates);
@@ -358,6 +358,10 @@ public class Solver
         }
 
         return (position, values, valueCount);
+    }
+
+    private void FindXWing()
+    {
     }
 
     private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, (Candidates Row, Candidates Column, Candidates Box) candidates)
