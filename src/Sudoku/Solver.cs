@@ -145,6 +145,11 @@ public class Solver
                 {
                     break;
                 }
+
+                if (! GetCellCandidates(puzzle, candidates, exclusions))
+                {
+                    return false;
+                }
             }
             else
             {
