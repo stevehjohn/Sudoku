@@ -298,6 +298,8 @@ public class ConsoleApplication
 
         var count = 0;
 
+        int[] lastPuzzle = null;
+
         Parallel.For(0, puzzleCount,
             new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount - 1 },
             _ =>
@@ -320,6 +322,8 @@ public class ConsoleApplication
                 var generator = new Generator();
 
                 var puzzle = generator.Generate(clues);
+
+                lastPuzzle = puzzle;
 
                 lock (recentLock)
                 {
@@ -358,8 +362,18 @@ public class ConsoleApplication
 
         Out($"\n Puzzles have been written to {filename}.");
 
-        Out(
-            $"\n {puzzleCount:N0} {clues} clue puzzles generated in {stopwatch.Elapsed.Minutes} minutes, {stopwatch.Elapsed.Seconds} seconds, {puzzleCount / stopwatch.Elapsed.TotalSeconds:N0} puzzles/second.");
+        Out($"\n {puzzleCount:N0} {clues} clue puzzles generated in {stopwatch.Elapsed.Minutes} minutes, {stopwatch.Elapsed.Seconds} seconds, {puzzleCount / stopwatch.Elapsed.TotalSeconds:N0} puzzles/second.");
+
+        if (lastPuzzle != null)
+        {
+            System.Console.WriteLine();
+            
+            System.Console.WriteLine(" Last puzzle:");
+            
+            System.Console.WriteLine();
+            
+            lastPuzzle.DumpToConsole(1);
+        }
 
         System.Console.CursorVisible = true;
     }
