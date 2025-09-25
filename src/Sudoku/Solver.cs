@@ -129,9 +129,9 @@ public class Solver
 
         _moveType = MoveType.Guess;
 
-        var single = FindHiddenSingles();
+        var single = FindHiddenSingle();
 
-        var move = single == -1 ? FindLowestMove(puzzle) : ((single % 9, single / 9), _cellCandidates[single], 1);
+        var move = single == -1 ? FindNakedSingle(puzzle) : ((single % 9, single / 9), _cellCandidates[single], 1);
 
         return CreateNextSteps(puzzle, move, candidates);
     }
@@ -196,7 +196,7 @@ public class Solver
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private int FindHiddenSingles()
+    private int FindHiddenSingle()
     {
         for (var yO = 0; yO < 81; yO += 27)
         {
@@ -312,7 +312,7 @@ public class Solver
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private ((int X, int Y) Position, int Values, int ValueCount) FindLowestMove(Span<int> puzzle)
+    private ((int X, int Y) Position, int Values, int ValueCount) FindNakedSingle(Span<int> puzzle)
     {
         var position = (X: -1, Y: -1);
 
