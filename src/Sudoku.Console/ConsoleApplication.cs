@@ -290,7 +290,7 @@ public class ConsoleApplication
             File.Delete(filename);
         }
 
-        Out($"\n Generating {clues} clue puzzles...\n");
+        Out($"\n {DateTime.Now:HH:mm:ss}: Generating {clues} clue puzzle{(puzzleCount > 1 ? "s" : string.Empty)}...\n");
 
         var recent = new List<int[]>();
 
