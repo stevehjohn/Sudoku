@@ -106,7 +106,9 @@ public class Solver
             }
         }
 
-        var solved = SolveStep(span, candidates);
+        var exclusions = new int[81];
+
+        var solved = SolveStep(span, candidates, exclusions);
 
         stopwatch.Stop();
 
@@ -120,7 +122,7 @@ public class Solver
             : new SudokuResult(_solution, true, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, "Solved");
     }
 
-    private bool SolveStep(Span<int> puzzle, (Candidates Row, Candidates Column, Candidates Box) candidates)
+    private bool SolveStep(Span<int> puzzle, (Candidates Row, Candidates Column, Candidates Box) candidates, int[] exclusions)
     {
         if (! GetCellCandidates(puzzle, candidates))
         {
@@ -150,7 +152,7 @@ public class Solver
             }
         }
 
-        return CreateNextSteps(puzzle, move, candidates);
+        return CreateNextSteps(puzzle, move, candidates, exclusions);
     }
 
     private static (Candidates Row, Candidates Column, Candidates Box) GetSectionCandidates(Span<int> puzzle)
@@ -377,7 +379,7 @@ public class Solver
         return false;
     }
 
-    private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, (Candidates Row, Candidates Column, Candidates Box) candidates)
+    private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, (Candidates Row, Candidates Column, Candidates Box) candidates, int[] exclusions)
     {
         var cell = move.Position.X + (move.Position.Y << 3) + move.Position.Y;
 
@@ -451,7 +453,7 @@ public class Solver
 
             _steps++;
 
-            if (SolveStep(puzzle, candidates))
+            if (SolveStep(puzzle, candidates, exclusions))
             {
                 return true;
             }
