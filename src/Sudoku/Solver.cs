@@ -347,10 +347,7 @@ public class Solver
                 continue;
             }
             
-            if (_moveType != MoveType.HiddenSingle)
-            {
-                _moveType = MoveType.NakedSingle;
-            }
+            _moveType = MoveType.NakedSingle;
 
             return (position, values, valueCount);
         }
