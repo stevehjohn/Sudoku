@@ -141,7 +141,7 @@ public class Solver
 
             if (move.ValueCount > 1)
             {
-                if (! FindXWing())
+                if (! FindXWing(exclusions))
                 {
                     break;
                 }
@@ -374,7 +374,7 @@ public class Solver
         return (position, values, valueCount);
     }
 
-    private bool FindXWing()
+    private bool FindXWing(int exclusions)
     {
         return false;
     }
