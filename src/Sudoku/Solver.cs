@@ -127,8 +127,6 @@ public class Solver
             return false;
         }
 
-        _moveType = MoveType.Guess;
-
         var single = FindHiddenSingle();
 
         var move = single == -1 ? FindNakedSingle(puzzle) : (Position: (single % 9, single / 9), Values: _cellCandidates[single], ValueCount: 1);
