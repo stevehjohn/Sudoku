@@ -81,13 +81,11 @@ public class Solver
 
         List<int>[] initialCandidates = null;
 
-        var exclusions = new int[81];
-
         if (_historyType == HistoryType.AllSteps)
         {
             initialCandidates = new List<int>[81];
 
-            GetCellCandidates(puzzle, candidates, exclusions);
+            GetCellCandidates(puzzle, candidates);
 
             for (var i = 0; i < 81; i++)
             {
@@ -108,7 +106,7 @@ public class Solver
             }
         }
 
-        var solved = SolveStep(span, candidates, exclusions);
+        var solved = SolveStep(span, candidates);
 
         stopwatch.Stop();
 
@@ -122,42 +120,18 @@ public class Solver
             : new SudokuResult(_solution, true, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, "Solved");
     }
 
-    private bool SolveStep(Span<int> puzzle, (Candidates Row, Candidates Column, Candidates Box) candidates, int[] exclusions)
+    private bool SolveStep(Span<int> puzzle, (Candidates Row, Candidates Column, Candidates Box) candidates)
     {
-        if (! GetCellCandidates(puzzle, candidates, exclusions))
+        if (! GetCellCandidates(puzzle, candidates))
         {
             return false;
         }
 
-        var moved = false;
+        var single = FindHiddenSingle();
 
-        var move = (Position: (-1, -1), Values: 0, ValueCount: 0);
+        var move = single == -1 ? FindNakedSingle(puzzle) : (Position: (single % 9, single / 9), Values: _cellCandidates[single], ValueCount: 1);
         
-        while (! moved)
-        {
-            var single = FindHiddenSingle();
-
-            move = single == -1 ? FindNakedSingle(puzzle) : (Position: (single % 9, single / 9), Values: _cellCandidates[single], ValueCount: 1);
-
-            if (move.ValueCount > 1)
-            {
-                if (! FindXWing(candidates.Row, candidates.Column, exclusions))
-                {
-                    break;
-                }
-
-                if (! GetCellCandidates(puzzle, candidates, exclusions))
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                moved = true;
-            }
-        }
-
-        return CreateNextSteps(puzzle, move, candidates, exclusions);
+        return CreateNextSteps(puzzle, move, candidates);
     }
 
     private static (Candidates Row, Candidates Column, Candidates Box) GetSectionCandidates(Span<int> puzzle)
@@ -186,7 +160,7 @@ public class Solver
         return (rowCandidates, columnCandidates, boxCandidates);
     }
 
-    private bool GetCellCandidates(Span<int> puzzle, (Candidates Row, Candidates Column, Candidates Box) candidates, int[] exclusions)
+    private bool GetCellCandidates(Span<int> puzzle, (Candidates Row, Candidates Column, Candidates Box) candidates)
     {
         for (var i = 0; i < 81; i++)
         {
@@ -198,7 +172,7 @@ public class Solver
             
                 var boxY = y / 3 * 3;
 
-                _cellCandidates[i] = candidates.Column[x] & candidates.Row[y] & candidates.Box[boxY + x / 3] & ~exclusions[i];
+                _cellCandidates[i] = candidates.Column[x] & candidates.Row[y] & candidates.Box[boxY + x / 3];
 
                 if (_cellCandidates[i] != 0)
                 {
@@ -379,12 +353,7 @@ public class Solver
         return (position, values, valueCount);
     }
 
-    private static bool FindXWing(Candidates rowCandidates, Candidates columnCandidates, int[] exclusions)
-    {
-        return false;
-    }
-
-    private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, (Candidates Row, Candidates Column, Candidates Box) candidates, int[] exclusions)
+    private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, (Candidates Row, Candidates Column, Candidates Box) candidates)
     {
         var cell = move.Position.X + (move.Position.Y << 3) + move.Position.Y;
 
@@ -458,11 +427,7 @@ public class Solver
 
             _steps++;
 
-            var oldExclusions = new int[81];
-            
-            Array.Copy(exclusions, oldExclusions, 81);
-
-            if (SolveStep(puzzle, candidates, exclusions))
+            if (SolveStep(puzzle, candidates))
             {
                 return true;
             }
@@ -470,8 +435,6 @@ public class Solver
             puzzle[cell] = 0;
 
             candidates = oldCandidates;
-
-            Array.Copy(oldExclusions, exclusions, 81);
 
             if (_historyType != HistoryType.None)
             {
