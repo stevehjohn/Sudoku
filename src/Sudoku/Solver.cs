@@ -193,7 +193,7 @@ public class Solver
             
                 var boxY = y / 3 * 3;
 
-                _cellCandidates[i] = candidates.Column[x] & candidates.Row[y] & candidates.Box[boxY + x / 3];
+                _cellCandidates[i] = candidates.Column[x] & candidates.Row[y] & candidates.Box[boxY + x / 3] & ~exclusions[i];
 
                 if (_cellCandidates[i] != 0)
                 {
