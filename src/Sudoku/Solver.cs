@@ -81,11 +81,13 @@ public class Solver
 
         List<int>[] initialCandidates = null;
 
+        var exclusions = new int[81];
+
         if (_historyType == HistoryType.AllSteps)
         {
             initialCandidates = new List<int>[81];
 
-            GetCellCandidates(puzzle, candidates);
+            GetCellCandidates(puzzle, candidates, exclusions);
 
             for (var i = 0; i < 81; i++)
             {
@@ -105,8 +107,6 @@ public class Solver
                 }
             }
         }
-
-        var exclusions = new int[81];
 
         var solved = SolveStep(span, candidates, exclusions);
 
