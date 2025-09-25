@@ -466,7 +466,7 @@ public class Solver
 
             candidates = oldCandidates;
 
-            exclusions = oldExclusions;
+            Array.Copy(exclusions, oldExclusions, 81);
 
             if (_historyType != HistoryType.None)
             {
