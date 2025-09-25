@@ -453,6 +453,10 @@ public class Solver
 
             _steps++;
 
+            var oldExclusions = new int[81];
+            
+            Array.Copy(exclusions, oldExclusions, 81);
+
             if (SolveStep(puzzle, candidates, exclusions))
             {
                 return true;
@@ -461,6 +465,8 @@ public class Solver
             puzzle[cell] = 0;
 
             candidates = oldCandidates;
+
+            exclusions = oldExclusions;
 
             if (_historyType != HistoryType.None)
             {
