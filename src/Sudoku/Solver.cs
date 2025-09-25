@@ -131,7 +131,12 @@ public class Solver
 
         var single = FindHiddenSingle();
 
-        var move = single == -1 ? FindNakedSingle(puzzle) : ((single % 9, single / 9), _cellCandidates[single], 1);
+        var move = single == -1 ? FindNakedSingle(puzzle) : (Position: (single % 9, single / 9), Values: _cellCandidates[single], ValueCount: 1);
+
+        if (move.Values == 0)
+        {
+            // TODO: X-Wing
+        }
 
         return CreateNextSteps(puzzle, move, candidates);
     }
