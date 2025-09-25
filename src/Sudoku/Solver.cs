@@ -127,13 +127,27 @@ public class Solver
             return false;
         }
 
-        var single = FindHiddenSingle();
+        var moved = false;
 
-        var move = single == -1 ? FindNakedSingle(puzzle) : (Position: (single % 9, single / 9), Values: _cellCandidates[single], ValueCount: 1);
-
-        if (move.ValueCount > 1)
+        var move = (Position: (-1, -1), Values: 0, ValueCount: 0);
+        
+        while (! moved)
         {
-            FindXWing();
+            var single = FindHiddenSingle();
+
+            move = single == -1 ? FindNakedSingle(puzzle) : (Position: (single % 9, single / 9), Values: _cellCandidates[single], ValueCount: 1);
+
+            if (move.ValueCount > 1)
+            {
+                if (! FindXWing())
+                {
+                    break;
+                }
+            }
+            else
+            {
+                moved = true;
+            }
         }
 
         return CreateNextSteps(puzzle, move, candidates);
@@ -358,8 +372,9 @@ public class Solver
         return (position, values, valueCount);
     }
 
-    private void FindXWing()
+    private bool FindXWing()
     {
+        return false;
     }
 
     private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, (Candidates Row, Candidates Column, Candidates Box) candidates)
