@@ -124,7 +124,7 @@ public class Solver
 
     private bool SolveStep(Span<int> puzzle, (Candidates Row, Candidates Column, Candidates Box) candidates, int[] exclusions)
     {
-        if (! GetCellCandidates(puzzle, candidates))
+        if (! GetCellCandidates(puzzle, candidates, exclusions))
         {
             return false;
         }
@@ -181,7 +181,7 @@ public class Solver
         return (rowCandidates, columnCandidates, boxCandidates);
     }
 
-    private bool GetCellCandidates(Span<int> puzzle, (Candidates Row, Candidates Column, Candidates Box) candidates)
+    private bool GetCellCandidates(Span<int> puzzle, (Candidates Row, Candidates Column, Candidates Box) candidates, int[] exclusions)
     {
         for (var i = 0; i < 81; i++)
         {
@@ -374,7 +374,7 @@ public class Solver
         return (position, values, valueCount);
     }
 
-    private bool FindXWing(int exclusions)
+    private bool FindXWing(int[] exclusions)
     {
         return false;
     }
