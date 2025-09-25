@@ -131,11 +131,6 @@ public class Solver
 
         var move = single == -1 ? FindNakedSingle(puzzle) : (Position: (single % 9, single / 9), Values: _cellCandidates[single], ValueCount: 1);
 
-        if (move.Values == 0)
-        {
-            FindXWing();
-        }
-
         return CreateNextSteps(puzzle, move, candidates);
     }
 
