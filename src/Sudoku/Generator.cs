@@ -21,7 +21,6 @@ public class Generator
         CreateSolvedPuzzle(puzzle);
 
         RemoveCells(puzzle, 81 - cluesToLeave);
-
         return puzzle;
     }
 
@@ -39,18 +38,16 @@ public class Generator
         RemoveCell(puzzle, cellsToRemove);
     }
 
-    private bool RemoveCell(int[] puzzle, int cellsToRemove)
+    private bool RemoveCell(int[] puzzle, int cellsToRemove, int start = 0)
     {
         if (cellsToRemove == 0)
         {
             return true;
         }
 
-        for (var i = 0; i < _filledCells.Count; i++)
+        for (var i = start; i < _filledCells.Count; i++)
         {
-            var cellIndex = _filledCells[0];
-
-            _filledCells.RemoveAt(0);
+            var cellIndex = _filledCells[i];
 
             var cellValue = puzzle[cellIndex];
 
@@ -60,14 +57,12 @@ public class Generator
 
             var unique = result.Solved && result.SolutionCount == 1;
 
-            if (unique && RemoveCell(puzzle, cellsToRemove - 1))
+            if (unique && RemoveCell(puzzle, cellsToRemove - 1, start + 1))
             {
                 return true;
             }
 
             puzzle[cellIndex] = cellValue;
-
-            _filledCells.Add(cellIndex);
         }
 
         return false;
