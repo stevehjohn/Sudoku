@@ -35,31 +35,38 @@ public class Generator
         RemoveCell(puzzle, cellsToRemove);
     }
 
-    private void RemoveCell(int[] puzzle, int cellsToRemove)
+    private bool RemoveCell(int[] puzzle, int cellsToRemove)
     {
-        var random = _rng.Next(_filledCells.Count);
-        
-        var cellIndex = _filledCells[random];
-
-        _filledCells.RemoveAt(random);
-
-        var cellValue = puzzle[cellIndex];
-
-        puzzle[cellIndex] = 0;
-        
-        var result = _solver.Solve(puzzle);
-
-        var unique = result.Solved && result.SolutionCount == 1;
-
-        if (unique)
+        if (cellsToRemove == 0)
         {
-            if (cellsToRemove == 0)
+            return true;
+        }
+
+        for (var i = 0; i < _filledCells.Count; i++)
+        {
+            var cellIndex = _filledCells[0];
+
+            _filledCells.RemoveAt(0);
+
+            var cellValue = puzzle[cellIndex];
+
+            puzzle[cellIndex] = 0;
+
+            var result = _solver.Solve(puzzle);
+
+            var unique = result.Solved && result.SolutionCount == 1;
+
+            if (unique && RemoveCell(puzzle, cellsToRemove - 1))
             {
-                return;
+                return true;
             }
 
-            RemoveCell(puzzle, cellsToRemove - 1);
+            puzzle[cellIndex] = cellValue;
+
+            _filledCells.Add(cellIndex);
         }
+
+        return false;
     }
 
     private bool CreateSolvedPuzzle(Span<int> puzzle, int cell = 0)
