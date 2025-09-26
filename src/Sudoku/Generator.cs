@@ -58,8 +58,10 @@ public class Generator
         {
             puzzle[cellIndex] = cellValue;
         }
-
-        RemoveCell(puzzle, cellsToRemove - 1);
+        else
+        {
+            RemoveCell(puzzle, cellsToRemove - 1);
+        }
     }
 
     private bool CreateSolvedPuzzle(Span<int> puzzle, int cell = 0)
