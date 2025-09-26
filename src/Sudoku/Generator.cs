@@ -50,7 +50,7 @@ public class Generator
                 
                 filledCells.Add(cellIndex);
 
-                i++;
+                i--;
             }
         }
     }
