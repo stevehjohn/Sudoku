@@ -48,7 +48,9 @@ public class Generator
 
         for (var i = start; i < _filledCells.Count; i++)
         {
-            var cellIndex = _filledCells[i];
+            (_filledCells[i], _filledCells[start]) = (_filledCells[start], _filledCells[i]);
+            
+            int cellIndex = _filledCells[start];
 
             var cellValue = puzzle[cellIndex];
 
@@ -64,6 +66,8 @@ public class Generator
             }
 
             puzzle[cellIndex] = cellValue;
+         
+            (_filledCells[i], _filledCells[start]) = (_filledCells[start], _filledCells[i]);
         }
 
         return false;
