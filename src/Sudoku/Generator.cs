@@ -47,6 +47,8 @@ public class Generator
             if (! result.Solved || result.SolutionCount > 1)
             {
                 puzzle[cellIndex] = cellValue;
+
+                i++;
             }
         }
     }
