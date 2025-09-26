@@ -8,7 +8,7 @@ public class Generator
 
     private readonly Random _rng = Random.Shared;
 
-    private readonly Solver _solver = new(HistoryType.None, SolveMethod.CountAll);
+    private readonly Solver _solver = new(HistoryType.None, SolveMethod.FindUnique);
     
     public int[] Generate(int cluesToLeave = 30)
     {
