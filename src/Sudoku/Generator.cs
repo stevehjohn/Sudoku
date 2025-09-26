@@ -70,8 +70,6 @@ public class Generator
             _filledCells.Add(cellIndex);
         }
 
-        ShuffleFilledCells();
-
         return false;
     }
 
