@@ -27,6 +27,8 @@ public class Generator
 
     private void RemoveCells(int[] puzzle, int cellsToRemove)
     {
+        _filledCells.Clear();
+        
         for (var i = 0; i < 81; i++)
         {
             _filledCells.Add(i);
