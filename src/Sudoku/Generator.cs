@@ -52,7 +52,13 @@ public class Generator
 
                 i--;
             }
+            
+            Console.Write($"{i}   ");
+
+            Console.CursorLeft = 0;
         }
+        
+        Console.WriteLine();
     }
 
     private bool CreateSolvedPuzzle(Span<int> puzzle, int cell = 0)
