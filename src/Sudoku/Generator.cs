@@ -9,6 +9,8 @@ public class Generator
     private readonly Random _rng = Random.Shared;
 
     private readonly Solver _solver = new(HistoryType.None, SolveMethod.FindUnique);
+
+    private readonly List<int> _filledCells = [];
     
     public int[] Generate(int cluesToLeave = 30)
     {
@@ -25,34 +27,39 @@ public class Generator
 
     private void RemoveCells(int[] puzzle, int cellsToRemove)
     {
-        var filledCells = new List<int>();
-
         for (var i = 0; i < 81; i++)
         {
-            filledCells.Add(i);
+            _filledCells.Add(i);
         }
+        
+        RemoveCell(puzzle, cellsToRemove);
+    }
 
-        for (var i = 0; i < cellsToRemove; i++)
+    private void RemoveCell(int[] puzzle, int cellsToRemove)
+    {
+        var random = _rng.Next(_filledCells.Count);
+        
+        var cellIndex = _filledCells[random];
+
+        _filledCells.RemoveAt(random);
+
+        var cellValue = puzzle[cellIndex];
+
+        puzzle[cellIndex] = 0;
+        
+        var result = _solver.Solve(puzzle);
+
+        if (result.Solved && result.SolutionCount == 1 && cellsToRemove == 0)
         {
-            var cellIndex = filledCells[_rng.Next(filledCells.Count)];
-
-            filledCells.Remove(cellIndex);
-            
-            var cellValue = puzzle[cellIndex];
-            
-            puzzle[cellIndex] = 0;
-
-            var result = _solver.Solve(puzzle);
-            
-            if (! result.Solved || result.SolutionCount > 1)
-            {
-                puzzle[cellIndex] = cellValue;
-                
-                filledCells.Add(cellIndex);
-
-                i--;
-            }
+            return;
         }
+
+        if (result.SolutionCount == 0)
+        {
+            puzzle[cellIndex] = cellValue;
+        }
+
+        RemoveCell(puzzle, cellsToRemove - 1);
     }
 
     private bool CreateSolvedPuzzle(Span<int> puzzle, int cell = 0)
