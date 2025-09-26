@@ -68,9 +68,9 @@ public class Generator
             puzzle[cellIndex] = cellValue;
 
             _filledCells.Add(cellIndex);
-
-            ShuffleFilledCells();
         }
+
+        ShuffleFilledCells();
 
         return false;
     }
