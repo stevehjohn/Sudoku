@@ -79,17 +79,10 @@ public class Generator
     {
         var count = _filledCells.Count;
         
-        for (var i = 1; i < count; i++)
+        for (var left = 0; left < count - 1; left++)
         {
-            var left = _random.Next(count);
-
-            var right = left;
-
-            while (right == left)
-            {
-                right = _random.Next(count);
-            }
-
+            var right = left + _random.Next(count - left);
+            
             (_filledCells[left], _filledCells[right]) = (_filledCells[right], _filledCells[left]);
         }
     }
