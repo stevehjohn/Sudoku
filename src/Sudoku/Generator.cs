@@ -6,7 +6,7 @@ public class Generator
 {
     private readonly List<int>[] _candidates = new List<int>[81];
 
-    private readonly Random _rng = Random.Shared;
+    private readonly Random _random = Random.Shared;
 
     private readonly Solver _solver = new(HistoryType.None, SolveMethod.FindUnique);
 
@@ -42,6 +42,8 @@ public class Generator
             return true;
         }
 
+        ShuffleFilledCells();
+
         for (var i = 0; i < _filledCells.Count; i++)
         {
             var cellIndex = _filledCells[0];
@@ -67,6 +69,25 @@ public class Generator
         }
 
         return false;
+    }
+
+    private void ShuffleFilledCells()
+    {
+        var count = _filledCells.Count;
+        
+        for (var i = 1; i < count; i++)
+        {
+            var left = _random.Next(count);
+
+            var right = left;
+
+            while (right == left)
+            {
+                right = _random.Next(count);
+            }
+
+            (_filledCells[left], _filledCells[right]) = (_filledCells[right], _filledCells[left]);
+        }
     }
 
     private bool CreateSolvedPuzzle(Span<int> puzzle, int cell = 0)
