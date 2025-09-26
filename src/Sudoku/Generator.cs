@@ -49,17 +49,15 @@ public class Generator
         
         var result = _solver.Solve(puzzle);
 
-        if (result.Solved && result.SolutionCount == 1 && cellsToRemove == 0)
-        {
-            return;
-        }
+        var unique = result.Solved && result.SolutionCount == 1;
 
-        if (result.SolutionCount == 0)
+        if (unique)
         {
-            puzzle[cellIndex] = cellValue;
-        }
-        else
-        {
+            if (cellsToRemove == 0)
+            {
+                return;
+            }
+
             RemoveCell(puzzle, cellsToRemove - 1);
         }
     }
