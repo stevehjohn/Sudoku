@@ -21,6 +21,7 @@ public class Generator
         CreateSolvedPuzzle(puzzle);
 
         RemoveCells(puzzle, 81 - cluesToLeave);
+        
         return puzzle;
     }
 
