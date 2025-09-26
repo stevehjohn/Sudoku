@@ -19,8 +19,8 @@ public class GeneratorTests
     
         var result = solver.Solve(puzzle);
         
-        // Assert.Equal(1, result.SolutionCount);
-        //
-        // Assert.True(result.Solved);
+        Assert.Equal(1, result.SolutionCount);
+        
+        Assert.True(result.Solved);
     }
 }
