@@ -50,7 +50,7 @@ public class Generator
         {
             (_filledCells[i], _filledCells[start]) = (_filledCells[start], _filledCells[i]);
             
-            int cellIndex = _filledCells[start];
+            var cellIndex = _filledCells[start];
 
             var cellValue = puzzle[cellIndex];
 
