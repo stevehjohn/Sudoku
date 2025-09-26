@@ -31,6 +31,8 @@ public class Generator
         {
             _filledCells.Add(i);
         }
+
+        ShuffleFilledCells();
         
         RemoveCell(puzzle, cellsToRemove);
     }
@@ -41,8 +43,6 @@ public class Generator
         {
             return true;
         }
-
-        ShuffleFilledCells();
 
         for (var i = 0; i < _filledCells.Count; i++)
         {
@@ -66,6 +66,8 @@ public class Generator
             puzzle[cellIndex] = cellValue;
 
             _filledCells.Add(cellIndex);
+
+            ShuffleFilledCells();
         }
 
         return false;
