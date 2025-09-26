@@ -6,9 +6,11 @@ public class Generator
 {
     private readonly List<int>[] _candidates = new List<int>[81];
 
-    private readonly Random _rng = Random.Shared;
+    private readonly Random _random = Random.Shared;
 
     private readonly Solver _solver = new(HistoryType.None, SolveMethod.FindUnique);
+
+    private readonly List<int> _filledCells = [];
     
     public int[] Generate(int cluesToLeave = 30)
     {
@@ -19,53 +21,63 @@ public class Generator
         CreateSolvedPuzzle(puzzle);
 
         RemoveCells(puzzle, 81 - cluesToLeave);
-
+        
         return puzzle;
     }
 
     private void RemoveCells(int[] puzzle, int cellsToRemove)
     {
-        var copy = new int[81];
-
+        _filledCells.Clear();
+        
         for (var i = 0; i < 81; i++)
         {
-            copy[i] = puzzle[i];
+            _filledCells.Add(i);
         }
 
-        var filledCells = new List<int>();
+        ShuffleFilledCells();
+        
+        RemoveCell(puzzle, cellsToRemove);
+    }
 
-        for (var i = 0; i < 81; i++)
+    private bool RemoveCell(int[] puzzle, int cellsToRemove, int start = 0)
+    {
+        if (cellsToRemove == 0)
         {
-            filledCells.Add(i);
+            return true;
         }
 
-        while (true)
+        for (var i = start; i < _filledCells.Count; i++)
         {
-            for (var i = 0; i < cellsToRemove; i++)
-            {
-                var cell = filledCells[_rng.Next(filledCells.Count)];
+            var cellIndex = _filledCells[i];
 
-                filledCells.Remove(cell);
-                
-                puzzle[cell] = 0;
+            var cellValue = puzzle[cellIndex];
+
+            puzzle[cellIndex] = 0;
+
+            var result = _solver.Solve(puzzle);
+
+            var unique = result.Solved && result.SolutionCount == 1;
+
+            if (unique && RemoveCell(puzzle, cellsToRemove - 1, i + 1))
+            {
+                return true;
             }
 
-            if (_solver.Solve(puzzle).Solved)
-            {
-                return;
-            }
+            puzzle[cellIndex] = cellValue;
+        }
 
-            for (var i = 0; i < 81; i++)
-            {
-                if (puzzle[i] != 0)
-                {
-                    continue;
-                }
-                
-                filledCells.Add(i);
+        return false;
+    }
 
-                puzzle[i] = copy[i];
-            }
+    private void ShuffleFilledCells()
+    {
+        var count = _filledCells.Count;
+        
+        for (var left = 0; left < count - 1; left++)
+        {
+            var right = left + _random.Next(count - left);
+            
+            (_filledCells[left], _filledCells[right]) = (_filledCells[right], _filledCells[left]);
         }
     }
 
@@ -73,7 +85,7 @@ public class Generator
     {
         while (_candidates[cell].Count > 0)
         {
-            var candidateIndex = _rng.Next(_candidates[cell].Count);
+            var candidateIndex = _random.Next(_candidates[cell].Count);
 
             var candidate = _candidates[cell][candidateIndex];
 

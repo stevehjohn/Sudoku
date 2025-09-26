@@ -20,7 +20,7 @@ public class ConsoleApplication
 
             EnumeratePuzzleFiles();
 
-            Out("Please select the puzzle set to solve:");
+            Out("Please select the puzzle set to solve or an option below:");
 
             Out();
 

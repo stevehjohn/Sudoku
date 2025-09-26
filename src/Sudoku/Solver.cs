@@ -66,13 +66,13 @@ public class Solver
                 stopwatch.Stop();
 
                 return span.IsValidSudoku()
-                    ? new SudokuResult(_workingCopy, true, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, "Full valid board") 
-                    : new SudokuResult(_workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, "Full invalid board");
+                    ? new SudokuResult(_workingCopy, true, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, 0, "Full valid board") 
+                    : new SudokuResult(_workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, 0, "Full invalid board");
             
             case > 64:
                 stopwatch.Stop();
 
-                return new SudokuResult(_workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, $"Insufficient number of clues: {81 - _score}");
+                return new SudokuResult(_workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, 0, $"Insufficient number of clues: {81 - _score}");
         }
 
         _history = _historyType != HistoryType.None ? [] : null;
@@ -112,12 +112,12 @@ public class Solver
 
         if (! solved && _solutionCount == 0)
         {
-            return new SudokuResult(_workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, "Unsolvable");
+            return new SudokuResult(_workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, 0, "Unsolvable");
         }
 
         return _solutionCount > 1 
-            ? new SudokuResult(_workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, $"Multiple solutions: {_solutionCount}") 
-            : new SudokuResult(_solution, true, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, "Solved");
+            ? new SudokuResult(_workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, _solutionCount, $"Multiple solutions: {_solutionCount}") 
+            : new SudokuResult(_solution, true, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, 1, "Solved");
     }
 
     private bool SolveStep(Span<int> puzzle, (Candidates Row, Candidates Column, Candidates Box) candidates)
