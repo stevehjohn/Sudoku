@@ -48,9 +48,7 @@ public class Generator
 
         for (var i = start; i < _filledCells.Count; i++)
         {
-            (_filledCells[i], _filledCells[start]) = (_filledCells[start], _filledCells[i]);
-            
-            var cellIndex = _filledCells[start];
+            var cellIndex = _filledCells[i];
 
             var cellValue = puzzle[cellIndex];
 
@@ -60,14 +58,12 @@ public class Generator
 
             var unique = result.Solved && result.SolutionCount == 1;
 
-            if (unique && RemoveCell(puzzle, cellsToRemove - 1, start + 1))
+            if (unique && RemoveCell(puzzle, cellsToRemove - 1, i + 1))
             {
                 return true;
             }
 
             puzzle[cellIndex] = cellValue;
-         
-            (_filledCells[i], _filledCells[start]) = (_filledCells[start], _filledCells[i]);
         }
 
         return false;
