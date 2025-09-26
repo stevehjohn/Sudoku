@@ -8,7 +8,7 @@ public class Generator
 
     private readonly Random _rng = Random.Shared;
 
-    private readonly Solver _solver = new(HistoryType.None, SolveMethod.FindUnique);
+    private readonly Solver _solver = new(HistoryType.None, SolveMethod.CountAll);
     
     public int[] Generate(int cluesToLeave = 30)
     {
@@ -42,7 +42,9 @@ public class Generator
             
             puzzle[cellIndex] = 0;
 
-            if (! _solver.Solve(puzzle).Solved)
+            var result = _solver.Solve(puzzle);
+            
+            if (! result.Solved || result.SolutionCount > 1)
             {
                 puzzle[cellIndex] = cellValue;
             }

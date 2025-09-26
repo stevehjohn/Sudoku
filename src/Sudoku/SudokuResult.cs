@@ -15,12 +15,14 @@ public class SudokuResult
     public double ElapsedMicroseconds { get; }
 
     public IReadOnlyList<Move> History { get; }
+    
+    public int SolutionCount { get; }
 
     public string Message { get; }
 
     public int this[int index] => _solution[index];
 
-    public SudokuResult(int[] solution, bool solved, int steps, double elapsedMilliseconds, List<Move> history, List<int>[] initialCandidates, string message)
+    public SudokuResult(int[] solution, bool solved, int steps, double elapsedMilliseconds, List<Move> history, List<int>[] initialCandidates, int solutionCount, string message)
     {
         _solution = solution;
 
@@ -34,6 +36,8 @@ public class SudokuResult
 
         _initialCandidates = initialCandidates;
 
+        SolutionCount = solutionCount;
+        
         Message = message;
     }
 
