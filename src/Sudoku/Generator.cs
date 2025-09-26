@@ -94,7 +94,7 @@ public class Generator
     {
         while (_candidates[cell].Count > 0)
         {
-            var candidateIndex = _rng.Next(_candidates[cell].Count);
+            var candidateIndex = _random.Next(_candidates[cell].Count);
 
             var candidate = _candidates[cell][candidateIndex];
 
