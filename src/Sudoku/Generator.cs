@@ -25,13 +25,6 @@ public class Generator
 
     private void RemoveCells(int[] puzzle, int cellsToRemove)
     {
-        var copy = new int[81];
-
-        for (var i = 0; i < 81; i++)
-        {
-            copy[i] = puzzle[i];
-        }
-
         var filledCells = new List<int>();
 
         for (var i = 0; i < 81; i++)
@@ -39,32 +32,19 @@ public class Generator
             filledCells.Add(i);
         }
 
-        while (true)
+        for (var i = 0; i < cellsToRemove; i++)
         {
-            for (var i = 0; i < cellsToRemove; i++)
+            var cellIndex = filledCells[_rng.Next(filledCells.Count)];
+
+            filledCells.Remove(cellIndex);
+            
+            var cellValue = puzzle[cellIndex];
+            
+            puzzle[cellIndex] = 0;
+
+            if (! _solver.Solve(puzzle).Solved)
             {
-                var cell = filledCells[_rng.Next(filledCells.Count)];
-
-                filledCells.Remove(cell);
-                
-                puzzle[cell] = 0;
-            }
-
-            if (_solver.Solve(puzzle).Solved)
-            {
-                return;
-            }
-
-            for (var i = 0; i < 81; i++)
-            {
-                if (puzzle[i] != 0)
-                {
-                    continue;
-                }
-                
-                filledCells.Add(i);
-
-                puzzle[i] = copy[i];
+                puzzle[cellIndex] = cellValue;
             }
         }
     }
