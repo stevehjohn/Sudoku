@@ -101,6 +101,15 @@ puzzle.DumpToConsole(1);
 
 On My machine:
 
+```
++-------|----------|-----------+
+| Clues | s/puzzle | puzzles/s |
++-------+----------+-----------+
+| 20    | 200      |           |
+| 21    | 4        |           |
+| 22    |          | 2         |
++-------+----------+-----------+
+```
 20 Clues: 5 m/puzzle
 21 Clues: 4 s/puzzle
 22 Clues: 2 puzzles/s
