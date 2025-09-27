@@ -97,6 +97,17 @@ var puzzle = generator.Generate(30); // Will generate a puzzle with 30 clues. Ca
 puzzle.DumpToConsole(1);
 ```
 
+### Timings
+
+On My machine:
+
+20 Clues: 5 m/puzzle
+21 Clues: 4 s/puzzle
+22 Clues: 2 puzzles/s
+23 Clues: 3 puzzles/s
+24 Clues: 70 puzzles/s
+25 Clues: 850 puzzles/s
+
 Output:
 
 ```
