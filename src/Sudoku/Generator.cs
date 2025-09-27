@@ -7,7 +7,7 @@ public class Generator
 {
     private readonly List<int>[] _candidates = new List<int>[81];
 
-    private readonly Random _random = Random.Shared;
+    private readonly Random _random = new();
 
     private readonly Solver _solver = new(HistoryType.None, SolveMethod.FindUnique);
 
