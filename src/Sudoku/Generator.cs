@@ -47,6 +47,8 @@ public class Generator
                 if (attempts > 10 && budgetSeconds < 10)
                 {
                     budgetSeconds++;
+
+                    attempts = 0;
                 }
             }
         }
