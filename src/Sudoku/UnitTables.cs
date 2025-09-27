@@ -25,6 +25,19 @@ public static class UnitTables
                 Units[i++] = y * 9 + x;
             }
         }
+
+        for (var b = 0; b < 9; b++)
+        {
+            int r0 = 3 * (b / 3), c0 = b % 3 * 3;
+            
+            for (var dy = 0; dy < 3; dy++)
+            {
+                for (var dx = 0; dx < 3; dx++)
+                {
+                    Units[i++] = (r0 + dy) * 9 + c0 + dx;
+                }
+            }
+        }
     }
 
     public static ReadOnlySpan<int> Row(int index) => Units.AsSpan(index * 9, 9);
