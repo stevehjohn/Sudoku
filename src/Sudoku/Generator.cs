@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Sudoku.Extensions;
 
 namespace Sudoku;
@@ -12,7 +13,7 @@ public class Generator
 
     private readonly List<int> _filledCells = [];
     
-    public int[] Generate(int cluesToLeave = 30)
+    public int[] Generate(int cluesToLeave = 30, int budgetSeconds = 2)
     {
         var puzzle = new int[81];
         
@@ -20,12 +21,24 @@ public class Generator
 
         CreateSolvedPuzzle(puzzle);
 
-        RemoveCells(puzzle, 81 - cluesToLeave);
-        
+        if (budgetSeconds == 0)
+        {
+            RemoveCells(puzzle, 81 - cluesToLeave, budgetSeconds);
+        }
+        else
+        {
+            while (! RemoveCells(puzzle, 81 - cluesToLeave, budgetSeconds))
+            {
+                InitialiseCandidates();
+
+                CreateSolvedPuzzle(puzzle);
+            }
+        }
+
         return puzzle;
     }
 
-    private void RemoveCells(int[] puzzle, int cellsToRemove)
+    private bool RemoveCells(int[] puzzle, int cellsToRemove, int budgetSeconds)
     {
         _filledCells.Clear();
         
@@ -35,15 +48,22 @@ public class Generator
         }
 
         ShuffleFilledCells();
+
+        var stopWatch = Stopwatch.StartNew();
         
-        RemoveCell(puzzle, cellsToRemove);
+        return RemoveCell(puzzle, cellsToRemove, stopWatch, budgetSeconds);
     }
 
-    private bool RemoveCell(int[] puzzle, int cellsToRemove, int start = 0)
+    private bool RemoveCell(int[] puzzle, int cellsToRemove, Stopwatch stopwatch, int budgetSeconds, int start = 0)
     {
         if (cellsToRemove == 0)
         {
             return true;
+        }
+
+        if (budgetSeconds > 0 && stopwatch.Elapsed.TotalSeconds > budgetSeconds)
+        {
+            return false;
         }
 
         for (var i = start; i < _filledCells.Count; i++)
@@ -58,7 +78,7 @@ public class Generator
 
             var unique = result.Solved && result.SolutionCount == 1;
 
-            if (unique && RemoveCell(puzzle, cellsToRemove - 1, i + 1))
+            if (unique && RemoveCell(puzzle, cellsToRemove - 1, stopwatch, budgetSeconds, i + 1))
             {
                 return true;
             }
