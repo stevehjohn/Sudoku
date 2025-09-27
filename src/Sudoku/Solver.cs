@@ -276,19 +276,21 @@ public class Solver
             var onceColumn = oneMaskColumn & ~twoMaskColumn;
 
             if (BitOperations.PopCount((uint) onceRow) == 1)
+            {
                 for (var x = 0; x < 9; x++)
                 {
                     if ((_cellCandidates[y9 + x] & onceRow) <= 0)
                     {
                         continue;
                     }
-                    
+
                     _cellCandidates[y9 + x] = onceRow;
 
                     _moveType = MoveType.HiddenSingle;
 
                     return y9 + x;
                 }
+            }
 
             if (BitOperations.PopCount((uint) onceColumn) != 1)
             {
