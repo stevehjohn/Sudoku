@@ -134,6 +134,10 @@ public class Solver
         for (var i = 0; i < 9; i++)
         {
             FindNakedPairs(UnitTables.Row(i));
+
+            FindNakedPairs(UnitTables.Column(i));
+            
+            FindNakedPairs(UnitTables.Box(i));
         }
 
         var single = FindHiddenSingle();
