@@ -66,6 +66,11 @@ public class Generator
             return false;
         }
 
+        if (_filledCells.Count - start < cellsToRemove)
+        {
+            return false;
+        }
+
         for (var i = start; i < _filledCells.Count; i++)
         {
             var cellIndex = _filledCells[i];
