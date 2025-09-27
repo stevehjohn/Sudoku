@@ -54,7 +54,7 @@ public class Generator
 
             puzzle[cellIndex] = 0;
 
-            var result = _solver.Solve(puzzle);
+            var result = _solver.Solve(puzzle, true);
 
             var unique = result.Solved && result.SolutionCount == 1;
 

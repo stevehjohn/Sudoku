@@ -27,6 +27,8 @@ public class Solver
 
     private MoveType _moveType;
 
+    private bool _verifyOnly;
+
     public Solver(HistoryType historyType, SolveMethod solveMethod)
     {
         _historyType = historyType;
@@ -34,8 +36,10 @@ public class Solver
         _solveMethod = solveMethod;
     }
 
-    public SudokuResult Solve(int[] puzzle)
+    public SudokuResult Solve(int[] puzzle, bool verifyOnly = false)
     {
+        _verifyOnly = verifyOnly;
+        
         _solutionCount = 0;
 
         _steps = 0;
@@ -404,7 +408,7 @@ public class Solver
 
             if (_score == 0)
             {
-                if (_solutionCount == 0)
+                if (_solutionCount == 0 && ! _verifyOnly)
                 {
                     for (var j = 0; j < 81; j++)
                     {
