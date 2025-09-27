@@ -13,7 +13,7 @@ public class Generator
 
     private readonly List<int> _filledCells = [];
     
-    public int[] Generate(int cluesToLeave = 30, int budgetSeconds = 2)
+    public int[] Generate(int cluesToLeave = 30, bool useBudget = true)
     {
         var puzzle = new int[81];
         
@@ -21,17 +21,33 @@ public class Generator
 
         CreateSolvedPuzzle(puzzle);
 
+        var budgetSeconds = 0;
+        
+        if (useBudget)
+        {
+            budgetSeconds = 2;
+        }
+
         if (budgetSeconds == 0)
         {
             RemoveCells(puzzle, 81 - cluesToLeave, budgetSeconds);
         }
         else
         {
+            var attempts = 0;
+            
             while (! RemoveCells(puzzle, 81 - cluesToLeave, budgetSeconds))
             {
                 InitialiseCandidates();
 
                 CreateSolvedPuzzle(puzzle);
+
+                attempts++;
+
+                if (attempts > 10 && budgetSeconds < 10)
+                {
+                    budgetSeconds++;
+                }
             }
         }
 
