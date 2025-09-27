@@ -39,7 +39,7 @@ public class Solver
     public SudokuResult Solve(int[] puzzle, bool verifyOnly = false)
     {
         _verifyOnly = verifyOnly;
-        
+
         _solutionCount = 0;
 
         _steps = 0;
@@ -70,9 +70,9 @@ public class Solver
                 stopwatch.Stop();
 
                 return span.IsValidSudoku()
-                    ? new SudokuResult(_workingCopy, true, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, 0, "Full valid board") 
+                    ? new SudokuResult(_workingCopy, true, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, 0, "Full valid board")
                     : new SudokuResult(_workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, null, null, 0, "Full invalid board");
-            
+
             case > 64:
                 stopwatch.Stop();
 
@@ -97,7 +97,7 @@ public class Solver
                 {
                     continue;
                 }
-                
+
                 initialCandidates[i] = [];
 
                 for (var j = 1; j < 10; j++)
@@ -119,8 +119,8 @@ public class Solver
             return new SudokuResult(_workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, 0, "Unsolvable");
         }
 
-        return _solutionCount > 1 
-            ? new SudokuResult(_workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, _solutionCount, $"Multiple solutions: {_solutionCount}") 
+        return _solutionCount > 1
+            ? new SudokuResult(_workingCopy, false, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, _solutionCount, $"Multiple solutions: {_solutionCount}")
             : new SudokuResult(_solution, true, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, 1, "Solved");
     }
 
@@ -133,9 +133,57 @@ public class Solver
 
         var single = FindHiddenSingle();
 
-        var move = single == -1 ? FindNakedSingle(puzzle) : (Position: (single % 9, single / 9), Values: _cellCandidates[single], ValueCount: 1);
-        
+        var move = single == -1 ? FindNakedSingle(puzzle) : (Position: (X: single % 9, Y: single / 9), Values: _cellCandidates[single], ValueCount: 1);
+
+        if (move.ValueCount == 2)
+        {
+            FindNakedPairs(UnitTables.Row(move.Position.X));
+
+            FindNakedPairs(UnitTables.Column(move.Position.Y));
+
+            FindNakedPairs(UnitTables.Box(move.Position.Y / 3 * 3 + move.Position.X / 3));
+        }
+
         return CreateNextSteps(puzzle, move, candidates);
+    }
+
+    private void FindNakedPairs(ReadOnlySpan<int> unit)
+    {
+        var mask = 0;
+
+        var count = 1;
+
+        for (var i = 0; i < 9; i++)
+        {
+            var cell = _cellCandidates[unit[i]];
+
+            if (BitOperations.PopCount((uint) cell) == 2)
+            {
+                if (mask == 0)
+                {
+                    mask = cell;
+                }
+                else if (cell == mask)
+                {
+                    count++;
+                }
+            }
+        }
+
+        if (count == 2)
+        {
+            for (var i = 0; i < 9; i++)
+            {
+                var index = unit[i];
+
+                var cell = _cellCandidates[index];
+
+                if (cell != mask)
+                {
+                    _cellCandidates[index] = cell & ~mask;
+                }
+            }
+        }
     }
 
     private static (Candidates Row, Candidates Column, Candidates Box) GetSectionCandidates(Span<int> puzzle)
@@ -151,7 +199,7 @@ public class Solver
             var x = i % 9;
 
             var y = i / 9;
-            
+
             var boxY = y / 3 * 3;
 
             rowCandidates.Remove(y, puzzle[i]);
@@ -173,7 +221,7 @@ public class Solver
                 var x = i % 9;
 
                 var y = i / 9;
-            
+
                 var boxY = y / 3 * 3;
 
                 _cellCandidates[i] = candidates.Column[x] & candidates.Row[y] & candidates.Box[boxY + x / 3];
@@ -182,7 +230,7 @@ public class Solver
                 {
                     continue;
                 }
-                
+
                 if (_historyType == HistoryType.AllSteps)
                 {
                     _history.Add(new Move(x, y, 0, MoveType.NoCandidates));
@@ -296,14 +344,14 @@ public class Solver
             {
                 continue;
             }
-            
+
             for (var x = 0; x < 9; x++)
             {
                 if ((_cellCandidates[(x << 3) + x + y] & onceColumn) <= 0)
                 {
                     continue;
                 }
-                
+
                 _cellCandidates[(x << 3) + x + y] = onceColumn;
 
                 _moveType = MoveType.HiddenSingle;
@@ -339,7 +387,7 @@ public class Solver
             {
                 continue;
             }
-            
+
             position = (i % 9, i / 9);
 
             values = candidates;
@@ -350,7 +398,7 @@ public class Solver
             {
                 continue;
             }
-            
+
             _moveType = MoveType.NakedSingle;
 
             return (position, values, valueCount);
