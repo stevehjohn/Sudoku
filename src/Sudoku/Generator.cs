@@ -22,10 +22,19 @@ public class Generator
         CreateSolvedPuzzle(puzzle);
 
         var budgetSeconds = 0;
+
+        var budgetMax = 10;
         
         if (useBudget)
         {
             budgetSeconds = 2;
+
+            budgetMax = cluesToLeave switch
+            {
+                < 20 => 120,
+                < 21 => 20,
+                _ => budgetMax
+            };
         }
 
         if (budgetSeconds == 0)
@@ -44,7 +53,7 @@ public class Generator
 
                 attempts++;
 
-                if (cluesToLeave < 20 && attempts > 10 && budgetSeconds < 10)
+                if (cluesToLeave < 20 && attempts > 10 && budgetSeconds < budgetMax)
                 {
                     budgetSeconds++;
 
