@@ -44,7 +44,7 @@ public class Generator
 
                 attempts++;
 
-                if (attempts > 10 && budgetSeconds < 10)
+                if (cluesToLeave < 20 && attempts > 10 && budgetSeconds < 10)
                 {
                     budgetSeconds++;
 
