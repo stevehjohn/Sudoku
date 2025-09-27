@@ -362,7 +362,13 @@ public class ConsoleApplication
 
         Out($"\n Puzzles have been written to {filename}.");
 
-        Out($"\n {puzzleCount:N0} {clues} clue puzzles generated in {stopwatch.Elapsed.Minutes} minutes, {stopwatch.Elapsed.Seconds} seconds, {puzzleCount / stopwatch.Elapsed.TotalSeconds:N0} puzzles/second.");
+        var rate = puzzleCount / stopwatch.Elapsed.TotalSeconds;
+
+        var rateText = rate < 1
+            ? $"{stopwatch.Elapsed.TotalSeconds / puzzleCount:N0} seconds/puzzle"
+            : $"{puzzleCount / stopwatch.Elapsed.TotalSeconds:N0} puzzles/second";
+        
+        Out($"\n {puzzleCount:N0} {clues} clue puzzles generated in {stopwatch.Elapsed.Hours,2:N}:{stopwatch.Elapsed.Minutes,2:N}.{stopwatch.Elapsed.Seconds,2:N}, {rateText}.");
 
         if (lastPuzzle != null)
         {
