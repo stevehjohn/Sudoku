@@ -106,14 +106,9 @@ On My machine:
 | 20    | 300        |           |
 | 21    | 4          |           |
 | 22    |            | 2         |
-|-------| ---------- |-----------|
-
-20 Clues: 5 m/puzzle
-21 Clues: 4 s/puzzle
-22 Clues: 2 puzzles/s
-23 Clues: 3 puzzles/s
-24 Clues: 70 puzzles/s
-25 Clues: 850 puzzles/s
+| 23    |            | 3         |
+| 24    |            | 70        |
+| 25    |            | 850       |
 
 Output:
 
