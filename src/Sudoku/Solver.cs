@@ -131,13 +131,9 @@ public class Solver
             return false;
         }
 
-        var row = (Span<int>) stackalloc int[9];
-
         for (var i = 0; i < 9; i++)
         {
-            GetRow(i, row);
-            
-            FindNakedPairs(row);
+            FindNakedPairs(UnitTables.Row(i));
         }
 
         var single = FindHiddenSingle();
@@ -147,21 +143,13 @@ public class Solver
         return CreateNextSteps(puzzle, move, candidates);
     }
 
-    private void FindNakedPairs(Span<int> unit)
+    private void FindNakedPairs(ReadOnlySpan<int> unit)
     {
         for (var i = 0; i < 9; i++)
         {
             var cell = _cellCandidates[unit[i]];
             // TODO...
 
-        }
-    }
-
-    private static void GetRow(int index, Span<int> unit)
-    {
-        for (var x = 0; x < 9; x++)
-        {
-            unit[x] = index * 9 + x;
         }
     }
 
