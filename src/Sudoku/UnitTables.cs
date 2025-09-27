@@ -28,7 +28,9 @@ public static class UnitTables
 
         for (var b = 0; b < 9; b++)
         {
-            int r0 = 3 * (b / 3), c0 = b % 3 * 3;
+            var r0 = 3 * (b / 3);
+            
+            var c0 = b % 3 * 3;
             
             for (var dy = 0; dy < 3; dy++)
             {
