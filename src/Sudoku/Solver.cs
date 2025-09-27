@@ -149,11 +149,42 @@ public class Solver
 
     private void FindNakedPairs(ReadOnlySpan<int> unit)
     {
+        var mask = 0;
+
+        var count = 1;
+        
         for (var i = 0; i < 9; i++)
         {
             var cell = _cellCandidates[unit[i]];
-            // TODO...
 
+            if (BitOperations.PopCount((uint) cell) == 2)
+            {
+                if (mask == 0)
+                {
+                    mask = cell;
+                }
+                else
+                {
+                    count++;
+                }
+            }
+        }
+
+        if (count == 2)
+        {
+            mask = ~mask;
+            
+            for (var i = 0; i < 9; i++)
+            {
+                var index = unit[i];
+                
+                var cell = _cellCandidates[index];
+
+                if (cell != mask)
+                {
+                    _cellCandidates[index] = cell & mask;
+                }
+            }
         }
     }
 
