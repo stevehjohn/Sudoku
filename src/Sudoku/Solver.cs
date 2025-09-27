@@ -163,7 +163,7 @@ public class Solver
                 {
                     mask = cell;
                 }
-                else
+                else if (cell == mask)
                 {
                     count++;
                 }
@@ -172,8 +172,6 @@ public class Solver
 
         if (count == 2)
         {
-            mask = ~mask;
-            
             for (var i = 0; i < 9; i++)
             {
                 var index = unit[i];
@@ -182,7 +180,7 @@ public class Solver
 
                 if (cell != mask)
                 {
-                    _cellCandidates[index] = cell & mask;
+                    _cellCandidates[index] = cell & ~mask;
                 }
             }
         }
