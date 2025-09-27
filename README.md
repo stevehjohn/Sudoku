@@ -92,7 +92,7 @@ Output:
 ```csharp
 var generator = new Generator();
 
-var puzzle = generator.Generate(30); // Will generate a puzzle with 30 clues. Can get quite slow below 25.
+var puzzle = generator.Generate(30); // Will generate a puzzle with 30 clues. Can get quite slow below 22.
 
 puzzle.DumpToConsole(1);
 ```
