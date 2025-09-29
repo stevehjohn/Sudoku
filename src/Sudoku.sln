@@ -26,6 +26,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Puzzles", "Puzzles", "{7231
 		..\Puzzles\Generated 2m x 40.zip = ..\Puzzles\Generated 2m x 40.zip
 		..\Puzzles\Generated 2m x 37.txt.zip = ..\Puzzles\Generated 2m x 37.txt.zip
 		..\Puzzles\Generated 2m x 50.zip = ..\Puzzles\Generated 2m x 50.zip
+		..\Puzzles\Generated 2m x 25.zip = ..\Puzzles\Generated 2m x 25.zip
+		..\Puzzles\World Hardest.zip = ..\Puzzles\World Hardest.zip
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.Tests", "Sudoku.Tests\Sudoku.Tests.csproj", "{E05213CF-2295-4E44-8488-DB5458042766}"
