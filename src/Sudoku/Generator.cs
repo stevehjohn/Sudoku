@@ -7,11 +7,11 @@ public class Generator
 {
     private readonly List<int>[] _candidates = new List<int>[81];
 
-    private readonly Random _random = new();
-
     private readonly Solver _solver = new(HistoryType.None, SolveMethod.FindUnique);
 
     private readonly List<int> _filledCells = [];
+
+    private Random _random;
     
     public int[] Generate(int cluesToLeave = 30, bool useBudget = true)
     {
@@ -39,6 +39,8 @@ public class Generator
 
         if (budgetSeconds == 0)
         {
+            _random = new Random(SeedGenerator.From(0, Environment.CurrentManagedThreadId, 0));
+            
             RemoveCells(puzzle, 81 - cluesToLeave, budgetSeconds);
         }
         else
@@ -47,6 +49,8 @@ public class Generator
             
             while (! RemoveCells(puzzle, 81 - cluesToLeave, budgetSeconds))
             {
+                _random = new Random(SeedGenerator.From(0, Environment.CurrentManagedThreadId, attempts));
+            
                 InitialiseCandidates();
 
                 CreateSolvedPuzzle(puzzle);
