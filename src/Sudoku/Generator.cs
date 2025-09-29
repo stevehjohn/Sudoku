@@ -19,6 +19,8 @@ public class Generator
         
         InitialiseCandidates();
 
+        _random = new Random(SeedGenerator.From(0, Environment.CurrentManagedThreadId, 0));
+
         CreateSolvedPuzzle(puzzle);
 
         var budgetSeconds = 0;
