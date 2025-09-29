@@ -368,6 +368,7 @@ public class Solver
         return (position, values, valueCount);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void FindNakedPairs(ReadOnlySpan<int> unit)
     {
         var mask = 0;
