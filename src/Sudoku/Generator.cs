@@ -33,7 +33,7 @@ public class Generator
 
         var budgetSeconds = 0;
 
-        var budgetMax = 10;
+        var budgetMax = 3;
         
         if (useBudget)
         {
@@ -41,8 +41,10 @@ public class Generator
 
             budgetMax = cluesToLeave switch
             {
-                < 20 => 120,
+                < 20 => 60,
                 < 21 => 20,
+                22 => 8,
+                21 => 8,
                 _ => budgetMax
             };
         }
