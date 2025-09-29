@@ -11,7 +11,17 @@ public class Generator
 
     private readonly List<int> _filledCells = [];
 
-    private readonly Random _random = new();
+    private readonly Random _random;
+
+    public Generator()
+    {
+        _random = new Random();
+    }
+
+    public Generator(int seed)
+    {
+        _random = new Random(seed);
+    }
     
     public int[] Generate(int cluesToLeave = 30, bool useBudget = true)
     {

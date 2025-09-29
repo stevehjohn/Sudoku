@@ -23,4 +23,22 @@ public class GeneratorTests
         
         Assert.True(result.Solved);
     }
+    
+    [Fact]
+    public void GeneratesSamePuzzleWithSameSeed()
+    {
+        var generator = new Generator(1234);
+    
+        var puzzle1 = generator.Generate(25);
+    
+        puzzle1.DumpToConsole(1);
+        
+        generator = new Generator(1234);
+    
+        var puzzle2 = generator.Generate(25);
+    
+        puzzle2.DumpToConsole(1);
+        
+        Assert.Equal(puzzle1, puzzle2);
+    }
 }
