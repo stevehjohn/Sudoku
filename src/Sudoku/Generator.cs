@@ -5,7 +5,7 @@ namespace Sudoku;
 
 public class Generator
 {
-    private const int RotationThreshold = 40;
+    private const int RotationThreshold = 50;
     
     private readonly List<int>[] _candidates = new List<int>[81];
 
