@@ -11,15 +11,13 @@ public class Generator
 
     private readonly List<int> _filledCells = [];
 
-    private Random _random;
+    private readonly Random _random = new();
     
     public int[] Generate(int cluesToLeave = 30, bool useBudget = true)
     {
         var puzzle = new int[81];
         
         InitialiseCandidates();
-
-        _random = new Random(SeedGenerator.From(0, Environment.CurrentManagedThreadId, 0));
 
         CreateSolvedPuzzle(puzzle);
 
@@ -41,8 +39,6 @@ public class Generator
 
         if (budgetSeconds == 0)
         {
-            _random = new Random(SeedGenerator.From(0, Environment.CurrentManagedThreadId, 0));
-            
             RemoveCells(puzzle, 81 - cluesToLeave, budgetSeconds);
         }
         else
@@ -51,8 +47,6 @@ public class Generator
             
             while (! RemoveCells(puzzle, 81 - cluesToLeave, budgetSeconds))
             {
-                _random = new Random(SeedGenerator.From(0, Environment.CurrentManagedThreadId, attempts));
-            
                 InitialiseCandidates();
 
                 CreateSolvedPuzzle(puzzle);
