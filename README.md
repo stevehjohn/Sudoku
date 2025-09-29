@@ -99,7 +99,7 @@ puzzle.DumpToConsole(1);
 
 ### Timings
 
-On My machine:
+On my machine:
 
 | Clues | puzzles/s | s/puzzle |
 |-------|-----------|----------|
