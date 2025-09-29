@@ -147,45 +147,6 @@ public class Solver
         return CreateNextSteps(puzzle, move, candidates);
     }
 
-    private void FindNakedPairs(ReadOnlySpan<int> unit)
-    {
-        var mask = 0;
-
-        var count = 1;
-
-        for (var i = 0; i < 9; i++)
-        {
-            var cell = _cellCandidates[unit[i]];
-
-            if (BitOperations.PopCount((uint) cell) == 2)
-            {
-                if (mask == 0)
-                {
-                    mask = cell;
-                }
-                else if (cell == mask)
-                {
-                    count++;
-                }
-            }
-        }
-
-        if (count == 2)
-        {
-            for (var i = 0; i < 9; i++)
-            {
-                var index = unit[i];
-
-                var cell = _cellCandidates[index];
-
-                if (cell != mask)
-                {
-                    _cellCandidates[index] = cell & ~mask;
-                }
-            }
-        }
-    }
-
     private static (Candidates Row, Candidates Column, Candidates Box) GetSectionCandidates(Span<int> puzzle)
     {
         var rowCandidates = new Candidates();
@@ -407,6 +368,45 @@ public class Solver
         return (position, values, valueCount);
     }
 
+    private void FindNakedPairs(ReadOnlySpan<int> unit)
+    {
+        var mask = 0;
+
+        var count = 1;
+
+        for (var i = 0; i < 9; i++)
+        {
+            var cell = _cellCandidates[unit[i]];
+
+            if (BitOperations.PopCount((uint) cell) == 2)
+            {
+                if (mask == 0)
+                {
+                    mask = cell;
+                }
+                else if (cell == mask)
+                {
+                    count++;
+                }
+            }
+        }
+
+        if (count == 2)
+        {
+            for (var i = 0; i < 9; i++)
+            {
+                var index = unit[i];
+
+                var cell = _cellCandidates[index];
+
+                if (cell != mask)
+                {
+                    _cellCandidates[index] = cell & ~mask;
+                }
+            }
+        }
+    }
+    
     private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, (Candidates Row, Candidates Column, Candidates Box) candidates)
     {
         var cell = move.Position.X + (move.Position.Y << 3) + move.Position.Y;
