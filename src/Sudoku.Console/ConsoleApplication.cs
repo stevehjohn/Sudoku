@@ -55,7 +55,7 @@ public class ConsoleApplication
 
             while (true)
             {
-                var response = In().ToLower();
+                var response = In().ToLower().Trim();
 
                 if (response == "q")
                 {
