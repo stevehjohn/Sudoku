@@ -88,17 +88,17 @@ public class Generator
 
         var stopWatch = Stopwatch.StartNew();
         
-        return RemoveCell(puzzle, cellsToRemove, stopWatch, budgetSeconds);
+        return RemoveCell(puzzle, cellsToRemove, stopWatch, budgetSeconds * Stopwatch.Frequency);
     }
 
-    private bool RemoveCell(int[] puzzle, int cellsToRemove, Stopwatch stopwatch, int budgetSeconds, int start = 0)
+    private bool RemoveCell(int[] puzzle, int cellsToRemove, Stopwatch stopwatch, long budgetTicks, int start = 0)
     {
         if (cellsToRemove == 0)
         {
             return true;
         }
 
-        if (budgetSeconds > 0 && stopwatch.Elapsed.TotalSeconds > budgetSeconds)
+        if (budgetTicks > 0 && stopwatch.ElapsedTicks > budgetTicks)
         {
             return false;
         }
@@ -120,7 +120,7 @@ public class Generator
 
             var unique = result.Solved && result.SolutionCount == 1;
 
-            if (unique && RemoveCell(puzzle, cellsToRemove - 1, stopwatch, budgetSeconds, i + 1))
+            if (unique && RemoveCell(puzzle, cellsToRemove - 1, stopwatch, budgetTicks, i + 1))
             {
                 return true;
             }
