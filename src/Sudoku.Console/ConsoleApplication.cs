@@ -309,14 +309,6 @@ public class ConsoleApplication
                     System.Console.CursorTop = 3;
 
                     System.Console.WriteLine($" Puzzle {count:N0}/{puzzleCount:N0}.               \n");
-
-                    lock (recentLock)
-                    {
-                        foreach (var item in recent)
-                        {
-                            System.Console.WriteLine($" {string.Join(string.Empty, item).Replace('0', '.')}");
-                        }
-                    }
                 }
 
                 var generator = new Generator();
