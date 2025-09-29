@@ -113,26 +113,17 @@ public class Generator
 
                 puzzle[cellIndex1] = 0;
 
-                var cellIndex2 = 0;
+                var cellIndex2 = _filledCells[i + 1];
 
-                var cellValue2 = 0;
+                var cellValue2 = puzzle[cellIndex2];
 
-                if (cellIndex1 != 40)
-                {
-                    cellIndex2 = _filledCells[i + 1];
-
-                    cellValue2 = puzzle[cellIndex2];
-
-                    puzzle[cellIndex2] = 0;
-                }
+                puzzle[cellIndex2] = 0;
 
                 var result = _solver.Solve(puzzle, true);
 
                 var unique = result.Solved && result.SolutionCount == 1;
 
-                var delta = cellIndex1 != 40 ? 2 : 1;
-
-                if (unique && RemoveCell(puzzle, cellsToRemove - delta, stopwatch, budgetTicks, i + delta))
+                if (unique && RemoveCell(puzzle, cellsToRemove - 2, stopwatch, budgetTicks, i + 2))
                 {
                     return true;
                 }
@@ -189,12 +180,16 @@ public class Generator
             (filledCells[left], filledCells[right]) = (filledCells[right], filledCells[left]);
         }
 
+        filledCells.Remove(40);
+        
+        filledCells.Insert(RotationThreshold + _random.Next(81 - RotationThreshold), 40);
+
         count = 0;
         
         while (filledCells.Count > 0)
         {
             var cell = filledCells[0];
-            
+
             _filledCells.Add(cell);
             
             filledCells.RemoveAt(0);
