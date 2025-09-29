@@ -365,8 +365,8 @@ public class ConsoleApplication
         var rate = puzzleCount / stopwatch.Elapsed.TotalSeconds;
 
         var rateText = rate < 1
-            ? $"{stopwatch.Elapsed.TotalSeconds / puzzleCount:N0} second(s)/puzzle"
-            : $"{puzzleCount / stopwatch.Elapsed.TotalSeconds:N0} puzzle(s)/second";
+            ? $"{stopwatch.Elapsed.TotalSeconds / puzzleCount:N2} second(s)/puzzle"
+            : $"{puzzleCount / stopwatch.Elapsed.TotalSeconds:N2} puzzle(s)/second";
         
         Out($"\n {puzzleCount:N0} {clues} clue puzzles generated in {stopwatch.Elapsed.Hours,2:N}:{stopwatch.Elapsed.Minutes,2:N}.{stopwatch.Elapsed.Seconds,2:N}, {rateText}.");
 
