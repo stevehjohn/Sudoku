@@ -79,14 +79,7 @@ public class Generator
 
     private bool RemoveCells(int[] puzzle, int cellsToRemove, int budgetSeconds)
     {
-        _filledCells.Clear();
-
-        for (var i = 0; i < 81; i++)
-        {
-            _filledCells.Add(i);
-        }
-
-        ShuffleFilledCells();
+        CreateFilledCells();
 
         var stopWatch = Stopwatch.StartNew();
 
@@ -176,33 +169,44 @@ public class Generator
         return false;
     }
 
-    private void ShuffleFilledCells()
+    private void CreateFilledCells()
     {
-        var count = _filledCells.Count;
+        _filledCells.Clear();
+
+        var filledCells = new List<int>();
+
+        for (var i = 0; i < 81; i++)
+        {
+            filledCells.Add(i);
+        }
+
+        var count = filledCells.Count;
 
         for (var left = 0; left < count - 1; left++)
         {
             var right = left + _random.Next(count - left);
 
-            (_filledCells[left], _filledCells[right]) = (_filledCells[right], _filledCells[left]);
+            (filledCells[left], filledCells[right]) = (filledCells[right], filledCells[left]);
         }
 
-        for (var i = 0; i < RotationThreshold; i += 2)
+        for (var i = 0; i < RotationThreshold;)
         {
-            var index = _filledCells[i];
+            var index = filledCells[i];
 
+            _filledCells.Add(index);
+            
             if (index == 40)
             {
-                i--;
+                i++;
 
                 continue;
             }
 
             var rotated = 80 - index;
 
-            _filledCells.Remove(rotated);
+            _filledCells.Add(rotated);
 
-            _filledCells.Insert(i + 1, rotated);
+            i++;
         }
     }
 
