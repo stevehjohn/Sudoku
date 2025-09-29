@@ -201,11 +201,11 @@ public class Generator
 
             if (count < RotationThreshold && cell != 40 && filledCells.Count > 0)
             {
-                cell = filledCells[0];
+                cell = 80 - cell;
             
                 _filledCells.Add(cell);
             
-                filledCells.RemoveAt(0);
+                filledCells.Remove(cell);
                 
                 count++;
             }
