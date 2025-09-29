@@ -5,6 +5,8 @@ namespace Sudoku;
 
 public class Generator
 {
+    private const int RotationThreshold = 40;
+    
     private readonly List<int>[] _candidates = new List<int>[81];
 
     private readonly Solver _solver = new(HistoryType.None, SolveMethod.FindUnique);
@@ -108,6 +110,34 @@ public class Generator
             return false;
         }
 
+        for (var i = start; i < RotationThreshold; i += 2)
+        {
+            var cellIndex1 = _filledCells[i];
+
+            var cellValue1 = puzzle[cellIndex1];
+
+            puzzle[cellIndex1] = 0;
+
+            var cellIndex2 = _filledCells[i];
+
+            var cellValue2 = puzzle[cellIndex2];
+
+            puzzle[cellIndex2] = 0;
+
+            var result = _solver.Solve(puzzle, true);
+
+            var unique = result.Solved && result.SolutionCount == 1;
+
+            if (unique && RemoveCell(puzzle, cellsToRemove - 1, stopwatch, budgetTicks, i + 1))
+            {
+                return true;
+            }
+
+            puzzle[cellIndex1] = cellValue1;
+            
+            puzzle[cellIndex2] = cellValue2;
+        }
+
         for (var i = start; i < _filledCells.Count; i++)
         {
             var cellIndex = _filledCells[i];
@@ -140,6 +170,17 @@ public class Generator
             var right = left + _random.Next(count - left);
             
             (_filledCells[left], _filledCells[right]) = (_filledCells[right], _filledCells[left]);
+        }
+
+        for (var i = 0; i < RotationThreshold; i += 2)
+        {
+            var index = _filledCells[i];
+
+            var rotated = 80 - index;
+
+            _filledCells.Remove(rotated);
+            
+            _filledCells.Insert(i + 1, rotated);
         }
     }
 
