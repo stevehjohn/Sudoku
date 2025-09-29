@@ -118,7 +118,7 @@ public class Generator
 
             puzzle[cellIndex1] = 0;
 
-            var cellIndex2 = _filledCells[i];
+            var cellIndex2 = _filledCells[i + 1];
 
             var cellValue2 = puzzle[cellIndex2];
 
@@ -128,7 +128,7 @@ public class Generator
 
             var unique = result.Solved && result.SolutionCount == 1;
 
-            if (unique && RemoveCell(puzzle, cellsToRemove - 1, stopwatch, budgetTicks, i + 1))
+            if (unique && RemoveCell(puzzle, cellsToRemove - 2, stopwatch, budgetTicks, i + 2))
             {
                 return true;
             }
@@ -176,6 +176,13 @@ public class Generator
         {
             var index = _filledCells[i];
 
+            if (index == 40)
+            {
+                i--;
+                
+                continue;
+            }
+            
             var rotated = 80 - index;
 
             _filledCells.Remove(rotated);
