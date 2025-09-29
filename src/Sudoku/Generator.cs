@@ -193,15 +193,15 @@ public class Generator
         
         while (filledCells.Count > 0)
         {
-            var cell = filledCells[count];
+            var cell = filledCells[0];
             
             _filledCells.Add(cell);
             
             filledCells.RemoveAt(0);
 
-            if (count < RotationThreshold && cell != 40)
+            if (count < RotationThreshold && cell != 40 && filledCells.Count > 0)
             {
-                cell = filledCells[count];
+                cell = filledCells[0];
             
                 _filledCells.Add(cell);
             
