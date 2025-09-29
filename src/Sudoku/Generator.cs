@@ -207,6 +207,13 @@ public class Generator
             _filledCells.Add(rotated);
 
             i++;
+        }        
+        
+        for (var i = RotationThreshold; i < 81; i++)
+        {
+            var index = filledCells[i];
+
+            _filledCells.Add(index);
         }
     }
 
