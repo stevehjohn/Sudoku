@@ -164,48 +164,64 @@ public class Generator
     {
         _filledCells.Clear();
 
-        var filledCells = new List<int>();
+        _filledCells.Capacity = 81;
+
+        var shuffled = new List<int>();
 
         for (var i = 0; i < 81; i++)
         {
-            filledCells.Add(i);
+            shuffled.Add(i);
         }
 
-        var count = filledCells.Count;
+        var count = shuffled.Count;
 
         for (var left = 0; left < count - 1; left++)
         {
             var right = left + _random.Next(count - left);
 
-            (filledCells[left], filledCells[right]) = (filledCells[right], filledCells[left]);
+            (shuffled[left], shuffled[right]) = (shuffled[right], shuffled[left]);
         }
 
-        filledCells.Remove(40);
-        
-        filledCells.Insert(RotationThreshold + _random.Next(81 - RotationThreshold), 40);
+        var used = new bool[81];
 
-        count = 0;
-        
-        while (filledCells.Count > 0)
+        var pairLimit = Math.Min(RotationThreshold, 81);
+
+        for (var i = 0; i < 81 && _filledCells.Count < pairLimit; i++)
         {
-            var cell = filledCells[0];
+            var cell = shuffled[i];
 
-            _filledCells.Add(cell);
-            
-            filledCells.RemoveAt(0);
-
-            if (count < RotationThreshold && cell != 40 && filledCells.Count > 0)
+            if (cell == 40 || used[cell])
             {
-                cell = 80 - cell;
-            
-                _filledCells.Add(cell);
-            
-                filledCells.Remove(cell);
-                
-                count++;
+                continue;
             }
 
-            count++;
+            var rotated = 80 - cell;
+
+            if (used[rotated])
+            {
+                continue;
+            }
+
+            used[cell] = used[rotated] = true;
+
+            _filledCells.Add(cell);
+
+            if (_filledCells.Count < pairLimit)
+            {
+                _filledCells.Add(rotated);
+            }
+        }
+
+        for (var i = 0; i < 81; i++)
+        {
+            var cell = shuffled[i];
+
+            if (! used[cell])
+            { 
+                used[cell] = true;
+                
+                _filledCells.Add(cell);
+            }
         }
     }
 
