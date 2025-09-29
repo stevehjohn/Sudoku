@@ -6,7 +6,7 @@ namespace Sudoku;
 public class Generator
 {
     private const int RotationThreshold = 50;
-    
+
     private readonly List<int>[] _candidates = new List<int>[81];
 
     private readonly Solver _solver = new(HistoryType.None, SolveMethod.FindUnique);
@@ -24,11 +24,11 @@ public class Generator
     {
         _random = new Random(seed);
     }
-    
+
     public int[] Generate(int cluesToLeave = 30, bool useBudget = true)
     {
         var puzzle = new int[81];
-        
+
         InitialiseCandidates();
 
         CreateSolvedPuzzle(puzzle);
@@ -36,7 +36,7 @@ public class Generator
         var budgetSeconds = 0;
 
         var budgetMax = 10;
-        
+
         if (useBudget)
         {
             budgetSeconds = 2;
@@ -56,7 +56,7 @@ public class Generator
         else
         {
             var attempts = 0;
-            
+
             while (! RemoveCells(puzzle, 81 - cluesToLeave, budgetSeconds))
             {
                 InitialiseCandidates();
@@ -80,7 +80,7 @@ public class Generator
     private bool RemoveCells(int[] puzzle, int cellsToRemove, int budgetSeconds)
     {
         _filledCells.Clear();
-        
+
         for (var i = 0; i < 81; i++)
         {
             _filledCells.Add(i);
@@ -89,7 +89,7 @@ public class Generator
         ShuffleFilledCells();
 
         var stopWatch = Stopwatch.StartNew();
-        
+
         return RemoveCell(puzzle, cellsToRemove, stopWatch, budgetSeconds * Stopwatch.Frequency);
     }
 
@@ -110,32 +110,47 @@ public class Generator
             return false;
         }
 
-        for (var i = start; i < RotationThreshold; i += 2)
+        if (cellsToRemove > 1 && start < RotationThreshold)
         {
-            var cellIndex1 = _filledCells[i];
-
-            var cellValue1 = puzzle[cellIndex1];
-
-            puzzle[cellIndex1] = 0;
-
-            var cellIndex2 = _filledCells[i + 1];
-
-            var cellValue2 = puzzle[cellIndex2];
-
-            puzzle[cellIndex2] = 0;
-
-            var result = _solver.Solve(puzzle, true);
-
-            var unique = result.Solved && result.SolutionCount == 1;
-
-            if (unique && RemoveCell(puzzle, cellsToRemove - 2, stopwatch, budgetTicks, i + 2))
+            for (var i = start; i < RotationThreshold; i += 2)
             {
-                return true;
-            }
+                var cellIndex1 = _filledCells[i];
 
-            puzzle[cellIndex1] = cellValue1;
-            
-            puzzle[cellIndex2] = cellValue2;
+                var cellValue1 = puzzle[cellIndex1];
+
+                puzzle[cellIndex1] = 0;
+
+                var cellIndex2 = 0;
+
+                var cellValue2 = 0;
+
+                if (cellIndex1 != 40)
+                {
+                    cellIndex2 = _filledCells[i + 1];
+
+                    cellValue2 = puzzle[cellIndex2];
+
+                    puzzle[cellIndex2] = 0;
+                }
+
+                var result = _solver.Solve(puzzle, true);
+
+                var unique = result.Solved && result.SolutionCount == 1;
+
+                var delta = cellIndex1 != 40 ? 2 : 1;
+
+                if (unique && RemoveCell(puzzle, cellsToRemove - delta, stopwatch, budgetTicks, i + delta))
+                {
+                    return true;
+                }
+
+                puzzle[cellIndex1] = cellValue1;
+
+                if (cellIndex1 != 40)
+                {
+                    puzzle[cellIndex2] = cellValue2;
+                }
+            }
         }
 
         for (var i = start; i < _filledCells.Count; i++)
@@ -164,11 +179,11 @@ public class Generator
     private void ShuffleFilledCells()
     {
         var count = _filledCells.Count;
-        
+
         for (var left = 0; left < count - 1; left++)
         {
             var right = left + _random.Next(count - left);
-            
+
             (_filledCells[left], _filledCells[right]) = (_filledCells[right], _filledCells[left]);
         }
 
@@ -179,14 +194,14 @@ public class Generator
             if (index == 40)
             {
                 i--;
-                
+
                 continue;
             }
-            
+
             var rotated = 80 - index;
 
             _filledCells.Remove(rotated);
-            
+
             _filledCells.Insert(i + 1, rotated);
         }
     }
@@ -208,7 +223,7 @@ public class Generator
                 return cell == 80 || CreateSolvedPuzzle(puzzle, cell + 1);
             }
         }
-        
+
         puzzle[cell] = 0;
 
         _candidates[cell] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
