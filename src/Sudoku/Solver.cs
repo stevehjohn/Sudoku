@@ -135,13 +135,19 @@ public class Solver
 
         var move = single == -1 ? FindNakedSingle(puzzle) : (Position: (X: single % 9, Y: single / 9), Values: _cellCandidates[single], ValueCount: 1);
 
-        if (move.ValueCount == 2)
+        switch (move.ValueCount)
         {
-            FindNakedPairs(UnitTables.Row(move.Position.X));
+            case 0:
+                return false;
+            
+            case 2:
+                FindNakedPairs(UnitTables.Row(move.Position.X));
 
-            FindNakedPairs(UnitTables.Column(move.Position.Y));
+                FindNakedPairs(UnitTables.Column(move.Position.Y));
 
-            FindNakedPairs(UnitTables.Box(move.Position.Y / 3 * 3 + move.Position.X / 3));
+                FindNakedPairs(UnitTables.Box(move.Position.Y / 3 * 3 + move.Position.X / 3));
+                
+                break;
         }
 
         return CreateNextSteps(puzzle, move, candidates);
