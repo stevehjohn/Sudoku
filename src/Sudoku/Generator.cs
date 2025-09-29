@@ -189,31 +189,28 @@ public class Generator
             (filledCells[left], filledCells[right]) = (filledCells[right], filledCells[left]);
         }
 
-        for (var i = 0; i < RotationThreshold;)
+        count = 0;
+        
+        while (filledCells.Count > 0)
         {
-            var index = filledCells[i];
-
-            _filledCells.Add(index);
+            var cell = filledCells[count];
             
-            if (index == 40)
-            {
-                i++;
+            _filledCells.Add(cell);
+            
+            filledCells.RemoveAt(0);
 
-                continue;
+            if (count < RotationThreshold && cell != 40)
+            {
+                cell = filledCells[count];
+            
+                _filledCells.Add(cell);
+            
+                filledCells.RemoveAt(0);
+                
+                count++;
             }
 
-            var rotated = 80 - index;
-
-            _filledCells.Add(rotated);
-
-            i++;
-        }        
-        
-        for (var i = RotationThreshold; i < 81; i++)
-        {
-            var index = filledCells[i];
-
-            _filledCells.Add(index);
+            count++;
         }
     }
 
