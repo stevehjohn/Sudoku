@@ -130,10 +130,7 @@ public class Generator
 
                 puzzle[cellIndex1] = cellValue1;
 
-                if (cellIndex1 != 40)
-                {
-                    puzzle[cellIndex2] = cellValue2;
-                }
+                puzzle[cellIndex2] = cellValue2;
             }
         }
 
