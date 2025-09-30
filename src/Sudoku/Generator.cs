@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using Sudoku.Extensions;
 
@@ -13,23 +14,35 @@ public class Generator
 
     private readonly Random _random;
 
+    private readonly List<int>[] _unavoidableSetLookup = new List<int>[81];
+
+    private List<int[]> _unavoidableSets = [];
+
+    private int[] _unavoidableSetCounts = Array.Empty<int>();
+
     public Generator()
     {
         _random = new Random();
+
+        InitialiseLookup();
     }
 
     public Generator(int seed)
     {
         _random = new Random(seed);
+
+        InitialiseLookup();
     }
-    
+
     public int[] Generate(int cluesToLeave = 30, bool useBudget = true)
     {
         var puzzle = new int[81];
-        
+
         InitialiseCandidates();
 
         CreateSolvedPuzzle(puzzle);
+
+        InitialiseUnavoidableSets(puzzle);
 
         var budgetSeconds = 0;
 
@@ -56,12 +69,14 @@ public class Generator
         else
         {
             var attempts = 0;
-            
+
             while (! RemoveCells(puzzle, 81 - cluesToLeave, budgetSeconds))
             {
                 InitialiseCandidates();
 
                 CreateSolvedPuzzle(puzzle);
+
+                InitialiseUnavoidableSets(puzzle);
 
                 attempts++;
 
@@ -75,6 +90,38 @@ public class Generator
         }
 
         return puzzle;
+    }
+
+    private void InitialiseLookup()
+    {
+        for (var i = 0; i < 81; i++)
+        {
+            _unavoidableSetLookup[i] = [];
+        }
+    }
+
+    private void InitialiseUnavoidableSets(ReadOnlySpan<int> puzzle)
+    {
+        _unavoidableSets = UnavoidableSetFinder.Find(puzzle);
+
+        _unavoidableSetCounts = new int[_unavoidableSets.Count];
+
+        for (var i = 0; i < 81; i++)
+        {
+            _unavoidableSetLookup[i].Clear();
+        }
+
+        for (var i = 0; i < _unavoidableSets.Count; i++)
+        {
+            var unavoidableSet = _unavoidableSets[i];
+
+            _unavoidableSetCounts[i] = unavoidableSet.Length;
+
+            foreach (var cell in unavoidableSet)
+            {
+                _unavoidableSetLookup[cell].Add(i);
+            }
+        }
     }
 
     private bool RemoveCells(int[] puzzle, int cellsToRemove, int budgetSeconds)
@@ -116,6 +163,11 @@ public class Generator
 
             var cellValue = puzzle[cellIndex];
 
+            if (! TryRemoveCell(cellIndex))
+            {
+                continue;
+            }
+
             puzzle[cellIndex] = 0;
 
             var result = _solver.Solve(puzzle, true);
@@ -128,9 +180,49 @@ public class Generator
             }
 
             puzzle[cellIndex] = cellValue;
+
+            RestoreCell(cellIndex);
         }
 
         return false;
+    }
+
+    private bool TryRemoveCell(int cellIndex)
+    {
+        if (_unavoidableSetCounts.Length == 0)
+        {
+            return true;
+        }
+
+        var unavoidableSets = _unavoidableSetLookup[cellIndex];
+
+        foreach (var unavoidableSetIndex in unavoidableSets)
+        {
+            if (_unavoidableSetCounts[unavoidableSetIndex] <= 1)
+            {
+                return false;
+            }
+        }
+
+        foreach (var unavoidableSetIndex in unavoidableSets)
+        {
+            _unavoidableSetCounts[unavoidableSetIndex]--;
+        }
+
+        return true;
+    }
+
+    private void RestoreCell(int cellIndex)
+    {
+        if (_unavoidableSetCounts.Length == 0)
+        {
+            return;
+        }
+
+        foreach (var unavoidableSetIndex in _unavoidableSetLookup[cellIndex])
+        {
+            _unavoidableSetCounts[unavoidableSetIndex]++;
+        }
     }
 
     private void ShuffleFilledCells()
