@@ -360,7 +360,7 @@ public class ConsoleApplication
             ? $"{stopwatch.Elapsed.TotalSeconds / puzzleCount:N2} second(s)/puzzle"
             : $"{puzzleCount / stopwatch.Elapsed.TotalSeconds:N2} puzzle(s)/second";
         
-        Out($"\n {puzzleCount:N0} {clues} clue puzzles generated in {stopwatch.Elapsed.Hours,2:N}:{stopwatch.Elapsed.Minutes,2:N}.{stopwatch.Elapsed.Seconds,2:N}, {rateText}.");
+        Out($"\n {puzzleCount:N0} {clues} clue puzzle(s) generated in {stopwatch.Elapsed:dd\\.hh\\:mm\\:ss\\.fff}, {rateText}.");
 
         if (lastPuzzle != null)
         {
