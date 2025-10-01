@@ -12,6 +12,8 @@ public class Generator
     private readonly List<int> _filledCells = [];
 
     private readonly Random _random;
+    
+    private Action<int> AttemptHook { get; set; }
 
     public Generator()
     {
@@ -64,6 +66,8 @@ public class Generator
                 CreateSolvedPuzzle(puzzle);
 
                 attempts++;
+
+                AttemptHook?.Invoke(attempts);
 
                 if (cluesToLeave < 20 && attempts > 10 && budgetSeconds < budgetMax)
                 {
