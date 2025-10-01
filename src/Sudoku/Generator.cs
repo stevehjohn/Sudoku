@@ -13,7 +13,7 @@ public class Generator
 
     private readonly Random _random;
     
-    private Action<int> AttemptHook { get; set; }
+    public Action<int> AttemptHook { get; set; }
 
     public Generator()
     {

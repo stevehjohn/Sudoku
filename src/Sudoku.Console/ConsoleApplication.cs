@@ -313,6 +313,11 @@ public class ConsoleApplication
 
                 var generator = new Generator();
 
+                if (puzzleCount == 1)
+                {
+                    generator.AttemptHook = ShowAttemptCount;
+                }
+
                 var puzzle = generator.Generate(clues);
 
                 lastPuzzle = puzzle;
@@ -374,6 +379,15 @@ public class ConsoleApplication
         }
 
         System.Console.CursorVisible = true;
+    }
+
+    private static void ShowAttemptCount(int count)
+    {
+        var x = System.Console.CursorLeft;
+        
+        System.Console.Write($" Attempt: {count}.");
+
+        System.Console.CursorLeft = x;
     }
 
     private static void RunTestSuite()
