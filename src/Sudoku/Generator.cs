@@ -57,7 +57,7 @@ public class Generator
         }
         else
         {
-            var attempts = 0;
+            var attempts = 1;
             
             while (! RemoveCells(puzzle, 81 - cluesToLeave, budgetSeconds))
             {
