@@ -43,9 +43,9 @@ public class Generator
 
             budgetMax = cluesToLeave switch
             {
-                < 20 => 60,
+                < 20 => 30,
                 < 21 => 20,
-                22 => 8,
+                22 => 10,
                 21 => 8,
                 _ => budgetMax
             };
@@ -69,7 +69,7 @@ public class Generator
 
                 AttemptHook?.Invoke(attempts);
 
-                if (cluesToLeave < 20 && attempts > 10 && budgetSeconds < budgetMax)
+                if (cluesToLeave < 20 && attempts % 10 == 0 && budgetSeconds < budgetMax)
                 {
                     budgetSeconds++;
 
