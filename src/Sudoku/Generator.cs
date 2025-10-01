@@ -72,8 +72,6 @@ public class Generator
                 if (cluesToLeave < 20 && attempts % 10 == 0 && budgetSeconds < budgetMax)
                 {
                     budgetSeconds++;
-
-                    attempts = 0;
                 }
             }
         }
