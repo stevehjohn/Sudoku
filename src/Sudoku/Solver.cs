@@ -9,6 +9,8 @@ public class Solver
 {
     private readonly int[] _cellCandidates = new int[81];
 
+    private readonly int[] _oldCellCandidates = new int[81];
+
     private readonly int[] _solution = new int[81];
 
     private readonly int[] _workingCopy = new int[81];
@@ -110,6 +112,8 @@ public class Solver
             }
         }
 
+        GetCellCandidates(puzzle, candidates);
+
         var solved = SolveStep(span, candidates);
 
         stopwatch.Stop();
@@ -126,10 +130,12 @@ public class Solver
 
     private bool SolveStep(Span<int> puzzle, (Candidates Row, Candidates Column, Candidates Box) candidates)
     {
-        if (! GetCellCandidates(puzzle, candidates))
-        {
-            return false;
-        }
+        // if (! GetCellCandidates(puzzle, candidates))
+        // {
+        //     return false;
+        // }
+        
+        Array.Copy(_cellCandidates, _oldCellCandidates, 81);
 
         var single = FindHiddenSingle();
 
@@ -496,6 +502,8 @@ public class Solver
             puzzle[cell] = 0;
 
             candidates = oldCandidates;
+        
+            Array.Copy(_oldCellCandidates, _cellCandidates, 81);
 
             if (_historyType != HistoryType.None)
             {
