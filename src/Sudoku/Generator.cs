@@ -46,7 +46,7 @@ public class Generator
                 < 20 => 30,
                 < 21 => 20,
                 22 => 10,
-                21 => 8,
+                23 => 8,
                 _ => budgetMax
             };
         }
