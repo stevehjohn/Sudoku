@@ -143,9 +143,9 @@ public class Solver
                 return false;
             
             case 2:
-                FindNakedPairs(UnitTables.Row(move.Position.X));
+                FindNakedPairs(UnitTables.Row(move.Position.Y));
 
-                FindNakedPairs(UnitTables.Column(move.Position.Y));
+                FindNakedPairs(UnitTables.Column(move.Position.X));
 
                 FindNakedPairs(UnitTables.Box(move.Position.Y / 3 * 3 + move.Position.X / 3));
                 
