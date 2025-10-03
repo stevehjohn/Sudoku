@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Runtime.Intrinsics.X86;
 using Sudoku.Extensions;
 
 namespace Sudoku;
@@ -420,15 +421,15 @@ public class Solver
     {
         var cell = move.Position.X + (move.Position.Y << 3) + move.Position.Y;
 
-        for (var i = 1; i < 10; i++)
+        var values = move.Values;
+        
+        // for (var i = 1; i < 10; i++)
+        while (values > 0)
         {
-            var bit = 1 << (i - 1);
+            var i = BitOperations.TrailingZeroCount(values) + 1;
 
-            if ((move.Values & bit) == 0)
-            {
-                continue;
-            }
-
+            values &= values - 1;
+            
             puzzle[cell] = i;
 
             var oldCandidates = candidates;
