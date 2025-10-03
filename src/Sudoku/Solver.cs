@@ -422,7 +422,6 @@ public class Solver
 
         var values = move.Values;
         
-        // for (var i = 1; i < 10; i++)
         while (values > 0)
         {
             var i = BitOperations.TrailingZeroCount(values) + 1;
