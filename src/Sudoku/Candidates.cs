@@ -38,5 +38,20 @@ public struct Candidates
 
             return (int) (_low >> ((index - 5) * 9)) & 0b1_1111_1111;
         }
+        set
+        {
+            if (index < 5)
+            {
+                var mask = ~(0b1_1111_1111ul << (index * 9));
+                
+                _high = (_high & mask) | (((ulong) value & 0b1_1111_1111) << (index * 9));
+                
+                return;
+            }
+
+            var maskLow = ~(0b1_1111_1111ul << ((index - 5) * 9));
+            
+            _low = (_low & maskLow) | (((ulong) value & 0b1_1111_1111) << ((index - 5) * 9));
+        }
     }
 }

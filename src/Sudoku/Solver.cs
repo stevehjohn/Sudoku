@@ -430,13 +430,19 @@ public class Solver
             
             puzzle[cell] = i;
 
-            var oldCandidates = candidates;
+            var box = move.Position.Y / 3 * 3 + move.Position.X / 3;
+
+            var oldRowCandidates = candidates.Row[move.Position.Y];
+            
+            var oldColumnCandidates = candidates.Column[move.Position.X];
+
+            var oldBoxCandidates = candidates.Box[box];
 
             candidates.Row.Remove(move.Position.Y, i);
 
             candidates.Column.Remove(move.Position.X, i);
 
-            candidates.Box.Remove(move.Position.Y / 3 * 3 + move.Position.X / 3, i);
+            candidates.Box.Remove(box, i);
 
             _score--;
 
@@ -496,7 +502,11 @@ public class Solver
 
             puzzle[cell] = 0;
 
-            candidates = oldCandidates;
+            candidates.Row[move.Position.Y] = oldRowCandidates;
+            
+            candidates.Column[move.Position.X] = oldColumnCandidates;
+
+            candidates.Box[box] = oldBoxCandidates;
 
             if (_historyType != HistoryType.None)
             {
