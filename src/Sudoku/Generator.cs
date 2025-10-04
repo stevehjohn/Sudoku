@@ -61,9 +61,9 @@ public class Generator
             
             while (! RemoveCells(puzzle, 81 - cluesToLeave, budgetSeconds))
             {
-                InitialiseCandidates();
-
-                CreateSolvedPuzzle(puzzle);
+                // InitialiseCandidates();
+                //
+                // CreateSolvedPuzzle(puzzle);
 
                 attempts++;
 
