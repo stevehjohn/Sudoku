@@ -61,10 +61,6 @@ public class Generator
             
             while (! RemoveCells(puzzle, 81 - cluesToLeave, budgetSeconds))
             {
-                // InitialiseCandidates();
-                //
-                // CreateSolvedPuzzle(puzzle);
-
                 attempts++;
 
                 AttemptHook?.Invoke(attempts);
