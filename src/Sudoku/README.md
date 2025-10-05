@@ -92,10 +92,39 @@ Output:
 ```csharp
 var generator = new Generator();
 
-var puzzle = generator.Generate(30); // Will generate a puzzle with 30 clues. Can get quite slow below 25.
+var puzzle = generator.Generate(30); // Will generate a puzzle with 30 clues. Can get quite slow below 22.
 
 puzzle.DumpToConsole(1);
 ```
+
+### Timings
+
+On my machine:
+
+| Clues | puzzles/s | s/puzzle |
+|-------|-----------|----------|
+| 19    |           | 18,000   |
+| 20    |           | 300      |
+| 21    |           | 4        |
+| 22    | 2         |          |
+| 23    | 100       |          |
+| 24    | 230       |          |
+| 25    | 1,600     |          |
+| 26    | 3,800     |          |
+| 27    | 4,300     |          |
+| 28    | 4,500     |          |
+| 29    | 4,500     |          |
+| 30    | 4,500     |          |
+| 31    | 4,600     |          |
+| 32    | 4,700     |          |
+| 33    | 4,700     |          |
+| 34    | 4,700     |          |
+| 35    | 4,700     |          |
+| 36    | 4,800     |          |
+| 37    | 4,900     |          |
+| 38    | 4,900     |          |
+| 39    | 4,900     |          |
+| 40    | 5,000     |          |
 
 Output:
 
