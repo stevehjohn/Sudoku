@@ -61,6 +61,11 @@ public class Generator
             
             while (! RemoveCells(puzzle, 81 - cluesToLeave, budgetSeconds, cancellationToken))
             {
+                if (cancellationToken is { IsCancellationRequested: true })
+                {
+                    break;
+                }
+
                 attempts++;
 
                 AttemptHook?.Invoke(attempts);
@@ -93,12 +98,12 @@ public class Generator
 
     private bool RemoveCell(int[] puzzle, int cellsToRemove, Stopwatch stopwatch, long budgetTicks, int start, CancellationToken? cancellationToken = null)
     {
-        if (cellsToRemove == 0 || cancellationToken is { IsCancellationRequested: true })
+        if (cellsToRemove == 0)
         {
             return true;
         }
 
-        if (budgetTicks > 0 && stopwatch.ElapsedTicks > budgetTicks)
+        if (budgetTicks > 0 && stopwatch.ElapsedTicks > budgetTicks || cancellationToken is { IsCancellationRequested: true })
         {
             return false;
         }
