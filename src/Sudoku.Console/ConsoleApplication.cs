@@ -361,6 +361,7 @@ public class ConsoleApplication
                 {
                     if (generated < puzzleCount)
                     {
+                        // ReSharper disable once AccessToDisposedClosure
                         writer.WriteLine($"{string.Join(string.Empty, puzzle).Replace('0', '.')}");
                     }
                 }
