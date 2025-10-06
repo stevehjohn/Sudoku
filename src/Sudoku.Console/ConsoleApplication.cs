@@ -327,9 +327,14 @@ public class ConsoleApplication
                     generator.AttemptHook = ShowAttemptCount;
                 }
 
-                var puzzle = generator.Generate(clues, cancellationToken);
+                var result = generator.Generate(clues, cancellationToken);
 
-                lastPuzzle = puzzle;
+                if (! result.Succeeded)
+                {
+                    return;
+                }
+
+                var puzzle = result.Puzzle;
 
                 lock (recentLock)
                 {

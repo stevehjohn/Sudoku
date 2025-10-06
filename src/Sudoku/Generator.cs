@@ -25,7 +25,7 @@ public class Generator
         _random = new Random(seed);
     }
     
-    public int[] Generate(int cluesToLeave = 30, CancellationToken? cancellationToken = null, bool useBudget = true)
+    public (bool Succeeded, int[] Puzzle) Generate(int cluesToLeave = 30, CancellationToken? cancellationToken = null, bool useBudget = true)
     {
         var puzzle = new int[81];
         
@@ -51,6 +51,8 @@ public class Generator
             };
         }
 
+        var succeeded = true;
+        
         if (budgetSeconds == 0)
         {
             RemoveCells(puzzle, 81 - cluesToLeave, budgetSeconds, cancellationToken);
@@ -63,6 +65,8 @@ public class Generator
             {
                 if (cancellationToken is { IsCancellationRequested: true })
                 {
+                    succeeded = false;
+                    
                     break;
                 }
 
@@ -77,7 +81,7 @@ public class Generator
             }
         }
 
-        return puzzle;
+        return (succeeded, puzzle);
     }
 
     private bool RemoveCells(int[] puzzle, int cellsToRemove, int budgetSeconds, CancellationToken? cancellationToken)
