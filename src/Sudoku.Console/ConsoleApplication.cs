@@ -309,11 +309,13 @@ public class ConsoleApplication
                     return;
                 }
 
-                Interlocked.Increment(ref generated);
+                var count = Interlocked.Increment(ref generated);
 
-                if (generated >= puzzleCount)
+                if (count > puzzleCount)
                 {
                     state.Stop();
+                    
+                    return;
                 }
 
                 lock (_consoleLock)
