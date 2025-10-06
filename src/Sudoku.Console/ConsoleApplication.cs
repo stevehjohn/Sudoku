@@ -118,19 +118,6 @@ public class ConsoleApplication
                     break;
                 }
 
-                if (response == "t")
-                {
-                    RunTestSuite();
-
-                    Out();
-
-                    Out("Press any key to continue.");
-
-                    System.Console.ReadKey();
-
-                    break;
-                }
-
                 if (response == "e")
                 {
                     SolveUserPuzzle();
