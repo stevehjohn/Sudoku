@@ -291,6 +291,10 @@ public class ConsoleApplication
 
         var cancellationToken = cancellationTokenSource.Token;
 
+        using var stream = new FileStream(filename, FileMode.Create);
+
+        using var writer = new StreamWriter(stream);
+
         Parallel.For(0, int.MaxValue,
             new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount - 1 },
             (_, state) =>
@@ -357,7 +361,7 @@ public class ConsoleApplication
                 {
                     if (generated < puzzleCount)
                     {
-                        File.AppendAllText(filename, $"{string.Join(string.Empty, puzzle).Replace('0', '.')}\n");
+                        writer.WriteLine($"{string.Join(string.Empty, puzzle).Replace('0', '.')}");
                     }
                 }
 
