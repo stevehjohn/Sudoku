@@ -350,7 +350,7 @@ public class ConsoleApplication
                 {
                     System.Console.CursorTop = 3;
 
-                    System.Console.WriteLine($" Puzzle {generated:N0}/{puzzleCount:N0}.               \n");
+                    System.Console.WriteLine($" Puzzle {generated + 1:N0}/{puzzleCount:N0}.               \n");
 
                     lock (recentLock)
                     {
