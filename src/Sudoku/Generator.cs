@@ -58,7 +58,7 @@ public class Generator
         
         if (budgetSeconds == 0)
         {
-            RemoveCells(puzzle, 81 - cluesToLeave, budgetSeconds, cancellationToken);
+            RemoveCells(puzzle, 81 - cluesToLeave, 0);
         }
         else
         {
@@ -87,7 +87,7 @@ public class Generator
         return (succeeded, puzzle);
     }
 
-    private bool RemoveCells(int[] puzzle, int cellsToRemove, int budgetSeconds, CancellationToken? cancellationToken)
+    private bool RemoveCells(int[] puzzle, int cellsToRemove, int budgetSeconds, CancellationToken? cancellationToken = null)
     {
         _filledCells.Clear();
         
