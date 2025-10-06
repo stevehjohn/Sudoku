@@ -11,7 +11,7 @@ public class GeneratorTests
     {
         var generator = new Generator();
     
-        var puzzle = generator.Generate(25).Puzzle;
+        var puzzle = generator.Generate(25, CancellationToken.None).Puzzle;
     
         puzzle.DumpToConsole(1);
     
@@ -29,13 +29,13 @@ public class GeneratorTests
     {
         var generator = new Generator(1234);
     
-        var puzzle1 = generator.Generate(25).Puzzle;
+        var puzzle1 = generator.Generate(25, CancellationToken.None).Puzzle;
     
         puzzle1.DumpToConsole(1);
         
         generator = new Generator(1234);
     
-        var puzzle2 = generator.Generate(25).Puzzle;
+        var puzzle2 = generator.Generate(25, CancellationToken.None).Puzzle;
     
         puzzle2.DumpToConsole(1);
         

@@ -11,7 +11,7 @@ public class IntArrayExtensionsTests
     {
         var generator = new Generator();
 
-        var puzzle = generator.Generate().Puzzle;
+        var puzzle = generator.Generate(30, CancellationToken.None).Puzzle;
 
         var y = Console.CursorTop;
 

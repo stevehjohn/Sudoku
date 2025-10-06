@@ -25,7 +25,7 @@ public class Generator
         _random = new Random(seed);
     }
     
-    public (bool Succeeded, int[] Puzzle) Generate(int cluesToLeave = 30, CancellationToken? cancellationToken = null, bool useBudget = true)
+    public (bool Succeeded, int[] Puzzle) Generate(int cluesToLeave, CancellationToken cancellationToken, bool useBudget = true)
     {
         var puzzle = new int[81];
         
@@ -58,7 +58,7 @@ public class Generator
         
         if (budgetSeconds == 0)
         {
-            RemoveCells(puzzle, 81 - cluesToLeave, 0);
+            RemoveCells(puzzle, 81 - cluesToLeave, 0, cancellationToken);
         }
         else
         {
@@ -66,7 +66,7 @@ public class Generator
             
             while (! RemoveCells(puzzle, 81 - cluesToLeave, budgetSeconds, cancellationToken))
             {
-                if (cancellationToken is { IsCancellationRequested: true })
+                if (cancellationToken.IsCancellationRequested)
                 {
                     succeeded = false;
                     
@@ -87,7 +87,7 @@ public class Generator
         return (succeeded, puzzle);
     }
 
-    private bool RemoveCells(int[] puzzle, int cellsToRemove, int budgetSeconds, CancellationToken? cancellationToken = null)
+    private bool RemoveCells(int[] puzzle, int cellsToRemove, int budgetSeconds, CancellationToken cancellationToken)
     {
         _filledCells.Clear();
         
@@ -103,14 +103,14 @@ public class Generator
         return RemoveCell(puzzle, cellsToRemove, stopWatch, budgetSeconds * Stopwatch.Frequency, 0, cancellationToken);
     }
 
-    private bool RemoveCell(int[] puzzle, int cellsToRemove, Stopwatch stopwatch, long budgetTicks, int start, CancellationToken? cancellationToken = null)
+    private bool RemoveCell(int[] puzzle, int cellsToRemove, Stopwatch stopwatch, long budgetTicks, int start, CancellationToken cancellationToken)
     {
         if (cellsToRemove == 0)
         {
             return true;
         }
 
-        if ((budgetTicks > 0 && stopwatch.ElapsedTicks > budgetTicks) || cancellationToken is { IsCancellationRequested: true })
+        if ((budgetTicks > 0 && stopwatch.ElapsedTicks > budgetTicks) || cancellationToken.IsCancellationRequested)
         {
             return false;
         }
@@ -130,7 +130,7 @@ public class Generator
 
             puzzle[cellIndex] = 0;
 
-            if (cancellationToken is { IsCancellationRequested: true })
+            if (cancellationToken.IsCancellationRequested)
             {
                 return false;
             }
@@ -148,7 +148,7 @@ public class Generator
 
             backtracks++;
 
-            if (backtracks > 3 || cancellationToken is { IsCancellationRequested: true })
+            if (backtracks > 3 || cancellationToken.IsCancellationRequested)
             {
                 return false;
             }
@@ -169,9 +169,9 @@ public class Generator
         }
     }
 
-    private bool CreateSolvedPuzzle(Span<int> puzzle, CancellationToken? cancellationToken = null, int cell = 0)
+    private bool CreateSolvedPuzzle(Span<int> puzzle, CancellationToken cancellationToken, int cell = 0)
     {
-        if (cancellationToken is { IsCancellationRequested: true })
+        if (cancellationToken.IsCancellationRequested)
         {
             return false;
         }
