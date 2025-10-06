@@ -373,6 +373,8 @@ public class ConsoleApplication
                     cancellationTokenSource.Cancel();
                     
                     state.Stop();
+                    
+                    stopwatch.Stop();
                 }
             });
 
