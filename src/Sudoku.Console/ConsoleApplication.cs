@@ -368,7 +368,7 @@ public class ConsoleApplication
 
                 var count = Interlocked.Increment(ref generated);
 
-                if (count > puzzleCount)
+                if (count >= puzzleCount)
                 {
                     cancellationTokenSource.Cancel();
                     
