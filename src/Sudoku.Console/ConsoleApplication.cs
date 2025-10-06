@@ -294,6 +294,8 @@ public class ConsoleApplication
         using var stream = new FileStream(filename, FileMode.Create);
 
         using var writer = new StreamWriter(stream);
+        
+        writer.AutoFlush = true;
 
         Parallel.For(0, int.MaxValue,
             new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount - 1 },
