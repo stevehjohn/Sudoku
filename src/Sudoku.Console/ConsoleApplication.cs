@@ -322,7 +322,7 @@ public class ConsoleApplication
                 {
                     System.Console.CursorTop = 3;
 
-                    System.Console.WriteLine($" Puzzle {generated:N0}/{puzzleCount:N0}.               \n");
+                    System.Console.WriteLine($" Puzzle {Math.Min(generated, puzzleCount):N0}/{puzzleCount:N0}.               \n");
                 }
 
                 var generator = new Generator();
