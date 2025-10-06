@@ -300,6 +300,10 @@ public class ConsoleApplication
 
         int[] lastPuzzle = null;
 
+        var cancellationTokenSource = new CancellationTokenSource();
+
+        var cancellationToken = cancellationTokenSource.Token;
+
         Parallel.For(0, int.MaxValue,
             new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount - 1 },
             (_, state) =>
@@ -323,7 +327,7 @@ public class ConsoleApplication
                     generator.AttemptHook = ShowAttemptCount;
                 }
 
-                var puzzle = generator.Generate(clues);
+                var puzzle = generator.Generate(clues, cancellationToken);
 
                 lastPuzzle = puzzle;
 
@@ -361,6 +365,8 @@ public class ConsoleApplication
 
                 if (count > puzzleCount)
                 {
+                    cancellationTokenSource.Cancel();
+                    
                     state.Stop();
                 }
             });
