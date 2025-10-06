@@ -134,7 +134,7 @@ public class Generator
 
             var unique = result.Solved && result.SolutionCount == 1;
 
-            if (unique && RemoveCell(puzzle, cellsToRemove - 1, stopwatch, budgetTicks, i + 1))
+            if (unique && RemoveCell(puzzle, cellsToRemove - 1, stopwatch, budgetTicks, i + 1, cancellationToken))
             {
                 return true;
             }
