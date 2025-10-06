@@ -130,6 +130,11 @@ public class Generator
 
             puzzle[cellIndex] = 0;
 
+            if (cancellationToken is { IsCancellationRequested: true })
+            {
+                return false;
+            }
+
             var result = _solver.Solve(puzzle, true);
 
             var unique = result.Solved && result.SolutionCount == 1;
