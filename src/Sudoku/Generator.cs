@@ -107,7 +107,7 @@ public class Generator
             return true;
         }
 
-        if (budgetTicks > 0 && stopwatch.ElapsedTicks > budgetTicks || cancellationToken is { IsCancellationRequested: true })
+        if ((budgetTicks > 0 && stopwatch.ElapsedTicks > budgetTicks) || cancellationToken is { IsCancellationRequested: true })
         {
             return false;
         }
