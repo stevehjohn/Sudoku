@@ -309,15 +309,6 @@ public class ConsoleApplication
                     return;
                 }
 
-                var count = Interlocked.Increment(ref generated);
-
-                if (count > puzzleCount)
-                {
-                    state.Stop();
-                    
-                    return;
-                }
-
                 lock (_consoleLock)
                 {
                     System.Console.CursorTop = 3;
@@ -364,6 +355,13 @@ public class ConsoleApplication
                 lock (_outputFileLock)
                 {
                     File.AppendAllText(filename, $"{string.Join(string.Empty, puzzle).Replace('0', '.')}\n");
+                }
+
+                var count = Interlocked.Increment(ref generated);
+
+                if (count > puzzleCount)
+                {
+                    state.Stop();
                 }
             });
 
