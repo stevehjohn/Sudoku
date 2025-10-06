@@ -311,6 +311,11 @@ public class ConsoleApplication
                     System.Console.WriteLine($" Puzzle {Math.Min(generated, puzzleCount):N0}/{puzzleCount:N0}.               \n");
                 }
 
+                if (generated >= puzzleCount)
+                {
+                    return;
+                }
+
                 var generator = new Generator();
 
                 if (puzzleCount == 1)
