@@ -277,7 +277,7 @@ public class ConsoleApplication
 
         Out($"\n {DateTime.Now:ddd d MMM HH:mm:ss}: Generating {clues} clue puzzle{(puzzleCount > 1 ? "s" : string.Empty)}...\n");
 
-        var recent = new List<int[]>();
+        var recent = new List<string>();
 
         var recentLock = new object();
 
@@ -336,9 +336,11 @@ public class ConsoleApplication
 
                 lastPuzzle = puzzle;
 
+                var puzzleString = $" {string.Join(string.Empty, puzzle).Replace('0', '.')}";
+
                 lock (recentLock)
                 {
-                    recent.Insert(0, puzzle);
+                    recent.Insert(0, puzzleString);
 
                     if (recent.Count > 20)
                     {
@@ -358,12 +360,12 @@ public class ConsoleApplication
                         {
                             foreach (var item in recent)
                             {
-                                System.Console.WriteLine($" {string.Join(string.Empty, item).Replace('0', '.')}");
+                                System.Console.WriteLine(item);
                             }
                         }
                         
                         // ReSharper disable once AccessToDisposedClosure
-                        writer.WriteLine($"{string.Join(string.Empty, puzzle).Replace('0', '.')}");
+                        writer.WriteLine(puzzleString);
 
                         top = System.Console.CursorTop;
                     }
