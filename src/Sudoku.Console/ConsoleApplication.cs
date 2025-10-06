@@ -295,6 +295,8 @@ public class ConsoleApplication
         
         writer.AutoFlush = true;
 
+        var top = 0;
+                
         Parallel.For(0, int.MaxValue,
             new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount - 1 },
             (_, state) =>
@@ -359,8 +361,11 @@ public class ConsoleApplication
                                 System.Console.WriteLine($" {string.Join(string.Empty, item).Replace('0', '.')}");
                             }
                         }
+                        
                         // ReSharper disable once AccessToDisposedClosure
                         writer.WriteLine($"{string.Join(string.Empty, puzzle).Replace('0', '.')}");
+
+                        top = System.Console.CursorTop;
                     }
                 }
 
@@ -377,6 +382,8 @@ public class ConsoleApplication
             });
 
         stopwatch.Stop();
+
+        System.Console.CursorTop = top;
 
         Out($"\n Puzzles have been written to {filename}.");
 
