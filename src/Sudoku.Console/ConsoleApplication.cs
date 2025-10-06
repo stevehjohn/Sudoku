@@ -336,6 +336,8 @@ public class ConsoleApplication
 
                 var puzzle = result.Puzzle;
 
+                lastPuzzle = puzzle;
+
                 lock (recentLock)
                 {
                     recent.Insert(0, puzzle);
