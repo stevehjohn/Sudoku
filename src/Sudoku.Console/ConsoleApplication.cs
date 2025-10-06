@@ -296,19 +296,31 @@ public class ConsoleApplication
 
         var recentLock = new object();
 
-        var count = 0;
+        var generated = 0;
 
         int[] lastPuzzle = null;
 
-        Parallel.For(0, puzzleCount,
+        Parallel.For(0, int.MaxValue,
             new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount - 1 },
-            _ =>
+            (_, state) =>
             {
+                if (state.IsStopped)
+                {
+                    return;
+                }
+
+                Interlocked.Increment(ref generated);
+
+                if (generated >= puzzleCount)
+                {
+                    state.Stop();
+                }
+
                 lock (_consoleLock)
                 {
                     System.Console.CursorTop = 3;
 
-                    System.Console.WriteLine($" Puzzle {count:N0}/{puzzleCount:N0}.               \n");
+                    System.Console.WriteLine($" Puzzle {generated:N0}/{puzzleCount:N0}.               \n");
                 }
 
                 var generator = new Generator();
@@ -334,11 +346,9 @@ public class ConsoleApplication
 
                 lock (_consoleLock)
                 {
-                    count++;
-
                     System.Console.CursorTop = 3;
 
-                    System.Console.WriteLine($" Puzzle {count:N0}/{puzzleCount:N0}.               \n");
+                    System.Console.WriteLine($" Puzzle {generated:N0}/{puzzleCount:N0}.               \n");
 
                     lock (recentLock)
                     {
