@@ -8,10 +8,8 @@ public class ConsoleApplication
 {
     private List<string> _files;
 
-    private readonly object _outputFileLock = new();
-
-    private readonly object _consoleLock = new();
-
+    private readonly object _lock = new();
+    
     public void Run()
     {
         while (true)
@@ -306,7 +304,7 @@ public class ConsoleApplication
                     return;
                 }
 
-                lock (_consoleLock)
+                lock (_lock)
                 {
                     System.Console.CursorTop = 3;
 
@@ -341,7 +339,7 @@ public class ConsoleApplication
                     }
                 }
 
-                lock (_consoleLock)
+                lock (_lock)
                 {
                     if (generated < puzzleCount)
                     {
@@ -356,13 +354,6 @@ public class ConsoleApplication
                                 System.Console.WriteLine($" {string.Join(string.Empty, item).Replace('0', '.')}");
                             }
                         }
-                    }
-                }
-                
-                lock (_outputFileLock)
-                {
-                    if (generated < puzzleCount)
-                    {
                         // ReSharper disable once AccessToDisposedClosure
                         writer.WriteLine($"{string.Join(string.Empty, puzzle).Replace('0', '.')}");
                     }
