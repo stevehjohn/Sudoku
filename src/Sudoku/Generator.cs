@@ -108,6 +108,8 @@ public class Generator
             return false;
         }
 
+        var backtracks = 0;
+
         for (var i = start; i < _filledCells.Count; i++)
         {
             var cellIndex = _filledCells[i];
@@ -126,6 +128,13 @@ public class Generator
             }
 
             puzzle[cellIndex] = cellValue;
+
+            backtracks++;
+
+            if (backtracks > 3)
+            {
+                return false;
+            }
         }
 
         return false;
