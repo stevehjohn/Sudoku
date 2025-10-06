@@ -337,22 +337,28 @@ public class ConsoleApplication
 
                 lock (_consoleLock)
                 {
-                    System.Console.CursorTop = 3;
-
-                    System.Console.WriteLine($" Puzzle {generated + 1:N0}/{puzzleCount:N0}.               \n");
-
-                    lock (recentLock)
+                    if (generated < puzzleCount)
                     {
-                        foreach (var item in recent)
+                        System.Console.CursorTop = 3;
+
+                        System.Console.WriteLine($" Puzzle {generated + 1:N0}/{puzzleCount:N0}.               \n");
+
+                        lock (recentLock)
                         {
-                            System.Console.WriteLine($" {string.Join(string.Empty, item).Replace('0', '.')}");
+                            foreach (var item in recent)
+                            {
+                                System.Console.WriteLine($" {string.Join(string.Empty, item).Replace('0', '.')}");
+                            }
                         }
                     }
                 }
                 
                 lock (_outputFileLock)
                 {
-                    File.AppendAllText(filename, $"{string.Join(string.Empty, puzzle).Replace('0', '.')}\n");
+                    if (generated < puzzleCount)
+                    {
+                        File.AppendAllText(filename, $"{string.Join(string.Empty, puzzle).Replace('0', '.')}\n");
+                    }
                 }
 
                 var count = Interlocked.Increment(ref generated);
