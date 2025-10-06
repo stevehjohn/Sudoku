@@ -140,7 +140,7 @@ public class Generator
 
             backtracks++;
 
-            if (backtracks > 3)
+            if (backtracks > 3 || cancellationToken is { IsCancellationRequested: true })
             {
                 return false;
             }
