@@ -31,7 +31,10 @@ public class Generator
         
         InitialiseCandidates();
 
-        CreateSolvedPuzzle(puzzle);
+        if (! CreateSolvedPuzzle(puzzle, cancellationToken))
+        {
+            return (false, puzzle);
+        }
 
         var budgetSeconds = 0;
 
@@ -161,8 +164,13 @@ public class Generator
         }
     }
 
-    private bool CreateSolvedPuzzle(Span<int> puzzle, int cell = 0)
+    private bool CreateSolvedPuzzle(Span<int> puzzle, CancellationToken? cancellationToken = null, int cell = 0)
     {
+        if (cancellationToken is { IsCancellationRequested: true })
+        {
+            return false;
+        }
+
         while (_candidates[cell].Count > 0)
         {
             var candidateIndex = _random.Next(_candidates[cell].Count);
@@ -175,7 +183,7 @@ public class Generator
 
             if (puzzle.IsValidSudoku())
             {
-                return cell == 80 || CreateSolvedPuzzle(puzzle, cell + 1);
+                return cell == 80 || CreateSolvedPuzzle(puzzle, cancellationToken, cell + 1);
             }
         }
         
@@ -183,7 +191,7 @@ public class Generator
 
         _candidates[cell] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-        return CreateSolvedPuzzle(puzzle, cell - 1);
+        return CreateSolvedPuzzle(puzzle, cancellationToken, cell - 1);
     }
 
     private void InitialiseCandidates()
