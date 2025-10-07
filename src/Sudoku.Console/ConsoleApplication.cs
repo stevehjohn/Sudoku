@@ -336,7 +336,7 @@ public class ConsoleApplication
 
                 lastPuzzle = puzzle;
 
-                var puzzleString = $" {string.Join(string.Empty, puzzle).Replace('0', '.')}";
+                var puzzleString = $"{string.Join(string.Empty, puzzle).Replace('0', '.')}";
 
                 lock (recentLock)
                 {
@@ -360,7 +360,7 @@ public class ConsoleApplication
                         {
                             foreach (var item in recent)
                             {
-                                System.Console.WriteLine(item);
+                                System.Console.WriteLine($" {item}");
                             }
                         }
                         
