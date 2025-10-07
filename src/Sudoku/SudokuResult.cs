@@ -92,6 +92,10 @@ public class SudokuResult
                     Console.WriteLine($" - No candidates at ({move.X}, {move.Y})");
                     break;
 
+                case MoveType.NakedPair:
+                    Console.WriteLine($" - Naked pair, removed other candidates ({string.Join(", ", move.Value.BitsToCandidates())}) at ({move.X}, {move.Y})");
+                    break;
+                
                 case MoveType.None:
                 case MoveType.Guess:
                 case MoveType.Backtrack:
