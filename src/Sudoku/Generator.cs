@@ -58,13 +58,13 @@ public class Generator
         
         if (budgetSeconds == 0)
         {
-            RemoveCells(puzzle, 81 - cluesToLeave, 0, cancellationToken);
+            RemoveCells(puzzle, cluesToLeave, 81 - cluesToLeave, 0, cancellationToken);
         }
         else
         {
             var attempts = 1;
             
-            while (! RemoveCells(puzzle, 81 - cluesToLeave, budgetSeconds, cancellationToken))
+            while (! RemoveCells(puzzle, cluesToLeave, 81 - cluesToLeave, budgetSeconds, cancellationToken))
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -87,7 +87,7 @@ public class Generator
         return (succeeded, puzzle);
     }
 
-    private bool RemoveCells(int[] puzzle, int cellsToRemove, int budgetSeconds, CancellationToken cancellationToken)
+    private bool RemoveCells(int[] puzzle, int targetClues, int cellsToRemove, int budgetSeconds, CancellationToken cancellationToken)
     {
         _filledCells.Clear();
         
@@ -100,10 +100,10 @@ public class Generator
 
         var stopWatch = Stopwatch.StartNew();
         
-        return RemoveCell(puzzle, cellsToRemove, stopWatch, budgetSeconds * Stopwatch.Frequency, 0, cancellationToken);
+        return RemoveCell(puzzle, targetClues, cellsToRemove, stopWatch, budgetSeconds * Stopwatch.Frequency, 0, cancellationToken);
     }
 
-    private bool RemoveCell(int[] puzzle, int cellsToRemove, Stopwatch stopwatch, long budgetTicks, int start, CancellationToken cancellationToken)
+    private bool RemoveCell(int[] puzzle, int targetClues, int cellsToRemove, Stopwatch stopwatch, long budgetTicks, int start, CancellationToken cancellationToken)
     {
         if (cellsToRemove == 0)
         {
@@ -139,7 +139,7 @@ public class Generator
 
             var unique = result.Solved && result.SolutionCount == 1;
 
-            if (unique && RemoveCell(puzzle, cellsToRemove - 1, stopwatch, budgetTicks, i + 1, cancellationToken))
+            if (unique && RemoveCell(puzzle, targetClues, cellsToRemove - 1, stopwatch, budgetTicks, i + 1, cancellationToken))
             {
                 return true;
             }
@@ -148,7 +148,7 @@ public class Generator
 
             backtracks++;
 
-            if (backtracks > 3 || cancellationToken.IsCancellationRequested)
+            if ((targetClues < 24 && backtracks > 3) || cancellationToken.IsCancellationRequested)
             {
                 return false;
             }
