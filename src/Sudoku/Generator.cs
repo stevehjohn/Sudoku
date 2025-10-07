@@ -5,8 +5,10 @@ namespace Sudoku;
 
 public class Generator
 {
-    private readonly List<int>[] _candidates = new List<int>[81];
+    private readonly int[][] _candidates = new int[81][];
 
+    private readonly int[] _candidateCounts = new int[81];
+    
     private readonly Solver _solver = new(HistoryType.None, SolveMethod.FindUnique);
 
     private readonly List<int> _filledCells = [];
@@ -176,14 +178,16 @@ public class Generator
             return false;
         }
 
-        while (_candidates[cell].Count > 0)
+        while (_candidateCounts[cell] > 0)
         {
-            var candidateIndex = _random.Next(_candidates[cell].Count);
+            var candidateIndex = _random.Next(_candidateCounts[cell]);
 
             var candidate = _candidates[cell][candidateIndex];
 
-            _candidates[cell].RemoveAt(candidateIndex);
-
+            _candidates[cell][candidateIndex] = _candidates[cell][_candidateCounts[cell] - 1];
+            
+            _candidateCounts[cell]--;
+            
             puzzle[cell] = candidate;
 
             if (puzzle.IsValidSudoku())
@@ -196,6 +200,8 @@ public class Generator
 
         _candidates[cell] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
+        _candidateCounts[cell] = 9;
+
         return CreateSolvedPuzzle(puzzle, cancellationToken, cell - 1);
     }
 
@@ -204,6 +210,8 @@ public class Generator
         for (var i = 0; i < 81; i++)
         {
             _candidates[i] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+            _candidateCounts[i] = 9;
         }
     }
 }
