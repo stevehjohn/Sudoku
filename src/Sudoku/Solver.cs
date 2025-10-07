@@ -133,26 +133,43 @@ public class Solver
             return false;
         }
 
-        var single = FindHiddenSingle();
-
-        var move = single == -1 ? FindNakedSingle(puzzle) : (Position: (X: single % 9, Y: single / 9), Values: _cellCandidates[single], ValueCount: 1);
-
-        switch (move.ValueCount)
+        while (true)
         {
-            case 0:
+            var single = FindHiddenSingle();
+
+            if (single != -1)
+            {
+                return CreateNextSteps(puzzle, (Position: (X: single % 9, Y: single / 9), Values: _cellCandidates[single], ValueCount: 1), candidates);
+            }
+
+            var move = FindNakedSingle(puzzle);
+
+            if (move.ValueCount == 1)
+            {
+                return CreateNextSteps(puzzle, move, candidates);
+            }
+
+            if (move.ValueCount < 4)
+            {
+                var changed = FindNakedPairs(UnitTables.Row(move.Position.Y));
+
+                changed |= FindNakedPairs(UnitTables.Column(move.Position.X));
+
+                changed |= FindNakedPairs(UnitTables.Box(move.Position.Y / 3 * 3 + move.Position.X / 3));
+
+                if (changed)
+                {
+                    continue;
+                }
+            }
+
+            if (move.ValueCount == 0)
+            {
                 return false;
-            
-            case 2:
-                FindNakedPairs(UnitTables.Row(move.Position.Y));
+            }
 
-                FindNakedPairs(UnitTables.Column(move.Position.X));
-
-                FindNakedPairs(UnitTables.Box(move.Position.Y / 3 * 3 + move.Position.X / 3));
-                
-                break;
+            return CreateNextSteps(puzzle, move, candidates);
         }
-
-        return CreateNextSteps(puzzle, move, candidates);
     }
 
     private static (Candidates Row, Candidates Column, Candidates Box) GetSectionCandidates(Span<int> puzzle)
@@ -382,7 +399,7 @@ public class Solver
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void FindNakedPairs(ReadOnlySpan<int> unit)
+    private bool FindNakedPairs(ReadOnlySpan<int> unit)
     {
         var mask = 0;
 
@@ -410,6 +427,8 @@ public class Solver
             }
         }
 
+        var changed = false;
+        
         if (count == 2)
         {
             for (var i = 0; i < 9; i++)
@@ -418,40 +437,55 @@ public class Solver
 
                 var cell = _cellCandidates[index];
 
-                if (cell != mask)
+                if (cell == mask)
+                {
+                    continue;
+                }
+
+                var overlap = cell & mask;
+
+                if (overlap == 0)
+                {
+                    continue;
+                }
+
+                var pruned = cell & ~overlap;
+                
+                if (pruned != cell)
                 {
                     if (_historyType != HistoryType.None)
                     {
-                        if (BitOperations.PopCount((uint) (cell & mask)) != 2)
-                        {
-                            _history.Add(new Move(index % 9, index / 9, cell & ~mask, MoveType.NakedPair));
-
-                            _cellCandidates[index] = cell & ~mask;
-                        }
+                        _history.Add(new Move(index % 9, index / 9, pruned, MoveType.NakedPair));
                     }
+
+                    _cellCandidates[index] = pruned;
+                    
+                    changed = true;
                 }
             }
         }
+
+        return changed;
     }
-    
+
     private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, (Candidates Row, Candidates Column, Candidates Box) candidates)
     {
         var cell = move.Position.X + (move.Position.Y << 3) + move.Position.Y;
 
         var values = move.Values;
-        
+
         while (values > 0)
         {
             var i = BitOperations.TrailingZeroCount(values) + 1;
 
             values &= values - 1;
-            
+
             puzzle[cell] = i;
 
             var box = move.Position.Y / 3 * 3 + move.Position.X / 3;
 
             var oldRowCandidates = candidates.Row[move.Position.Y];
-            
+
             var oldColumnCandidates = candidates.Column[move.Position.X];
 
             var oldBoxCandidates = candidates.Box[box];
@@ -521,7 +555,7 @@ public class Solver
             puzzle[cell] = 0;
 
             candidates.Row[move.Position.Y] = oldRowCandidates;
-            
+
             candidates.Column[move.Position.X] = oldColumnCandidates;
 
             candidates.Box[box] = oldBoxCandidates;
