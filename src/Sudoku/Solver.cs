@@ -165,6 +165,11 @@ public class Solver
 
         for (var i = 0; i < 81; i++)
         {
+            if (puzzle[i] == 0)
+            {
+                continue;
+            }
+
             var x = i % 9;
 
             var y = i / 9;
