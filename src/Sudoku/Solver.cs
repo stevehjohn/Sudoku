@@ -422,13 +422,13 @@ public class Solver
                 {
                     if (_historyType != HistoryType.None)
                     {
-                        if (BitOperations.PopCount((uint) (cell & mask)) == 2)
+                        if (BitOperations.PopCount((uint) (cell & mask)) != 2)
                         {
                             _history.Add(new Move(index % 9, index / 9, cell & ~mask, MoveType.NakedPair));
+
+                            _cellCandidates[index] = cell & ~mask;
                         }
                     }
-
-                    _cellCandidates[index] = cell & ~mask;
                 }
             }
         }
