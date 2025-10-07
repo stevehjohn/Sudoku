@@ -149,7 +149,7 @@ public class Solver
                 return CreateNextSteps(puzzle, move, candidates);
             }
 
-            if (move.ValueCount < 4)
+            if (_score < 55 && move.ValueCount < 4)
             {
                 var changed = FindNakedPairs(UnitTables.Row(move.Position.Y));
 
