@@ -4,7 +4,7 @@ namespace Sudoku.Console;
 
 public static class TreeGenerator
 {
-    private const string Numbers = "➊➋➌➍➎➏➐➑⦿⦸";
+    private const string Numbers = "➊➋➌➍➎➏➐➑➒⦿·";
 
     private const string NodeTemplate = "<li data-solution-path='{onSolutionPath}'><a {id} class='{class}'><div class='cellTitle'>{type}</div>{puzzle}</a>{children}</li>";
 
@@ -34,6 +34,11 @@ public static class TreeGenerator
         var puzzle = new StringBuilder();
 
         puzzle.Append("<table cellspacing='0'><tr>");
+
+        if (node.OnSolvedPath)
+        {
+            System.Console.WriteLine("");
+        }
 
         for (var i = 0; i < 81; i++)
         {
@@ -105,15 +110,21 @@ public static class TreeGenerator
                     }
                     else
                     {
-                        var colour = "#000000";
+                        var unit = node.Move.Type switch
+                        {
+                            MoveType.NakedPairRow => UnitTables.Row(metadata.UnitIndex),
+                            MoveType.NakedPairColumn => UnitTables.Column(metadata.UnitIndex),
+                            _ => UnitTables.Box(metadata.UnitIndex)
+                        };
                         
-                        
-                        
+                        var colour = unit.Contains(i) ? "#000000" : "#a0a0a0";
+
                         puzzle.Append($"<span style='color: {colour}'>{(node[i] == 0 ? "<pre>&nbsp;</pre>" : node[i])}</span>");
                     }
                     
                     break;
 
+                case MoveType.Guess:
                 default:
                     puzzle.Append(node[i] == 0 ? "<pre>&nbsp;</pre>" : node[i]);
                     break;
