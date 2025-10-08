@@ -109,7 +109,7 @@ public class SudokuResult
                         _ => move.Y / 3 * 3 + move.X / 3
                     };
                     
-                    Console.WriteLine($" - Naked pair ({string.Join(", ", ((move.Value & 0x7FFF0000) >> 16).BitsToCandidates())}), left other candidates ({string.Join(", ", (move.Value & 0xFFFF).BitsToCandidates())}) in {type} {unit}");
+                    Console.WriteLine($" - Naked pair ({string.Join(", ", move.Value.BitsToCandidates())}) in {type} {unit}");
                     break;
                 
                 case MoveType.None:

@@ -429,19 +429,19 @@ public class Solver
 
         var changed = false;
 
-        var metadata = new NakedPairMetadata();
-        
-        if (_historyType != HistoryType.None)
-        {
-            var move = new Move(0, 0, 0, moveType);
-            
-            move.AddMetadata(metadata);
-            
-            _history.Add(move);
-        }
-
         if (count == 2)
         {
+            var metadata = new NakedPairMetadata();
+        
+            if (_historyType != HistoryType.None)
+            {
+                var move = new Move(0, 0, mask, moveType);
+            
+                move.AddMetadata(metadata);
+            
+                _history.Add(move);
+            }
+
             for (var i = 0; i < 9; i++)
             {
                 var index = unit[i];
