@@ -93,9 +93,9 @@ public static class TreeGenerator
                 case MoveType.NakedPairRow:
                 case MoveType.NakedPairColumn:
                 case MoveType.NakedPairBox:
-                    if (node[i] > 0 && node[i] <= 9)
+                    if (node[i] - 1 > 0 && node[i] - 1 <= 9)
                     {
-                        puzzle.Append(Numbers[node[i] - 1]);
+                        puzzle.Append(node[i] - 1);
                     }
                     break;
 
@@ -103,7 +103,7 @@ public static class TreeGenerator
                     puzzle.Append(node[i] == 0 ? "<pre>&nbsp;</pre>" : node[i]);
                     break;
             }
-            
+
             puzzle.Append("</td>");
         }
 
@@ -136,7 +136,7 @@ public static class TreeGenerator
                 case MoveType.NoCandidates:
                     content = content.Replace("{class}", "deadEnd").Replace("{type}", "No Candidate");
                     break;
-                
+
                 case MoveType.NakedPairRow:
                 case MoveType.NakedPairColumn:
                 case MoveType.NakedPairBox:
