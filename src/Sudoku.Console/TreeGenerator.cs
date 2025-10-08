@@ -90,39 +90,20 @@ public static class TreeGenerator
                     puzzle.Append("<span class='added'>ⓧ</span>");
                     break;
 
-                case MoveType.NakedPairRow when node[i] > 9:
-                case MoveType.NakedPairColumn when node[i] > 9:
-                case MoveType.NakedPairBox when node[i] > 9:
+                case MoveType.NakedPairRow:
+                case MoveType.NakedPairColumn:
+                case MoveType.NakedPairBox:
+                    if (node[i] <= 9)
+                    {
+                        puzzle.Append($"<span class='added'>{Numbers[node[i] - 1]}</span>");
+                    }
                     break;
 
                 default:
                     puzzle.Append(node[i] == 0 ? "<pre>&nbsp;</pre>" : node[i]);
                     break;
             }
-
-            // if (node[i] != 0)
-            // {
-            //     if (isGuess)
-            //     {
-            //         puzzle.Append($"<span class='added'>{Numbers[node[i] - 1]}</span>");
-            //     }
-            //     else
-            //     {
-            //         puzzle.Append(node[i]);
-            //     }
-            // }
-            // else
-            // {
-            //     if (node.Move.Type == MoveType.NoCandidates && node.Move.X == x && node.Move.Y == y)
-            //     {
-            //         puzzle.Append("<span class='added'>ⓧ</span>");
-            //     }
-            //     else
-            //     {
-            //         puzzle.Append("<pre>&nbsp;</pre>");
-            //     }
-            // }
-
+            
             puzzle.Append("</td>");
         }
 
