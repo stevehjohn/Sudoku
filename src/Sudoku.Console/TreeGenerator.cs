@@ -102,11 +102,11 @@ public static class TreeGenerator
 
                     if (metadata.Pair.Contains(i))
                     {
-                        puzzle.Append(Numbers[8]);
+                        puzzle.Append(Numbers[9]);
                     }
                     else if (metadata.Affected.Contains(i))
                     {
-                        puzzle.Append(Numbers[9]);
+                        puzzle.Append(Numbers[10]);
                     }
                     else
                     {
