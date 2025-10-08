@@ -37,7 +37,7 @@ public class Node
             _puzzleState[i] = parent._puzzleState[i];
         }
 
-        if (move.Type != MoveType.None)
+        if (move.Type is not (MoveType.None or MoveType.NakedPairRow or MoveType.NakedPairColumn or MoveType.NakedPairBox))
         {
             _puzzleState[move.X + move.Y * 9] = move.Type == MoveType.Backtrack ? 0 : move.Value;
         }

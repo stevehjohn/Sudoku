@@ -136,6 +136,10 @@ td {
     background-color: bisque;
 }
 
+.tree li a.nakedPair {
+    background-color: #ec99c7;
+}
+
 .cellTitle {
     font-weight: bold;
     font-size: 13px;
