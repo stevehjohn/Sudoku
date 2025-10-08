@@ -97,12 +97,19 @@ public class SudokuResult
                 case MoveType.NakedPairBox:
                     var type = move.Type switch
                     {
-                        MoveType.NakedPairRow => "Row",
-                        MoveType.NakedPairColumn => "Column",
-                        _ => "Box"
+                        MoveType.NakedPairRow => "row",
+                        MoveType.NakedPairColumn => "column",
+                        _ => "box"
+                    };
+
+                    var unit = move.Type switch
+                    {
+                        MoveType.NakedPairRow => move.Y,
+                        MoveType.NakedPairColumn => move.X,
+                        _ => move.Y / 3 * 3 + move.X / 3
                     };
                     
-                    Console.WriteLine($" - {type} naked pair ({string.Join(", ", ((move.Value & 0x7FFF0000) >> 16).BitsToCandidates())}), left other candidates ({string.Join(", ", (move.Value & 0xFFFF).BitsToCandidates())}) at ({move.X}, {move.Y})");
+                    Console.WriteLine($" - Naked pair ({string.Join(", ", ((move.Value & 0x7FFF0000) >> 16).BitsToCandidates())}), left other candidates ({string.Join(", ", (move.Value & 0xFFFF).BitsToCandidates())}) in {type} {unit}");
                     break;
                 
                 case MoveType.None:
