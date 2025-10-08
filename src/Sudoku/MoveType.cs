@@ -7,6 +7,8 @@ public enum MoveType
     HiddenSingle,
     Guess,
     Backtrack,
-    NakedPair,
+    NakedPairRow,
+    NakedPairColumn,
+    NakedPairBox,
     NoCandidates
 }

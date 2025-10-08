@@ -151,11 +151,11 @@ public class Solver
 
             if (_score < 55 && move.ValueCount < 4)
             {
-                var changed = FindNakedPairs(UnitTables.Row(move.Position.Y));
+                var changed = FindNakedPairs(UnitTables.Row(move.Position.Y), MoveType.NakedPairRow);
 
-                changed |= FindNakedPairs(UnitTables.Column(move.Position.X));
+                changed |= FindNakedPairs(UnitTables.Column(move.Position.X), MoveType.NakedPairColumn);
 
-                changed |= FindNakedPairs(UnitTables.Box(move.Position.Y / 3 * 3 + move.Position.X / 3));
+                changed |= FindNakedPairs(UnitTables.Box(move.Position.Y / 3 * 3 + move.Position.X / 3), MoveType.NakedPairBox);
 
                 if (changed)
                 {
@@ -399,7 +399,7 @@ public class Solver
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool FindNakedPairs(ReadOnlySpan<int> unit)
+    private bool FindNakedPairs(ReadOnlySpan<int> unit, MoveType moveType)
     {
         var mask = 0;
 
@@ -455,7 +455,7 @@ public class Solver
                 {
                     if (_historyType != HistoryType.None)
                     {
-                        _history.Add(new Move(index % 9, index / 9, remaining | (mask << 16), MoveType.NakedPair));
+                        _history.Add(new Move(index % 9, index / 9, remaining | (mask << 16), moveType));
                     }
 
                     _cellCandidates[index] = remaining;
