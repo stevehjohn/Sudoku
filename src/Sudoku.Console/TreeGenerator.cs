@@ -4,7 +4,7 @@ namespace Sudoku.Console;
 
 public static class TreeGenerator
 {
-    private const string Numbers = "➊➋➌➍➎➏➐➑➒";
+    private const string Numbers = "➊➋➌➍➎➏➐➑➒➀➁➂➃➄➅➆➇➈";
 
     private const string NodeTemplate = "<li data-solution-path='{onSolutionPath}'><a {id} class='{class}'><div class='cellTitle'>{type}</div>{puzzle}</a>{children}</li>";
 
