@@ -9,6 +9,6 @@ http://sudopedia.enjoysudoku.com/Invalid_Test_Cases.html
 
 # Other Notes
 
-- Good for visualising branches: ........1..58.3...4............2......6.1.....7....98.2..1....4.1..5...63....4...
+- Good for visualising branches: 1.849.....9.............7......3....62.....4....85..1....1....6.7.....93..5......
 - Could add naked pair removals to the ConsoleSolveVisualiser.
 
