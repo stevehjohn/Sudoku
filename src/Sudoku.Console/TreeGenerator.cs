@@ -159,7 +159,7 @@ public static class TreeGenerator
                 case MoveType.NakedPairRow:
                 case MoveType.NakedPairColumn:
                 case MoveType.NakedPairBox:
-                    content = content.Replace("{class}", "deadEnd").Replace("{type}", "Naked Pair");
+                    content = content.Replace("{class}", "lastPossible").Replace("{type}", "Naked Pair");
                     break;
 
                 case MoveType.HiddenSingle:
