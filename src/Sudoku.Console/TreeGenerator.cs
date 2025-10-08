@@ -80,14 +80,19 @@ public static class TreeGenerator
 
             switch (node.Move.Type)
             {
-                case MoveType.Guess:
-                case MoveType.NakedSingle:
-                case MoveType.HiddenSingle:
+                case MoveType.Guess when node.Move.X == x && node.Move.Y == y:
+                case MoveType.NakedSingle when node.Move.X == x && node.Move.Y == y:
+                case MoveType.HiddenSingle when node.Move.X == x && node.Move.Y == y:
                     puzzle.Append($"<span class='added'>{Numbers[node[i] - 1]}</span>");
                     break;
 
                 case MoveType.NoCandidates when node.Move.X == x && node.Move.Y == y:
                     puzzle.Append("<span class='added'>ⓧ</span>");
+                    break;
+
+                case MoveType.NakedPairRow:
+                case MoveType.NakedPairColumn:
+                case MoveType.NakedPairBox:
                     break;
 
                 default:
@@ -149,6 +154,12 @@ public static class TreeGenerator
 
                 case MoveType.NoCandidates:
                     content = content.Replace("{class}", "deadEnd").Replace("{type}", "No Candidate");
+                    break;
+                
+                case MoveType.NakedPairRow:
+                case MoveType.NakedPairColumn:
+                case MoveType.NakedPairBox:
+                    content = content.Replace("{class}", "deadEnd").Replace("{type}", "Naked Pair");
                     break;
 
                 case MoveType.HiddenSingle:
