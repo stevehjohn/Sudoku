@@ -11,6 +11,8 @@ public struct Move
     public MoveType Type { get; }
 
     public int[] Candidates { get; set; } = [];
+    
+    public dynamic Metadata { get; set; }
 
     public Move(int x, int y, int value, MoveType moveType)
     {

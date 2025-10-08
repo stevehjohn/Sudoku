@@ -428,7 +428,16 @@ public class Solver
         }
 
         var changed = false;
+
+        Move? move = null;
         
+        if (_historyType != HistoryType.None)
+        {
+            move = new Move(0, 0, 0, moveType);
+            
+            _history.Add(move.Value);
+        }
+
         if (count == 2)
         {
             for (var i = 0; i < 9; i++)
@@ -439,6 +448,11 @@ public class Solver
 
                 if (cell == mask)
                 {
+                    if (move.HasValue)
+                    {
+                        // This is a part of the pair
+                    }
+
                     continue;
                 }
 
@@ -453,9 +467,9 @@ public class Solver
                 
                 if (remaining != cell)
                 {
-                    if (_historyType != HistoryType.None)
+                    if (move.HasValue)
                     {
-                        _history.Add(new Move(index % 9, index / 9, remaining | (mask << 16), moveType));
+                        // This has had candidates removed
                     }
 
                     _cellCandidates[index] = remaining;
