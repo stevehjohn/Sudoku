@@ -320,6 +320,11 @@ public class BulkSolver
                 System.Console.ReadKey();
             }
 
+            if (move.Type is MoveType.NakedPairRow or MoveType.NakedPairColumn or MoveType.NakedPairBox)
+            {
+                continue;
+            }
+
             if (historyType == HistoryType.SolutionOnly)
             {
                 for (var i = 0; i < 5; i++)
