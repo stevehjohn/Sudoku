@@ -232,14 +232,7 @@ public class ConsoleApplication
 
         var response = System.Console.ReadLine();
 
-        if (! int.TryParse(response, out var clues))
-        {
-            Out("\n Invalid input.");
-
-            return;
-        }
-
-        if (clues is < 17 or > 72)
+        if (! int.TryParse(response, out var clues) || clues is < 17 or > 72)
         {
             Out("\n Invalid input.");
 
@@ -325,14 +318,12 @@ public class ConsoleApplication
                     generator.AttemptHook = ShowAttemptCount;
                 }
 
-                var result = generator.Generate(clues, cancellationToken);
+                var (succeeded, puzzle) = generator.Generate(clues, cancellationToken);
 
-                if (! result.Succeeded)
+                if (! succeeded)
                 {
                     return;
                 }
-
-                var puzzle = result.Puzzle;
 
                 lastPuzzle = puzzle;
 
