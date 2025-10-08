@@ -90,9 +90,9 @@ public static class TreeGenerator
                     puzzle.Append("<span class='added'>ⓧ</span>");
                     break;
 
-                case MoveType.NakedPairRow:
-                case MoveType.NakedPairColumn:
-                case MoveType.NakedPairBox:
+                case MoveType.NakedPairRow when node[i] > 9:
+                case MoveType.NakedPairColumn when node[i] > 9:
+                case MoveType.NakedPairBox when node[i] > 9:
                     break;
 
                 default:
