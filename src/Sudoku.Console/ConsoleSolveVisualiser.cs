@@ -86,6 +86,11 @@ public class ConsoleSolveVisualiser
         {
             step++;
 
+            if (move.Type is MoveType.NakedPairRow or MoveType.NakedPairColumn or MoveType.NakedPairBox)
+            {
+                continue;
+            }
+
             SetCursorPosition(move.X, move.Y, move.Value);
 
             if (move.Type == MoveType.Backtrack)
