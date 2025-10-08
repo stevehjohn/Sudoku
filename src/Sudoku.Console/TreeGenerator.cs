@@ -4,7 +4,7 @@ namespace Sudoku.Console;
 
 public static class TreeGenerator
 {
-    private const string Numbers = "➊➋➌➍➎➏➐➑➒➀➁➂➃➄➅➆➇➈";
+    private const string Numbers = "➊➋➌➍➎➏➐➑⦿⦸";
 
     private const string NodeTemplate = "<li data-solution-path='{onSolutionPath}'><a {id} class='{class}'><div class='cellTitle'>{type}</div>{puzzle}</a>{children}</li>";
 
@@ -93,10 +93,21 @@ public static class TreeGenerator
                 case MoveType.NakedPairRow:
                 case MoveType.NakedPairColumn:
                 case MoveType.NakedPairBox:
-                    if (node[i] - 1 > 0 && node[i] - 1 <= 9)
+                    var metadata = node.Move.GetMetadata<NakedPairMetadata>();
+
+                    if (metadata.Pair.Contains(i))
                     {
-                        puzzle.Append(node[i] - 1);
+                        puzzle.Append(Numbers[8]);
                     }
+                    else if (metadata.Affected.Contains(i))
+                    {
+                        puzzle.Append(Numbers[9]);
+                    }
+                    else
+                    {
+                        puzzle.Append(node[i] == 0 ? "<pre>&nbsp;</pre>" : node[i]);
+                    }
+                    
                     break;
 
                 default:

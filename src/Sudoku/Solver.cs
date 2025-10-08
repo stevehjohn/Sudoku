@@ -427,20 +427,9 @@ public class Solver
             }
         }
 
-        var changed = false;
-
         if (count == 2)
         {
             var metadata = new NakedPairMetadata();
-        
-            if (_historyType != HistoryType.None)
-            {
-                var move = new Move(0, 0, mask, moveType);
-            
-                move.AddMetadata(metadata);
-            
-                _history.Add(move);
-            }
 
             for (var i = 0; i < 9; i++)
             {
@@ -469,13 +458,22 @@ public class Solver
                     metadata.Affected.Add(index);
 
                     _cellCandidates[index] = remaining;
-                    
-                    changed = true;
                 }
             }
+        
+            if (_historyType != HistoryType.None && metadata.Affected.Count > 0)
+            {
+                var move = new Move(0, 0, mask, moveType);
+            
+                move.AddMetadata(metadata);
+            
+                _history.Add(move);
+            }
+
+            return metadata.Affected.Count > 0;
         }
 
-        return changed;
+        return false;
     }
 
     private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, (Candidates Row, Candidates Column, Candidates Box) candidates)
