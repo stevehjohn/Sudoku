@@ -95,7 +95,7 @@ public static class TreeGenerator
                 case MoveType.NakedPairBox:
                     if (node[i] > 0 && node[i] <= 9)
                     {
-                        puzzle.Append($"<span>{Numbers[node[i] - 1]}</span>");
+                        puzzle.Append(Numbers[node[i] - 1]);
                     }
                     break;
 
