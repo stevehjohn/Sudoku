@@ -427,7 +427,7 @@ public class Solver
         if (count == 2)
         {
             var metadata = new NakedPairMetadata(unitIndex);
-
+            
             for (var i = 0; i < 9; i++)
             {
                 var index = unit[i];

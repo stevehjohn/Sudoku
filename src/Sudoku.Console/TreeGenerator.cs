@@ -105,7 +105,11 @@ public static class TreeGenerator
                     }
                     else
                     {
-                        puzzle.Append(node[i] == 0 ? "<pre>&nbsp;</pre>" : node[i]);
+                        var colour = "#000000";
+                        
+                        
+                        
+                        puzzle.Append($"<span style='color: {colour}'>{(node[i] == 0 ? "<pre>&nbsp;</pre>" : node[i])}</span>");
                     }
                     
                     break;
