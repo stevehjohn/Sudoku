@@ -449,16 +449,16 @@ public class Solver
                     continue;
                 }
 
-                var pruned = cell & ~overlap;
+                var remaining = cell & ~overlap;
                 
-                if (pruned != cell)
+                if (remaining != cell)
                 {
                     if (_historyType != HistoryType.None)
                     {
-                        _history.Add(new Move(index % 9, index / 9, pruned, MoveType.NakedPair));
+                        _history.Add(new Move(index % 9, index / 9, remaining | (mask << 16), MoveType.NakedPair));
                     }
 
-                    _cellCandidates[index] = pruned;
+                    _cellCandidates[index] = remaining;
                     
                     changed = true;
                 }

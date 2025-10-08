@@ -93,7 +93,7 @@ public class SudokuResult
                     break;
 
                 case MoveType.NakedPair:
-                    Console.WriteLine($" - Naked pair, removed other candidates ({string.Join(", ", move.Value.BitsToCandidates())}) at ({move.X}, {move.Y})");
+                    Console.WriteLine($" - Naked pair ({string.Join(", ", ((move.Value & 0x7FFF0000) >> 16).BitsToCandidates())}), left other candidates ({string.Join(", ", (move.Value & 0xFFFF).BitsToCandidates())}) at ({move.X}, {move.Y})");
                     break;
                 
                 case MoveType.None:
