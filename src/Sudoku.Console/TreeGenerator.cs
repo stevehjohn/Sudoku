@@ -5,17 +5,17 @@ namespace Sudoku.Console;
 public static class TreeGenerator
 {
     private const string Numbers = "➊➋➌➍➎➏➐➑➒";
-    
-    private const string NodeTemplate = "<li data-solution-path='{onSolutionPath}'><a {id} class='{class}'><div class='cellTitle'>{type}</div>{puzzle}</a>{children}</li>"; 
-        
+
+    private const string NodeTemplate = "<li data-solution-path='{onSolutionPath}'><a {id} class='{class}'><div class='cellTitle'>{type}</div>{puzzle}</a>{children}</li>";
+
     public static void Generate(int[] puzzle, string filename)
     {
         var solver = new Solver(HistoryType.AllSteps, SolveMethod.FindFirst);
 
         var result = solver.Solve(puzzle);
-        
+
         var root = GenerateNodes(puzzle, result);
-        
+
         var visualisation = File.ReadAllText($"{FileHelper.GetSupportingFilesPath()}/Template.html");
 
         visualisation = visualisation.Replace("{css}", File.ReadAllText($"{FileHelper.GetSupportingFilesPath()}/Styles.css"));
@@ -30,11 +30,11 @@ public static class TreeGenerator
         var content = NodeTemplate;
 
         content = content.Replace("{onSolutionPath}", node.OnSolvedPath.ToString().ToLower());
-        
+
         var puzzle = new StringBuilder();
 
         puzzle.Append("<table cellspacing='0'><tr>");
-        
+
         for (var i = 0; i < 81; i++)
         {
             if (i > 0)
@@ -61,7 +61,7 @@ public static class TreeGenerator
                 20 or 26 or 50 or 74 or 80 => " br",
                 _ => string.Empty
             };
-            
+
             if (box % 2 == 0)
             {
                 if (isGuess)
@@ -78,28 +78,45 @@ public static class TreeGenerator
                 puzzle.Append(isGuess ? "<td class='guess'>" : "<td>");
             }
 
-            if (node[i] != 0)
+            switch (node.Move.Type)
             {
-                if (isGuess)
-                {
+                case MoveType.Guess:
+                case MoveType.NakedSingle:
+                case MoveType.HiddenSingle:
                     puzzle.Append($"<span class='added'>{Numbers[node[i] - 1]}</span>");
-                }
-                else
-                {
-                    puzzle.Append(node[i]);
-                }
-            }
-            else
-            {
-                if (node.Move.Type == MoveType.NoCandidates && node.Move.X == x && node.Move.Y == y)
-                {
+                    break;
+
+                case MoveType.NoCandidates when node.Move.X == x && node.Move.Y == y:
                     puzzle.Append("<span class='added'>ⓧ</span>");
-                }
-                else
-                {
-                    puzzle.Append("<pre>&nbsp;</pre>");
-                }
+                    break;
+
+                default:
+                    puzzle.Append(node[i] == 0 ? "<pre>&nbsp;</pre>" : node[i]);
+                    break;
             }
+
+            // if (node[i] != 0)
+            // {
+            //     if (isGuess)
+            //     {
+            //         puzzle.Append($"<span class='added'>{Numbers[node[i] - 1]}</span>");
+            //     }
+            //     else
+            //     {
+            //         puzzle.Append(node[i]);
+            //     }
+            // }
+            // else
+            // {
+            //     if (node.Move.Type == MoveType.NoCandidates && node.Move.X == x && node.Move.Y == y)
+            //     {
+            //         puzzle.Append("<span class='added'>ⓧ</span>");
+            //     }
+            //     else
+            //     {
+            //         puzzle.Append("<pre>&nbsp;</pre>");
+            //     }
+            // }
 
             puzzle.Append("</td>");
         }
@@ -121,7 +138,7 @@ public static class TreeGenerator
                     content = content.Replace("{id}", node.Children.Count == 0 ? "id='answer'" : "id='puzzle'");
 
                     break;
-                    
+
                 case MoveType.Guess:
                     content = content.Replace("{class}", "guess").Replace("{type}", "Guess");
                     break;
@@ -129,7 +146,7 @@ public static class TreeGenerator
                 case MoveType.NakedSingle:
                     content = content.Replace("{class}", "lastPossible").Replace("{type}", "Naked Single");
                     break;
-                
+
                 case MoveType.NoCandidates:
                     content = content.Replace("{class}", "deadEnd").Replace("{type}", "No Candidate");
                     break;
@@ -156,7 +173,7 @@ public static class TreeGenerator
             {
                 children.Append(ProcessNode(child));
             }
-            
+
             content = content.Replace("{children}", $"<ul>{children}</ul>");
         }
 
@@ -172,7 +189,7 @@ public static class TreeGenerator
         var solved = node;
 
         var backtracking = false;
-        
+
         foreach (var move in result.History)
         {
             if (move.Type == MoveType.Backtrack)
@@ -180,7 +197,7 @@ public static class TreeGenerator
                 node = node.Parent;
 
                 backtracking = true;
-                
+
                 continue;
             }
 
@@ -197,14 +214,14 @@ public static class TreeGenerator
             {
                 continue;
             }
-            
+
             solved = node;
-                
+
             solved.AddChild(new Move(0, 0, 0, MoveType.None), true);
         }
 
         node = solved;
-        
+
         while (node.Parent != null)
         {
             node.OnSolvedPath = true;
@@ -215,7 +232,7 @@ public static class TreeGenerator
         solved.OnSolvedPath = true;
 
         ReorderChildren(root, solved);
-        
+
         return root;
     }
 
@@ -224,7 +241,7 @@ public static class TreeGenerator
         var node = solvedNode;
 
         var left = false;
-        
+
         while (node != root)
         {
             if (node.Children.Count > 1)
