@@ -429,13 +429,15 @@ public class Solver
 
         var changed = false;
 
-        Move? move = null;
+        var metadata = new NakedPairMetadata();
         
         if (_historyType != HistoryType.None)
         {
-            move = new Move(0, 0, 0, moveType);
+            var move = new Move(0, 0, 0, moveType);
             
-            _history.Add(move.Value);
+            move.AddMetadata(metadata);
+            
+            _history.Add(move);
         }
 
         if (count == 2)
@@ -448,10 +450,7 @@ public class Solver
 
                 if (cell == mask)
                 {
-                    if (move.HasValue)
-                    {
-                        // This is a part of the pair
-                    }
+                    metadata.Pair.Add(index);
 
                     continue;
                 }
@@ -467,10 +466,7 @@ public class Solver
                 
                 if (remaining != cell)
                 {
-                    if (move.HasValue)
-                    {
-                        // This has had candidates removed
-                    }
+                    metadata.Affected.Add(index);
 
                     _cellCandidates[index] = remaining;
                     
