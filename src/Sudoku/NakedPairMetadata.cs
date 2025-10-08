@@ -6,8 +6,12 @@ public struct NakedPairMetadata
 
     public List<int> Affected { get; }
     
-    public NakedPairMetadata()
+    public int UnitIndex { get; }
+    
+    public NakedPairMetadata(int unitIndex)
     {
+        UnitIndex = unitIndex;
+        
         Pair = [];
         
         Affected = [];

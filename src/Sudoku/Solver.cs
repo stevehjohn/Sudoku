@@ -151,11 +151,13 @@ public class Solver
 
             if (_score < 55 && move.ValueCount < 4)
             {
-                var changed = FindNakedPairs(UnitTables.Row(move.Position.Y), MoveType.NakedPairRow);
+                var box = move.Position.Y / 3 * 3 + move.Position.X / 3;
+                
+                var changed = FindNakedPairs(UnitTables.Row(move.Position.Y), move.Position.Y, MoveType.NakedPairRow);
 
-                changed |= FindNakedPairs(UnitTables.Column(move.Position.X), MoveType.NakedPairColumn);
+                changed |= FindNakedPairs(UnitTables.Column(move.Position.X), move.Position.X, MoveType.NakedPairColumn);
 
-                changed |= FindNakedPairs(UnitTables.Box(move.Position.Y / 3 * 3 + move.Position.X / 3), MoveType.NakedPairBox);
+                changed |= FindNakedPairs(UnitTables.Box(box), box, MoveType.NakedPairBox);
 
                 if (changed)
                 {
@@ -399,7 +401,7 @@ public class Solver
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool FindNakedPairs(ReadOnlySpan<int> unit, MoveType moveType)
+    private bool FindNakedPairs(ReadOnlySpan<int> unit, int unitIndex, MoveType moveType)
     {
         var mask = 0;
 
@@ -429,7 +431,7 @@ public class Solver
 
         if (count == 2)
         {
-            var metadata = new NakedPairMetadata();
+            var metadata = new NakedPairMetadata(unitIndex);
 
             for (var i = 0; i < 9; i++)
             {
