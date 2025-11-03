@@ -359,6 +359,8 @@ public class ConsoleApplication
                         writer.WriteLine(puzzleString);
 
                         top = System.Console.CursorTop;
+
+                        System.Console.Title = $"Sudoku ({generated + 1:N0}/{puzzleCount:N0})";
                     }
                 }
 
