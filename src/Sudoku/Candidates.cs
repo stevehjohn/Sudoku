@@ -27,6 +27,23 @@ public struct Candidates
         }
     }
 
+    public void Add(int index, int value)
+    {
+        if (value == 0)
+        {
+            return;
+        }
+
+        if (index < 5)
+        {
+            _high |= 1ul << (index * 9 + value - 1);
+        }
+        else
+        {
+            _low |= 1ul << ((index - 5) * 9 + value - 1);
+        }
+    }
+
     public int this[int index]
     {
         get
