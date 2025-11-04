@@ -94,8 +94,6 @@ public class Solver
             }
         }
 
-        GetCellCandidates();
-
         var solved = SolveStep();
 
         stopwatch.Stop();
