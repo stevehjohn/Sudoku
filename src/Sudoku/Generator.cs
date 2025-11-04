@@ -42,7 +42,7 @@ public class Generator
 
         var budgetMax = 3;
         
-        if (useBudget)
+        if (useBudget && ! Debugger.IsAttached)
         {
             budgetSeconds = 2;
 
