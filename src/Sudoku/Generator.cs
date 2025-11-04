@@ -140,6 +140,27 @@ public class Generator
 
             var cellValue = puzzle[cellIndex];
 
+            var row = cellIndex / 9;
+
+            if (CountValueInUnit(puzzle, UnitTables.Row(row), cellValue) == 9)
+            {
+                continue;
+            }
+
+            var column = cellIndex % 9;
+
+            if (CountValueInUnit(puzzle, UnitTables.Row(column), cellValue) == 9)
+            {
+                continue;
+            }
+
+            var box = row / 3 * 3 + column / 3;
+
+            if (CountValueInUnit(puzzle, UnitTables.Row(box), cellValue) == 9)
+            {
+                continue;
+            }
+
             puzzle[cellIndex] = 0;
 
             if (cancellationToken.IsCancellationRequested)
@@ -170,7 +191,22 @@ public class Generator
 
         return false;
     }
+    
+    private int CountValueInUnit(int[] puzzle, ReadOnlySpan<int> unit, int value)
+    {
+        var count = 0;
+    
+        for (var i = 0; i < 9; i++)
+        {
+            if (puzzle[unit[i]] == value)
+            {
+                count++;
+            }
+        }
 
+        return count;
+    }
+    
     private void ShuffleFilledCells()
     {
         var count = _filledCells.Count;
