@@ -13,9 +13,9 @@ public class Solver
 
     private readonly int[] _workingCopy = new int[81];
 
-    private readonly HistoryType _historyType;
+    private HistoryType _historyType;
 
-    private readonly SolveMethod _solveMethod;
+    private SolveMethod _solveMethod;
 
     private List<Move> _history;
 
@@ -29,7 +29,9 @@ public class Solver
 
     private bool _verifyOnly;
 
-    public Solver(HistoryType historyType, SolveMethod solveMethod)
+    private (Candidates Row, Candidates Column, Candidates Box) _candidates;
+
+    public Solver(HistoryType historyType = HistoryType.None, SolveMethod solveMethod = SolveMethod.FindUnique)
     {
         _historyType = historyType;
 
@@ -38,32 +40,14 @@ public class Solver
 
     public SudokuResult Solve(int[] puzzle, bool verifyOnly = false)
     {
+        var stopwatch = Stopwatch.StartNew();
+        
         _verifyOnly = verifyOnly;
 
-        _solutionCount = 0;
-
-        _steps = 0;
-
-        _score = 81;
-
-        var stopwatch = Stopwatch.StartNew();
-
-        for (var i = 0; i < 81; i++)
-        {
-            if (puzzle[i] != 0)
-            {
-                _score--;
-
-                _workingCopy[i] = puzzle[i];
-            }
-            else
-            {
-                _workingCopy[i] = 0;
-            }
-        }
-
+        Initialise(new Span<int>(puzzle));
+        
         var span = new Span<int>(_workingCopy);
-
+        
         switch (_score)
         {
             case 0:
@@ -81,7 +65,7 @@ public class Solver
 
         _history = _historyType != HistoryType.None ? [] : null;
 
-        var candidates = GetSectionCandidates(span);
+        _candidates = GetSectionCandidates();
 
         List<int>[] initialCandidates = null;
 
@@ -89,7 +73,7 @@ public class Solver
         {
             initialCandidates = new List<int>[81];
 
-            GetCellCandidates(span, candidates);
+            GetCellCandidates();
 
             for (var i = 0; i < 81; i++)
             {
@@ -110,9 +94,9 @@ public class Solver
             }
         }
 
-        GetCellCandidates(span, candidates);
+        GetCellCandidates();
 
-        var solved = SolveStep(span, candidates);
+        var solved = SolveStep();
 
         stopwatch.Stop();
 
@@ -126,9 +110,93 @@ public class Solver
             : new SudokuResult(_solution, true, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, 1, "Solved");
     }
 
-    private bool SolveStep(Span<int> puzzle, (Candidates Row, Candidates Column, Candidates Box) candidates)
+    public void BeginGenerationSession(int[] puzzle)
     {
-        if (! GetCellCandidates(puzzle, candidates))
+        _verifyOnly = true;
+
+        _historyType = HistoryType.None;
+
+        _solveMethod = SolveMethod.FindUnique;
+        
+        Initialise(new Span<int>(puzzle));
+
+        _candidates = GetSectionCandidates();
+
+        GetCellCandidates();
+    }
+
+    public bool VerifyRemoval(int removedCell)
+    {
+        var span = new Span<int>(_workingCopy);
+        
+        var value = span[removedCell];
+        
+        span[removedCell] = 0;
+        
+        var row = removedCell / 9;
+
+        var column = removedCell % 9;
+
+        var box = row / 3 * 3 + column / 3;
+        
+        _candidates.Row.Add(row, value);
+        
+        _candidates.Column.Add(column, value);
+        
+        _candidates.Box.Add(box, value);
+
+        _score++;
+
+        _solutionCount = 0;
+        
+        SolveStep();
+
+        var solved = _solutionCount == 1;
+
+        return solved;
+    }
+
+    public void RestoreCell(int cell, int value)
+    {
+        _workingCopy[cell] = value;
+        
+        var row = cell / 9;
+
+        var column = cell % 9;
+
+        var box = row / 3 * 3 + column / 3;
+        
+        _candidates.Row.Remove(row, value);
+        
+        _candidates.Column.Remove(column, value);
+        
+        _candidates.Box.Remove(box, value);
+
+        _score--;
+    }
+
+    private void Initialise(Span<int> puzzle)
+    {
+        _solutionCount = 0;
+
+        _steps = 0;
+
+        _score = 81;
+
+        for (var i = 0; i < 81; i++)
+        {
+            if (puzzle[i] != 0)
+            {
+                _score--;
+            }
+
+            _workingCopy[i] = puzzle[i];
+        }
+    }
+
+    private bool SolveStep()
+    {
+        if (! GetCellCandidates())
         {
             return false;
         }
@@ -139,14 +207,14 @@ public class Solver
 
             if (single != -1)
             {
-                return CreateNextSteps(puzzle, (Position: (X: single % 9, Y: single / 9), Values: _cellCandidates[single], ValueCount: 1), candidates);
+                return CreateNextSteps((Position: (X: single % 9, Y: single / 9), Values: _cellCandidates[single], ValueCount: 1));
             }
 
-            var move = FindNakedSingle(puzzle);
+            var move = FindNakedSingle();
 
             if (move.ValueCount == 1)
             {
-                return CreateNextSteps(puzzle, move, candidates);
+                return CreateNextSteps(move);
             }
 
             if (_score < 55 && move.ValueCount < 4)
@@ -170,11 +238,11 @@ public class Solver
                 return false;
             }
 
-            return CreateNextSteps(puzzle, move, candidates);
+            return CreateNextSteps(move);
         }
     }
 
-    private static (Candidates Row, Candidates Column, Candidates Box) GetSectionCandidates(Span<int> puzzle)
+    private (Candidates Row, Candidates Column, Candidates Box) GetSectionCandidates()
     {
         var rowCandidates = new Candidates();
 
@@ -184,7 +252,7 @@ public class Solver
 
         for (var i = 0; i < 81; i++)
         {
-            if (puzzle[i] == 0)
+            if (_workingCopy[i] == 0)
             {
                 continue;
             }
@@ -195,21 +263,23 @@ public class Solver
 
             var boxY = y / 3 * 3;
 
-            rowCandidates.Remove(y, puzzle[i]);
+            rowCandidates.Remove(y, _workingCopy[i]);
 
-            columnCandidates.Remove(x, puzzle[i]);
+            columnCandidates.Remove(x, _workingCopy[i]);
 
-            boxCandidates.Remove(boxY + x / 3, puzzle[i]);
+            boxCandidates.Remove(boxY + x / 3, _workingCopy[i]);
         }
 
         return (rowCandidates, columnCandidates, boxCandidates);
     }
 
-    private bool GetCellCandidates(Span<int> puzzle, (Candidates Row, Candidates Column, Candidates Box) candidates)
+    private bool GetCellCandidates()
     {
+        var candidateCount = 0;
+        
         for (var i = 0; i < 81; i++)
         {
-            if (puzzle[i] == 0)
+            if (_workingCopy[i] == 0)
             {
                 var x = i % 9;
 
@@ -217,10 +287,12 @@ public class Solver
 
                 var boxY = y / 3 * 3;
 
-                _cellCandidates[i] = candidates.Column[x] & candidates.Row[y] & candidates.Box[boxY + x / 3];
+                _cellCandidates[i] = _candidates.Column[x] & _candidates.Row[y] & _candidates.Box[boxY + x / 3];
 
                 if (_cellCandidates[i] != 0)
                 {
+                    candidateCount++;
+                    
                     continue;
                 }
 
@@ -235,7 +307,7 @@ public class Solver
             _cellCandidates[i] = 0;
         }
 
-        return true;
+        return candidateCount > 0;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -357,7 +429,7 @@ public class Solver
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private ((int X, int Y) Position, int Values, int ValueCount) FindNakedSingle(Span<int> puzzle)
+    private ((int X, int Y) Position, int Values, int ValueCount) FindNakedSingle()
     {
         var position = (X: -1, Y: -1);
 
@@ -367,7 +439,7 @@ public class Solver
 
         for (var i = 0; i < 81; i++)
         {
-            if (puzzle[i] != 0)
+            if (_workingCopy[i] != 0)
             {
                 continue;
             }
@@ -473,7 +545,7 @@ public class Solver
         return false;
     }
 
-    private bool CreateNextSteps(Span<int> puzzle, ((int X, int Y) Position, int Values, int ValueCount) move, (Candidates Row, Candidates Column, Candidates Box) candidates)
+    private bool CreateNextSteps(((int X, int Y) Position, int Values, int ValueCount) move)
     {
         var cell = move.Position.X + (move.Position.Y << 3) + move.Position.Y;
 
@@ -481,25 +553,19 @@ public class Solver
 
         while (values > 0)
         {
-            var i = BitOperations.TrailingZeroCount(values) + 1;
+            var value = BitOperations.TrailingZeroCount(values) + 1;
 
             values &= values - 1;
 
-            puzzle[cell] = i;
+            _workingCopy[cell] = value;
 
             var box = move.Position.Y / 3 * 3 + move.Position.X / 3;
 
-            var oldRowCandidates = candidates.Row[move.Position.Y];
+            _candidates.Row.Remove(move.Position.Y, value);
 
-            var oldColumnCandidates = candidates.Column[move.Position.X];
+            _candidates.Column.Remove(move.Position.X, value);
 
-            var oldBoxCandidates = candidates.Box[box];
-
-            candidates.Row.Remove(move.Position.Y, i);
-
-            candidates.Column.Remove(move.Position.X, i);
-
-            candidates.Box.Remove(box, i);
+            _candidates.Box.Remove(box, value);
 
             _score--;
 
@@ -510,7 +576,7 @@ public class Solver
 
             if (_historyType != HistoryType.None)
             {
-                var historyMove = new Move(move.Position.X, move.Position.Y, i, _moveType);
+                var historyMove = new Move(move.Position.X, move.Position.Y, value, _moveType);
 
                 var historyCandidates = new List<int>();
 
@@ -533,7 +599,7 @@ public class Solver
                 {
                     for (var j = 0; j < 81; j++)
                     {
-                        _solution[j] = puzzle[j];
+                        _solution[j] = _workingCopy[j];
                     }
                 }
 
@@ -552,18 +618,18 @@ public class Solver
 
             _steps++;
 
-            if (SolveStep(puzzle, candidates))
+            if (SolveStep())
             {
                 return true;
             }
 
-            puzzle[cell] = 0;
+            _workingCopy[cell] = 0;
 
-            candidates.Row[move.Position.Y] = oldRowCandidates;
+            _candidates.Row.Add(move.Position.Y, value);
 
-            candidates.Column[move.Position.X] = oldColumnCandidates;
+            _candidates.Column.Add(move.Position.X, value);
 
-            candidates.Box[box] = oldBoxCandidates;
+            _candidates.Box.Add(box, value);
 
             if (_historyType != HistoryType.None)
             {
@@ -573,7 +639,7 @@ public class Solver
                 }
                 else
                 {
-                    _history?.Add(new Move(move.Position.X, move.Position.Y, i, MoveType.Backtrack));
+                    _history?.Add(new Move(move.Position.X, move.Position.Y, value, MoveType.Backtrack));
                 }
             }
 
