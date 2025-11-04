@@ -89,7 +89,7 @@ public class Solver
         {
             initialCandidates = new List<int>[81];
 
-            GetCellCandidates(puzzle, candidates);
+            GetCellCandidates(span, candidates);
 
             for (var i = 0; i < 81; i++)
             {
@@ -110,7 +110,7 @@ public class Solver
             }
         }
 
-        GetCellCandidates(puzzle, candidates);
+        GetCellCandidates(span, candidates);
 
         var solved = SolveStep(span, candidates);
 
