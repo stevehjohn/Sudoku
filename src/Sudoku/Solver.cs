@@ -13,9 +13,9 @@ public class Solver
 
     private readonly int[] _workingCopy = new int[81];
 
-    private HistoryType _historyType;
+    private readonly HistoryType _historyType;
 
-    private SolveMethod _solveMethod;
+    private readonly SolveMethod _solveMethod;
 
     private List<Move> _history;
 
