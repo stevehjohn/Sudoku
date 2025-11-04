@@ -9,7 +9,7 @@ public class Generator
 
     private readonly int[] _candidateCounts = new int[81];
     
-    private readonly Solver _solver = new(HistoryType.None, SolveMethod.FindUnique);
+    private readonly Solver _solver = new();
 
     private readonly List<int> _filledCells = [];
 
@@ -137,7 +137,7 @@ public class Generator
             {
                 return false;
             }
-
+            
             var result = _solver.Solve(puzzle, true);
 
             var unique = result.Solved && result.SolutionCount == 1;
