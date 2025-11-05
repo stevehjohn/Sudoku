@@ -12,6 +12,8 @@ public class ConsoleApplication
     
     public void Run()
     {
+        System.Console.Title = "Sudoku";
+        
         while (true)
         {
             Clear();
@@ -256,6 +258,8 @@ public class ConsoleApplication
     private void GeneratePuzzles(int clues, int puzzleCount)
     {
         System.Console.Clear();
+
+        System.Console.Title = "Sudoku";
 
         var stopwatch = Stopwatch.StartNew();
 
