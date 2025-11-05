@@ -149,14 +149,14 @@ public class Generator
 
             var column = cellIndex % 9;
 
-            if (CountValueInUnit(puzzle, UnitTables.Row(column), cellValue) == 9)
+            if (CountValueInUnit(puzzle, UnitTables.Column(column), cellValue) == 9)
             {
                 continue;
             }
 
             var box = row / 3 * 3 + column / 3;
 
-            if (CountValueInUnit(puzzle, UnitTables.Row(box), cellValue) == 9)
+            if (CountValueInUnit(puzzle, UnitTables.Box(box), cellValue) == 9)
             {
                 continue;
             }
