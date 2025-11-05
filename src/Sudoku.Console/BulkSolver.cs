@@ -26,7 +26,7 @@ public class BulkSolver
 
     private readonly StringBuilder _output = new(10_000);
 
-    private readonly object _statsLock = new();
+    private readonly Lock _statsLock = new();
 
     private readonly object _consoleLock = new();
 

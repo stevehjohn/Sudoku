@@ -8,7 +8,7 @@ public class ConsoleApplication
 {
     private List<string> _files;
 
-    private readonly object _lock = new();
+    private readonly Lock _lock = new();
     
     public void Run()
     {

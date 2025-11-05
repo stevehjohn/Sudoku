@@ -83,6 +83,7 @@ public static class TreeGenerator
                 puzzle.Append(isGuess ? "<td class='guess'>" : "<td>");
             }
 
+            // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
             switch (node.Move.Type)
             {
                 case MoveType.Guess when node.Move.X == x && node.Move.Y == y:

@@ -192,7 +192,7 @@ public class Generator
         return false;
     }
     
-    private int CountValueInUnit(int[] puzzle, ReadOnlySpan<int> unit, int value)
+    private static int CountValueInUnit(int[] puzzle, ReadOnlySpan<int> unit, int value)
     {
         var count = 0;
     
