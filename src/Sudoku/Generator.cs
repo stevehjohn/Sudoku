@@ -15,7 +15,9 @@ public class Generator
 
     private readonly Random _random;
     
-    private readonly bool[] _failed = new bool[81];
+    private readonly int[] _failed = new int[81];
+
+    private int _failedStamp;
 
     public Action<int> AttemptHook { get; set; }
 
@@ -104,8 +106,8 @@ public class Generator
         ShuffleFilledCells();
 
         var stopWatch = Stopwatch.StartNew();
-        
-        Array.Fill(_failed, false);
+
+        _failedStamp++;
         
         return RemoveCell(puzzle, targetClues, cellsToRemove, stopWatch, budgetSeconds * Stopwatch.Frequency, 0, cancellationToken);
     }
@@ -133,7 +135,7 @@ public class Generator
         {
             var cellIndex = _filledCells[i];
 
-            if (_failed[cellIndex])
+            if (_failed[cellIndex] == _failedStamp)
             {
                 continue;
             }
@@ -179,7 +181,7 @@ public class Generator
 
             puzzle[cellIndex] = cellValue;
 
-            _failed[cellIndex] = true;
+            _failed[cellIndex] = _failedStamp;
 
             backtracks++;
 
