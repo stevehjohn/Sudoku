@@ -105,8 +105,6 @@ public class Generator
 
         var stopWatch = Stopwatch.StartNew();
         
-        Array.Fill(_failed, false);
-        
         return RemoveCell(puzzle, targetClues, cellsToRemove, stopWatch, budgetSeconds * Stopwatch.Frequency, 0, cancellationToken);
     }
 
@@ -260,6 +258,8 @@ public class Generator
             _candidates[i] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
             _candidateCounts[i] = 9;
+
+            _failed[i] = false;
         }
     }
 }
