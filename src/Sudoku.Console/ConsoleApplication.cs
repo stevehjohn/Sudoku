@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.IO.Compression;
+using System.Runtime;
 using Sudoku.Extensions;
 
 namespace Sudoku.Console;
@@ -294,6 +295,10 @@ public class ConsoleApplication
 
         var top = 0;
                 
+        var oldMode = GCSettings.LatencyMode;
+
+        GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
+
         Parallel.For(0, int.MaxValue,
             new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount / 2 },
             (_, state) =>
@@ -379,6 +384,8 @@ public class ConsoleApplication
                     state.Stop();
                 }
             });
+
+        GCSettings.LatencyMode = oldMode;
 
         stopwatch.Stop();
 
