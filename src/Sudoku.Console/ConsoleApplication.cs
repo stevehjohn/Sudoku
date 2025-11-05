@@ -12,6 +12,8 @@ public class ConsoleApplication
     
     public void Run()
     {
+        System.Console.Title = "Sudoku";
+        
         while (true)
         {
             Clear();
