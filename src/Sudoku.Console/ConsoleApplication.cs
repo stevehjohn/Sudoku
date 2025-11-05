@@ -257,6 +257,8 @@ public class ConsoleApplication
     {
         System.Console.Clear();
 
+        System.Console.Title = "Sudoku";
+
         var stopwatch = Stopwatch.StartNew();
 
         System.Console.CursorVisible = false;
