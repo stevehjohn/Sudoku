@@ -54,9 +54,9 @@ public static class UnitTables
 
     public static ReadOnlySpan<byte> BoxCells(int index) => Units.AsSpan(162 + index * 9, 9);
 
-    public static ReadOnlySpan<byte> CellRow(int index) => Units.AsSpan(243 + index * 9, 9);
+    public static byte CellRow(int index) => Units[243 + index];
 
-    public static ReadOnlySpan<byte> CellColumn(int index) => Units.AsSpan(324 + index * 9, 9);
+    public static byte CellColumn(int index) => Units[324 + index];
 
-    public static ReadOnlySpan<byte> CellBox(int index) => Units.AsSpan(405 + index * 9, 9);
+    public static byte CellBox(int index) => Units[405 + index];
 }
