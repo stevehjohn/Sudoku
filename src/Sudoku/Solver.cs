@@ -406,7 +406,7 @@ public class Solver
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool FindNakedPairs(ReadOnlySpan<int> unit, int unitIndex, MoveType moveType)
+    private bool FindNakedPairs(ReadOnlySpan<byte> unit, int unitIndex, MoveType moveType)
     {
         var mask = 0;
 

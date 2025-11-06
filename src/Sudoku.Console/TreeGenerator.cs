@@ -117,12 +117,12 @@ public static class TreeGenerator
                             MoveType.NakedPairColumn => UnitTables.Column(metadata.UnitIndex),
                             _ => UnitTables.Box(metadata.UnitIndex)
                         };
-                        
-                        var colour = unit.Contains(i) ? "#000000" : "#a0a0a0";
+
+                        var colour = unit.Contains((byte) i) ? "#000000" : "#a0a0a0";
 
                         puzzle.Append($"<span style='color: {colour}'>{(node[i] == 0 ? "<pre>&nbsp;</pre>" : node[i])}</span>");
                     }
-                    
+
                     break;
 
                 case MoveType.Guess:

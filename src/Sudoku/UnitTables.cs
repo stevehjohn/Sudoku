@@ -2,11 +2,11 @@ namespace Sudoku;
 
 public static class UnitTables
 {
-    private static readonly int[] Units;
+    private static readonly byte[] Units;
 
     static UnitTables()
     {
-        Units = new int[27 * 9];
+        Units = new byte[27 * 9];
 
         var i = 0;
 
@@ -14,7 +14,7 @@ public static class UnitTables
         {
             for (var x = 0; x < 9; x++)
             {
-                Units[i++] = y * 9 + x;
+                Units[i++] = (byte) (y * 9 + x);
             }
         }
 
@@ -22,7 +22,7 @@ public static class UnitTables
         {
             for (var y = 0; y < 9; y++)
             {
-                Units[i++] = y * 9 + x;
+                Units[i++] = (byte) (y * 9 + x);
             }
         }
 
@@ -36,15 +36,15 @@ public static class UnitTables
             {
                 for (var dx = 0; dx < 3; dx++)
                 {
-                    Units[i++] = (r0 + dy) * 9 + c0 + dx;
+                    Units[i++] = (byte) ((r0 + dy) * 9 + c0 + dx);
                 }
             }
         }
     }
 
-    public static ReadOnlySpan<int> Row(int index) => Units.AsSpan(index * 9, 9);
+    public static ReadOnlySpan<byte> Row(int index) => Units.AsSpan(index * 9, 9);
 
-    public static ReadOnlySpan<int> Column(int index) => Units.AsSpan(81 + index * 9, 9);
+    public static ReadOnlySpan<byte> Column(int index) => Units.AsSpan(81 + index * 9, 9);
 
-    public static ReadOnlySpan<int> Box(int index) => Units.AsSpan(162 + index * 9, 9);
+    public static ReadOnlySpan<byte> Box(int index) => Units.AsSpan(162 + index * 9, 9);
 }
