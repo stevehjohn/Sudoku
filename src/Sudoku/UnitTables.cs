@@ -16,7 +16,7 @@ public static class UnitTables
             {
                 Units[i] = (byte) (y * 9 + x);
 
-                Units[243 + i++] = (byte) y;
+                Units[243 + i++] = (byte) x;
             }
         }
 
@@ -26,7 +26,7 @@ public static class UnitTables
             {
                 Units[i] = (byte) (y * 9 + x);
 
-                Units[243 + i++] = (byte) x;
+                Units[243 + i++] = (byte) y;
             }
         }
 
