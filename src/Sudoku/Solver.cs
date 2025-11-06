@@ -140,7 +140,7 @@ public class Solver
 
             if (single != -1)
             {
-                return CreateNextSteps((Position: (X: single % 9, Y: single / 9), Values: _cellCandidates[single], ValueCount: 1));
+                return CreateNextSteps((Position: (X: UnitTables.CellColumn(single), Y: UnitTables.CellRow(single)), Values: _cellCandidates[single], ValueCount: 1));
             }
 
             var move = FindNakedSingle();
