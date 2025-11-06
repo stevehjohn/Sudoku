@@ -142,27 +142,6 @@ public class Generator
 
             var cellValue = puzzle[cellIndex];
 
-            var row = UnitTables.CellRow(cellIndex);
-
-            if (CountValueInUnit(puzzle, UnitTables.RowCells(row), cellValue) > 6)
-            {
-                continue;
-            }
-
-            var column = UnitTables.CellColumn(cellIndex);
-
-            if (CountValueInUnit(puzzle, UnitTables.ColumnCells(column), cellValue) > 6)
-            {
-                continue;
-            }
-
-            var box = UnitTables.CellBox(cellIndex);
-
-            if (CountValueInUnit(puzzle, UnitTables.BoxCells(box), cellValue) > 6)
-            {
-                continue;
-            }
-
             puzzle[cellIndex] = 0;
 
             if (cancellationToken.IsCancellationRequested)
