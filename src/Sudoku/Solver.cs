@@ -131,7 +131,7 @@ public class Solver
 
     private bool SolveStep()
     {
-        if (! GetCellCandidates())
+        if (_candidateCount == 0)
         {
             return false;
         }
@@ -208,9 +208,9 @@ public class Solver
         return (rowCandidates, columnCandidates, boxCandidates);
     }
 
-    private bool GetCellCandidates()
+    private void GetCellCandidates()
     {
-        var candidateCount = 0;
+        _candidateCount = 0;
         
         for (var i = 0; i < 81; i++)
         {
@@ -226,7 +226,7 @@ public class Solver
 
                 if (_cellCandidates[i] != 0)
                 {
-                    candidateCount++;
+                    _candidateCount++;
                     
                     continue;
                 }
@@ -235,19 +235,13 @@ public class Solver
                 {
                     _history.Add(new Move(x, y, 0, MoveType.NoCandidates));
                 }
-
-                return false;
             }
 
             _cellCandidates[i] = 0;
         }
-
-        _candidateCount = candidateCount;
-
-        return candidateCount > 0;
     }
 
-    private bool UpdateCellCandidates(int updatedCell)
+    private void UpdateCellCandidates(int updatedCell)
     {
         var removedCandidate = _workingCopy[updatedCell] > 0;
 
@@ -274,8 +268,6 @@ public class Solver
         UpdateUnitCandidates(columnCells, mask, updated, removedCandidate);
         
         UpdateUnitCandidates(boxCells, mask, updated, removedCandidate);
-        
-        return _candidateCount > 0;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -569,6 +561,8 @@ public class Solver
 
             _candidates.Box.Remove(box, value);
 
+            UpdateCellCandidates(cell);
+
             _score--;
 
             if (move.ValueCount > 1)
@@ -632,6 +626,8 @@ public class Solver
             _candidates.Column.Add(move.Position.X, value);
 
             _candidates.Box.Add(box, value);
+
+            UpdateCellCandidates(cell);
 
             if (_historyType != HistoryType.None)
             {
