@@ -152,7 +152,7 @@ public class Solver
 
             if (_score < 55 && move.ValueCount < 4)
             {
-                var box = move.Position.Y / 3 * 3 + move.Position.X / 3;
+                var box = UnitTables.CellBox(move.Position.Y * 9 + move.Position.X);
                 
                 var changed = FindNakedPairs(UnitTables.RowCells(move.Position.Y), move.Position.Y, MoveType.NakedPairRow);
 
@@ -386,7 +386,7 @@ public class Solver
                 continue;
             }
 
-            position = (i % 9, i / 9);
+            position = (UnitTables.CellColumn(i), UnitTables.CellRow(i));
 
             values = candidates;
 
@@ -492,7 +492,7 @@ public class Solver
 
             _workingCopy[cell] = value;
 
-            var box = move.Position.Y / 3 * 3 + move.Position.X / 3;
+            var box = UnitTables.CellBox(move.Position.Y * 9 + move.Position.X);
 
             _candidates.Row.Remove(move.Position.Y, value);
 
