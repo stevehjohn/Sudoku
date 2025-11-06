@@ -249,7 +249,11 @@ public class Solver
 
     private bool UpdateCellCandidates(int updatedCell)
     {
-        var inverseBit = ~(1 << (_workingCopy[updatedCell] - 1));
+        var removedCandidate = _workingCopy[updatedCell] > 0;
+
+        var mask = removedCandidate
+            ? ~(1 << (_workingCopy[updatedCell] - 1))
+            : 1 << (_workingCopy[updatedCell] - 1);
 
         var x = UnitTables.CellColumn(updatedCell);
 
@@ -265,17 +269,17 @@ public class Solver
 
         Span<bool> updated = stackalloc bool[81];
         
-        UpdateUnitCandidates(rowCells, inverseBit, updated);
+        UpdateUnitCandidates(rowCells, mask, updated, removedCandidate);
         
-        UpdateUnitCandidates(columnCells, inverseBit, updated);
+        UpdateUnitCandidates(columnCells, mask, updated, removedCandidate);
         
-        UpdateUnitCandidates(boxCells, inverseBit, updated);
+        UpdateUnitCandidates(boxCells, mask, updated, removedCandidate);
         
         return _candidateCount > 0;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void UpdateUnitCandidates(ReadOnlySpan<byte> cells, int mask, Span<bool> updated)
+    private void UpdateUnitCandidates(ReadOnlySpan<byte> cells, int mask, Span<bool> updated, bool removedCandidate)
     {
         for (var i = 0; i < 9; i++)
         {
@@ -288,18 +292,20 @@ public class Solver
 
             var oldValue = _cellCandidates[cell];
 
-            _cellCandidates[cell] &= mask;
-
-            if (oldValue > 0)
+            if (removedCandidate)
             {
-                if (_cellCandidates[cell] == 0)
+                _cellCandidates[cell] &= mask;
+
+                if (oldValue > 0)
                 {
                     _candidateCount--;
                 }
             }
             else
             {
-                if (_cellCandidates[cell] > 0)
+                _cellCandidates[cell] |= mask;
+
+                if (oldValue == 0)
                 {
                     _candidateCount++;
                 }
