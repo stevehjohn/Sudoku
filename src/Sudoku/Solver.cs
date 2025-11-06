@@ -31,6 +31,8 @@ public class Solver
 
     private (Candidates Row, Candidates Column, Candidates Box) _candidates;
 
+    private int _candidateCount;
+
     public Solver(HistoryType historyType = HistoryType.None, SolveMethod solveMethod = SolveMethod.FindUnique)
     {
         _historyType = historyType;
@@ -41,13 +43,13 @@ public class Solver
     public SudokuResult Solve(int[] puzzle, bool verifyOnly = false)
     {
         var stopwatch = Stopwatch.StartNew();
-        
+
         _verifyOnly = verifyOnly;
 
         Initialise(new Span<int>(puzzle));
-        
+
         var span = new Span<int>(_workingCopy);
-        
+
         switch (_score)
         {
             case 0:
@@ -69,11 +71,11 @@ public class Solver
 
         List<int>[] initialCandidates = null;
 
+        GetCellCandidates();
+
         if (_historyType == HistoryType.AllSteps)
         {
             initialCandidates = new List<int>[81];
-
-            GetCellCandidates();
 
             for (var i = 0; i < 81; i++)
             {
@@ -129,7 +131,7 @@ public class Solver
 
     private bool SolveStep()
     {
-        if (! GetCellCandidates())
+        if (_candidateCount == 0)
         {
             return false;
         }
@@ -153,7 +155,7 @@ public class Solver
             if (_score < 55 && move.ValueCount < 4)
             {
                 var box = UnitTables.CellBox(move.Position.Y * 9 + move.Position.X);
-                
+
                 var changed = FindNakedPairs(UnitTables.RowCells(move.Position.Y), move.Position.Y, MoveType.NakedPairRow);
 
                 changed |= FindNakedPairs(UnitTables.ColumnCells(move.Position.X), move.Position.X, MoveType.NakedPairColumn);
@@ -206,10 +208,10 @@ public class Solver
         return (rowCandidates, columnCandidates, boxCandidates);
     }
 
-    private bool GetCellCandidates()
+    private void GetCellCandidates()
     {
-        var candidateCount = 0;
-        
+        _candidateCount = 0;
+
         for (var i = 0; i < 81; i++)
         {
             if (_workingCopy[i] == 0)
@@ -224,8 +226,8 @@ public class Solver
 
                 if (_cellCandidates[i] != 0)
                 {
-                    candidateCount++;
-                    
+                    _candidateCount++;
+
                     continue;
                 }
 
@@ -233,14 +235,83 @@ public class Solver
                 {
                     _history.Add(new Move(x, y, 0, MoveType.NoCandidates));
                 }
-
-                return false;
             }
 
             _cellCandidates[i] = 0;
         }
+    }
 
-        return candidateCount > 0;
+    private void UpdateCellCandidates(int updatedCell)
+    {
+        var x = UnitTables.CellColumn(updatedCell);
+
+        var y = UnitTables.CellRow(updatedCell);
+
+        var box = UnitTables.CellBox(updatedCell);
+
+        var rowCells = UnitTables.RowCells(y);
+
+        var columnCells = UnitTables.ColumnCells(x);
+
+        var boxCells = UnitTables.BoxCells(box);
+
+        Span<bool> updated = stackalloc bool[81];
+
+        UpdateUnitCandidates(rowCells, updated);
+
+        UpdateUnitCandidates(columnCells, updated);
+
+        UpdateUnitCandidates(boxCells, updated);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void UpdateUnitCandidates(ReadOnlySpan<byte> cells, Span<bool> updated)
+    {
+        for (var i = 0; i < 9; i++)
+        {
+            var cell = cells[i];
+
+            if (updated[cell])
+            {
+                continue;
+            }
+
+            if (_workingCopy[cell] > 0)
+            {
+                _cellCandidates[cell] = 0;
+
+                updated[cell] = true;
+                
+                continue;
+            }
+
+            var oldValue = _cellCandidates[cell];
+
+            var x = UnitTables.CellColumn(cell);
+            
+            var y = UnitTables.CellRow(cell);
+            
+            var box = UnitTables.CellBox(cell);
+
+            _cellCandidates[cell] = _candidates.Column[x] & _candidates.Row[y] & _candidates.Box[box];
+
+            if (oldValue > 0)
+            {
+                if (_cellCandidates[cell] == 0)
+                {
+                    _candidateCount--;
+                }
+            }
+            else
+            {
+                if (_cellCandidates[cell] > 0)
+                {
+                    _candidateCount++;
+                }
+            }
+
+            updated[cell] = true;
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -429,7 +500,7 @@ public class Solver
         if (count == 2)
         {
             var metadata = new NakedPairMetadata(unitIndex);
-            
+
             for (var i = 0; i < 9; i++)
             {
                 var index = unit[i];
@@ -451,7 +522,7 @@ public class Solver
                 }
 
                 var remaining = cell & ~overlap;
-                
+
                 if (remaining != cell)
                 {
                     metadata.Affected.Add(index);
@@ -459,13 +530,13 @@ public class Solver
                     _cellCandidates[index] = remaining;
                 }
             }
-        
+
             if (_historyType != HistoryType.None && metadata.Affected.Count > 0)
             {
                 var move = new Move(0, 0, mask, moveType);
-            
+
                 move.AddMetadata(metadata);
-            
+
                 _history.Add(move);
             }
 
@@ -496,6 +567,8 @@ public class Solver
             _candidates.Column.Remove(move.Position.X, value);
 
             _candidates.Box.Remove(box, value);
+
+            UpdateCellCandidates(cell);
 
             _score--;
 
@@ -560,6 +633,8 @@ public class Solver
             _candidates.Column.Add(move.Position.X, value);
 
             _candidates.Box.Add(box, value);
+
+            UpdateCellCandidates(cell);
 
             if (_historyType != HistoryType.None)
             {

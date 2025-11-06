@@ -142,27 +142,6 @@ public class Generator
 
             var cellValue = puzzle[cellIndex];
 
-            var row = UnitTables.CellRow(cellIndex);
-
-            if (CountValueInUnit(puzzle, UnitTables.RowCells(row), cellValue) > 6)
-            {
-                continue;
-            }
-
-            var column = UnitTables.CellColumn(cellIndex);
-
-            if (CountValueInUnit(puzzle, UnitTables.ColumnCells(column), cellValue) > 6)
-            {
-                continue;
-            }
-
-            var box = UnitTables.CellBox(cellIndex);
-
-            if (CountValueInUnit(puzzle, UnitTables.BoxCells(box), cellValue) > 6)
-            {
-                continue;
-            }
-
             puzzle[cellIndex] = 0;
 
             if (cancellationToken.IsCancellationRequested)
@@ -192,21 +171,6 @@ public class Generator
         }
 
         return false;
-    }
-    
-    private static int CountValueInUnit(int[] puzzle, ReadOnlySpan<byte> unit, int value)
-    {
-        var count = 0;
-    
-        for (var i = 0; i < 9; i++)
-        {
-            if (puzzle[unit[i]] == value)
-            {
-                count++;
-            }
-        }
-
-        return count;
     }
     
     private void ShuffleFilledCells()
