@@ -4,77 +4,41 @@ public static class SpanIntExtensions
 {
     public static bool IsValidSudoku(this Span<int> puzzle)
     {
-        var uniqueRow = new HashSet<int>();
-
-        var uniqueColumn = new HashSet<int>();
-
-        for (var y = 0; y < 9; y++)
+        Span<ushort> rowMask = stackalloc ushort[9];
+        
+        Span<ushort> columnMask = stackalloc ushort[9];
+        
+        Span<ushort> boxMask = stackalloc ushort[9];
+    
+        for (var i = 0; i < 81; i++)
         {
-            uniqueRow.Clear();
+            var value = puzzle[i];
 
-            uniqueColumn.Clear();
-
-            var countRow = 0;
-
-            var countColumn = 0;
-
-            for (var x = 0; x < 9; x++)
+            if (value == 0)
             {
-                if (puzzle[x + y * 9] != 0)
-                {
-                    uniqueRow.Add(puzzle[x + y * 9]);
-
-                    countRow++;
-                }
-
-                if (puzzle[y + x * 9] == 0)
-                {
-                    continue;
-                }
-                
-                uniqueColumn.Add(puzzle[y + x * 9]);
-
-                countColumn++;
+                continue;
             }
+        
+            var bit = (ushort)(1 << value);
+            
+            var row = i / 9;
+            
+            var column = i % 9;
+            
+            var box = row / 3 * 3 + column / 3;
 
-            if (uniqueRow.Count < countRow || uniqueColumn.Count < countColumn)
+            if (((rowMask[row] | columnMask[column] | boxMask[box]) & bit) != 0)
             {
                 return false;
             }
+        
+            rowMask[row] |= bit;
+            
+            columnMask[column] |= bit;
+            
+            boxMask[box] |= bit;
         }
-
-        var uniqueBox = new HashSet<int>();
-
-        for (var yO = 0; yO < 9; yO += 3)
-        {
-            for (var xO = 0; xO < 9; xO += 3)
-            {
-                uniqueBox.Clear();
-
-                var countBox = 0;
-
-                for (var x = 0; x < 3; x++)
-                {
-                    for (var y = 0; y < 3; y++)
-                    {
-                        if (puzzle[(yO + y) * 9 + xO + x] == 0)
-                        {
-                            continue;
-                        }
-                        
-                        uniqueBox.Add(puzzle[(yO + y) * 9 + xO + x]);
-
-                        countBox++;
-                    }
-                }
-
-                if (uniqueBox.Count < countBox)
-                {
-                    return false;
-                }
-            }
-        }
-
+    
         return true;
     }
 }
