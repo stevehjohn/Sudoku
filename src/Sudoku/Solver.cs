@@ -243,57 +243,49 @@ public class Solver
 
     private void UpdateCellCandidates(int updatedCell)
     {
-        if (_workingCopy[updatedCell] == 0)
-        {
-            _cellCandidates[updatedCell] = 0;
-        }
-        else
-        {
-            var x = UnitTables.CellColumn(updatedCell);
-            
-            var y = UnitTables.CellRow(updatedCell);
-            
-            var box = UnitTables.CellBox(updatedCell);
-
-            _cellCandidates[updatedCell] = _candidates.Column[x] & _candidates.Row[y] & _candidates.Box[box];
-        }
-
+        UpdateCellCandidatesInternal(updatedCell);
+        
         var peers = UnitTables.Peers(updatedCell);
 
         for (var i = 0; i < peers.Length; i++)
         {
             var cell = peers[i];
             
-            if (_workingCopy[cell] > 0)
-            {
-                _cellCandidates[cell] = 0;
+            UpdateCellCandidatesInternal(cell);
+        }
+    }
 
-                continue;
+    private void UpdateCellCandidatesInternal(int cell)
+    {
+        if (_workingCopy[cell] > 0)
+        {
+            _cellCandidates[cell] = 0;
+
+            return;
+        }
+
+        var oldValue = _cellCandidates[cell];
+
+        var x = UnitTables.CellColumn(cell);
+
+        var y = UnitTables.CellRow(cell);
+
+        var box = UnitTables.CellBox(cell);
+
+        _cellCandidates[cell] = _candidates.Column[x] & _candidates.Row[y] & _candidates.Box[box];
+
+        if (oldValue > 0)
+        {
+            if (_cellCandidates[cell] == 0)
+            {
+                _candidateCount--;
             }
-
-            var oldValue = _cellCandidates[cell];
-
-            var x = UnitTables.CellColumn(cell);
-            
-            var y = UnitTables.CellRow(cell);
-            
-            var box = UnitTables.CellBox(cell);
-
-            _cellCandidates[cell] = _candidates.Column[x] & _candidates.Row[y] & _candidates.Box[box];
-
-            if (oldValue > 0)
+        }
+        else
+        {
+            if (_cellCandidates[cell] > 0)
             {
-                if (_cellCandidates[cell] == 0)
-                {
-                    _candidateCount--;
-                }
-            }
-            else
-            {
-                if (_cellCandidates[cell] > 0)
-                {
-                    _candidateCount++;
-                }
+                _candidateCount++;
             }
         }
     }
