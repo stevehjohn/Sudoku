@@ -241,76 +241,57 @@ public class Solver
         }
     }
 
-    private void UpdateCellCandidates(int updatedCell)
+    private void UpdateCellAndPeerCandidates(int updatedCell)
     {
-        var x = UnitTables.CellColumn(updatedCell);
+        UpdateCellCandidates(updatedCell);
+        
+        var peers = UnitTables.Peers(updatedCell);
 
-        var y = UnitTables.CellRow(updatedCell);
-
-        var box = UnitTables.CellBox(updatedCell);
-
-        var rowCells = UnitTables.RowCells(y);
-
-        var columnCells = UnitTables.ColumnCells(x);
-
-        var boxCells = UnitTables.BoxCells(box);
-
-        Span<bool> updated = stackalloc bool[81];
-
-        UpdateUnitCandidates(rowCells, updated);
-
-        UpdateUnitCandidates(columnCells, updated);
-
-        UpdateUnitCandidates(boxCells, updated);
+        for (var i = 0; i < peers.Length; i++)
+        {
+            var cell = peers[i];
+            
+            UpdateCellCandidates(cell);
+        }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void UpdateUnitCandidates(ReadOnlySpan<byte> cells, Span<bool> updated)
+    private void UpdateCellCandidates(int cell)
     {
-        for (var i = 0; i < 9; i++)
+        if (_workingCopy[cell] > 0)
         {
-            var cell = cells[i];
+            _cellCandidates[cell] = 0;
 
-            if (updated[cell])
+            return;
+        }
+
+        var oldValue = _cellCandidates[cell];
+
+        var x = UnitTables.CellColumn(cell);
+
+        var y = UnitTables.CellRow(cell);
+
+        var box = UnitTables.CellBox(cell);
+
+        _cellCandidates[cell] = _candidates.Column[x] & _candidates.Row[y] & _candidates.Box[box];
+
+        if (oldValue > 0)
+        {
+            if (_cellCandidates[cell] == 0)
             {
-                continue;
+                _candidateCount--;
             }
-
-            if (_workingCopy[cell] > 0)
+        }
+        else
+        {
+            if (_cellCandidates[cell] > 0)
             {
-                _cellCandidates[cell] = 0;
-
-                updated[cell] = true;
-                
-                continue;
+                _candidateCount++;
             }
+        }
 
-            var oldValue = _cellCandidates[cell];
-
-            var x = UnitTables.CellColumn(cell);
-            
-            var y = UnitTables.CellRow(cell);
-            
-            var box = UnitTables.CellBox(cell);
-
-            _cellCandidates[cell] = _candidates.Column[x] & _candidates.Row[y] & _candidates.Box[box];
-
-            if (oldValue > 0)
-            {
-                if (_cellCandidates[cell] == 0)
-                {
-                    _candidateCount--;
-                }
-            }
-            else
-            {
-                if (_cellCandidates[cell] > 0)
-                {
-                    _candidateCount++;
-                }
-            }
-
-            updated[cell] = true;
+        if (_historyType == HistoryType.AllSteps)
+        {
+            _history.Add(new Move(x, y, 0, MoveType.NoCandidates));
         }
     }
 
