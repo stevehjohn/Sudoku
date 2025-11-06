@@ -144,21 +144,21 @@ public class Generator
 
             var row = cellIndex / 9;
 
-            if (CountValueInUnit(puzzle, UnitTables.Row(row), cellValue) > 6)
+            if (CountValueInUnit(puzzle, UnitTables.RowCells(row), cellValue) > 6)
             {
                 continue;
             }
 
             var column = cellIndex % 9;
 
-            if (CountValueInUnit(puzzle, UnitTables.Column(column), cellValue) > 6)
+            if (CountValueInUnit(puzzle, UnitTables.ColumnCells(column), cellValue) > 6)
             {
                 continue;
             }
 
             var box = row / 3 * 3 + column / 3;
 
-            if (CountValueInUnit(puzzle, UnitTables.Box(box), cellValue) > 6)
+            if (CountValueInUnit(puzzle, UnitTables.BoxCells(box), cellValue) > 6)
             {
                 continue;
             }

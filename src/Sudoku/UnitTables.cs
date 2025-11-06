@@ -42,9 +42,9 @@ public static class UnitTables
         }
     }
 
-    public static ReadOnlySpan<byte> Row(int index) => Units.AsSpan(index * 9, 9);
+    public static ReadOnlySpan<byte> RowCells(int index) => Units.AsSpan(index * 9, 9);
 
-    public static ReadOnlySpan<byte> Column(int index) => Units.AsSpan(81 + index * 9, 9);
+    public static ReadOnlySpan<byte> ColumnCells(int index) => Units.AsSpan(81 + index * 9, 9);
 
-    public static ReadOnlySpan<byte> Box(int index) => Units.AsSpan(162 + index * 9, 9);
+    public static ReadOnlySpan<byte> BoxCells(int index) => Units.AsSpan(162 + index * 9, 9);
 }
