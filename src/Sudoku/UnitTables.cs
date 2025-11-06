@@ -40,7 +40,7 @@ public static class UnitTables
             {
                 for (var dx = 0; dx < 3; dx++)
                 {
-                    Units[i++] = (byte) ((r0 + dy) * 9 + c0 + dx);
+                    Units[i] = (byte) ((r0 + dy) * 9 + c0 + dx);
 
                     Units[243 + i++] = (byte) ((r0 + dy) * 9 + c0 + dx);
                 }
