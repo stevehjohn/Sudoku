@@ -278,11 +278,11 @@ public class Solver
 
             var oldValue = _cellCandidates[cell];
 
-            var cellX = UnitTables.CellColumn(cell);
-            var cellY = UnitTables.CellRow(cell);
-            var cellBox = UnitTables.CellBox(cell);
+            var x = UnitTables.CellColumn(cell);
+            var y = UnitTables.CellRow(cell);
+            var box = UnitTables.CellBox(cell);
 
-            _cellCandidates[cell] = _candidates.Column[cellX] & _candidates.Row[cellY] & _candidates.Box[cellBox];
+            _cellCandidates[cell] = _candidates.Column[x] & _candidates.Row[y] & _candidates.Box[box];
 
             if (oldValue > 0)
             {
