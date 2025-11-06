@@ -44,20 +44,21 @@ public class Generator
 
         var budgetSeconds = 0;
 
-        var budgetMax = 3;
+        var budgetMin = 3;
         
         if (useBudget && ! Debugger.IsAttached)
         {
             budgetSeconds = 2;
 
-            budgetMax = cluesToLeave switch
+            budgetMin = cluesToLeave switch
             {
                 < 19 => 60,
                 < 20 => 30,
-                < 21 => 20,
+                < 21 => 25,
+                21 => 20,
                 22 => 10,
                 23 => 8,
-                _ => budgetMax
+                _ => budgetMin
             };
         }
 
@@ -84,7 +85,7 @@ public class Generator
 
                 AttemptHook?.Invoke(attempts);
 
-                if (cluesToLeave < 20 && attempts % 10 == 0 && budgetSeconds < budgetMax)
+                if (cluesToLeave < 20 && attempts % 10 == 0 && budgetSeconds < budgetMin)
                 {
                     budgetSeconds++;
                 }
