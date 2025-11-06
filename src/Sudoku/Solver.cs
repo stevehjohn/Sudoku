@@ -278,6 +278,10 @@ public class Solver
 
             if (_workingCopy[cell] > 0)
             {
+                _cellCandidates[cell] = 0;
+
+                updated[cell] = true;
+                
                 continue;
             }
 
