@@ -271,7 +271,12 @@ public class Solver
         {
             var cell = cells[i];
 
-            if (updated[cell] || _workingCopy[cell] > 0)
+            if (updated[cell])
+            {
+                continue;
+            }
+
+            if (_workingCopy[cell] > 0)
             {
                 continue;
             }
