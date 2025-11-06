@@ -288,6 +288,11 @@ public class Solver
                 _candidateCount++;
             }
         }
+
+        if (_historyType == HistoryType.AllSteps)
+        {
+            _history.Add(new Move(x, y, 0, MoveType.NoCandidates));
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
