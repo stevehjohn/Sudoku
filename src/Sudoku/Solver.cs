@@ -257,15 +257,15 @@ public class Solver
 
         Span<bool> updated = stackalloc bool[81];
 
-        UpdateUnitCandidates(rowCells, x, y, box, updated);
+        UpdateUnitCandidates(rowCells, updated);
 
-        UpdateUnitCandidates(columnCells, x, y, box, updated);
+        UpdateUnitCandidates(columnCells, updated);
 
-        UpdateUnitCandidates(boxCells, x, y, box, updated);
+        UpdateUnitCandidates(boxCells, updated);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void UpdateUnitCandidates(ReadOnlySpan<byte> cells, int x, int y, int box, Span<bool> updated)
+    private void UpdateUnitCandidates(ReadOnlySpan<byte> cells, Span<bool> updated)
     {
         for (var i = 0; i < 9; i++)
         {
@@ -278,7 +278,11 @@ public class Solver
 
             var oldValue = _cellCandidates[cell];
 
-            _cellCandidates[cell] = _candidates.Column[x] & _candidates.Row[y] & _candidates.Box[box];
+            var cellX = UnitTables.CellColumn(cell);
+            var cellY = UnitTables.CellRow(cell);
+            var cellBox = UnitTables.CellBox(cell);
+
+            _cellCandidates[cell] = _candidates.Column[cellX] & _candidates.Row[cellY] & _candidates.Box[cellBox];
 
             if (oldValue > 0)
             {
