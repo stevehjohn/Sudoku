@@ -214,9 +214,9 @@ public class Solver
         {
             if (_workingCopy[i] == 0)
             {
-                var x = UnitTables.CellColumn(i);
+                var x = i % 9;
 
-                var y = UnitTables.CellRow(i);
+                var y = i / 9;
 
                 var boxY = y / 3 * 3;
 
