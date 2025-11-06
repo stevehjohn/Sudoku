@@ -300,7 +300,7 @@ public class ConsoleApplication
         GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
 
         Parallel.For(0, int.MaxValue,
-            new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount / 2 + 1 },
+            new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount / 2 },
             (_, state) =>
             {
                 if (state.IsStopped)
