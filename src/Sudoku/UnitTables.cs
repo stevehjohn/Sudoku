@@ -14,9 +14,7 @@ public static class UnitTables
         {
             for (var x = 0; x < 9; x++)
             {
-                Units[i] = (byte) (y * 9 + x);
-
-                Units[243 + i++] = (byte) y;
+                Units[i++] = (byte) (y * 9 + x);
             }
         }
 
@@ -24,27 +22,36 @@ public static class UnitTables
         {
             for (var y = 0; y < 9; y++)
             {
-                Units[i] = (byte) (y * 9 + x);
-
-                Units[243 + i++] = (byte) x;
+                Units[i++] = (byte) (y * 9 + x);
             }
         }
 
         for (var box = 0; box < 9; box++)
         {
-            var r0 = 3 * (box / 3);
+            var row = 3 * (box / 3);
             
-            var c0 = box % 3 * 3;
+            var column = box % 3 * 3;
             
             for (var dy = 0; dy < 3; dy++)
             {
                 for (var dx = 0; dx < 3; dx++)
                 {
-                    Units[i] = (byte) ((r0 + dy) * 9 + c0 + dx);
-
-                    Units[243 + i++] = (byte) box;
+                    Units[i++] = (byte) ((row + dy) * 9 + column + dx);
                 }
             }
+        }
+
+        for (i = 0; i < 81; i++)
+        {
+            var y = i / 9;
+            
+            Units[243 + i] = (byte) y;
+
+            var x = i % 9;
+            
+            Units[324 + i] = (byte) x;
+
+            Units[402 + i] = (byte) (y / 3 * 3 + x / 3);
         }
     }
 

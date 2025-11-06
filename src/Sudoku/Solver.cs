@@ -214,13 +214,13 @@ public class Solver
         {
             if (_workingCopy[i] == 0)
             {
-                var x = UnitTables.CellColumn(i);
+                var x = i % 9;
 
-                var y = UnitTables.CellRow(i);
+                var y = i / 9;
 
-                var box = UnitTables.CellBox(i);
+                var boxY = y / 3 * 3;
 
-                _cellCandidates[i] = _candidates.Column[x] & _candidates.Row[y] & _candidates.Box[box];
+                _cellCandidates[i] = _candidates.Column[x] & _candidates.Row[y] & _candidates.Box[boxY + x / 3];
 
                 if (_cellCandidates[i] != 0)
                 {
