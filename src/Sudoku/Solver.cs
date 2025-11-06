@@ -214,9 +214,9 @@ public class Solver
         {
             if (_workingCopy[i] == 0)
             {
-                var x = UnitTables.CellRow(i);
+                var x = UnitTables.CellColumn(i);
 
-                var y = UnitTables.CellColumn(i);
+                var y = UnitTables.CellRow(i);
 
                 var box = UnitTables.CellBox(i);
 
