@@ -71,11 +71,11 @@ public class Solver
 
         List<int>[] initialCandidates = null;
 
+        GetCellCandidates();
+
         if (_historyType == HistoryType.AllSteps)
         {
             initialCandidates = new List<int>[81];
-
-            GetCellCandidates();
 
             for (var i = 0; i < 81; i++)
             {
