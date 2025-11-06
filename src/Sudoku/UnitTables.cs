@@ -100,6 +100,11 @@ public static class UnitTables
         
         for (var i = 0; i < unit.Length; i++)
         {
+            if (peerIndex == 20)
+            {
+                return;
+            }
+
             if (peers[peerIndex] != 255)
             {
                 peerIndex++;
