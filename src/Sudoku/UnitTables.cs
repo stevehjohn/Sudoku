@@ -16,7 +16,7 @@ public static class UnitTables
             {
                 Units[i] = (byte) (y * 9 + x);
 
-                Units[243 + i++] = (byte) (y * 9 + x);
+                Units[243 + i++] = (byte) y;
             }
         }
 
@@ -26,15 +26,15 @@ public static class UnitTables
             {
                 Units[i] = (byte) (y * 9 + x);
 
-                Units[243 + i++] = (byte) (y * 9 + x);
+                Units[243 + i++] = (byte) x;
             }
         }
 
-        for (var b = 0; b < 9; b++)
+        for (var box = 0; box < 9; box++)
         {
-            var r0 = 3 * (b / 3);
+            var r0 = 3 * (box / 3);
             
-            var c0 = b % 3 * 3;
+            var c0 = box % 3 * 3;
             
             for (var dy = 0; dy < 3; dy++)
             {
@@ -42,7 +42,7 @@ public static class UnitTables
                 {
                     Units[i] = (byte) ((r0 + dy) * 9 + c0 + dx);
 
-                    Units[243 + i++] = (byte) ((r0 + dy) * 9 + c0 + dx);
+                    Units[243 + i++] = (byte) box;
                 }
             }
         }
