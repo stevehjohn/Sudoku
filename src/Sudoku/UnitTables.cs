@@ -96,32 +96,29 @@ public static class UnitTables
 
     private static void AddPeers(int cell, byte[] peers, ReadOnlySpan<byte> unit)
     {
-        var unitIndex = 0;
+        var peerIndex = 0;
         
-        for (var i = 0; i < peers.Length; i++)
+        for (var i = 0; i < unit.Length; i++)
         {
-            if (peers[i] != 255)
+            if (peers[peerIndex] != 255)
+            {
+                peerIndex++;
+
+                i--;
+                
+                continue;
+            }
+
+            var unitCell = unit[i];
+
+            if (unitCell == cell || peers.Contains(unitCell))
             {
                 continue;
             }
 
-            var unitCell = unit[unitIndex];
+            peers[peerIndex] = unitCell;
 
-            if (unitCell == cell)
-            {
-                continue;
-            }
-
-            if (peers[i] == unitCell)
-            {
-                unitIndex++;
-            
-                continue;
-            }
-
-            peers[i] = unitCell;
-
-            unitIndex++;
+            peerIndex++;
         }
     }
 }
