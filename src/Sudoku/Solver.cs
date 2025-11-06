@@ -218,9 +218,9 @@ public class Solver
 
                 var y = UnitTables.CellRow(i);
 
-                var boxY = y / 3 * 3;
+                var box = UnitTables.CellBox(i);
 
-                _cellCandidates[i] = _candidates.Column[x] & _candidates.Row[y] & _candidates.Box[boxY + x / 3];
+                _cellCandidates[i] = _candidates.Column[x] & _candidates.Row[y] & _candidates.Box[box];
 
                 if (_cellCandidates[i] != 0)
                 {

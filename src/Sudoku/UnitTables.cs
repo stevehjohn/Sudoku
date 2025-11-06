@@ -51,7 +51,7 @@ public static class UnitTables
             
             Units[324 + i] = (byte) x;
 
-            Units[402 + i] = (byte) (y / 3 * 3 + x / 3);
+            Units[405 + i] = (byte) (y / 3 * 3 + x / 3);
         }
     }
 
