@@ -271,14 +271,14 @@ public class Solver
         {
             var cell = cells[i];
 
-            if (updated[cell])
+            if (updated[cell] || _workingCopy[cell] > 0)
             {
                 continue;
             }
 
             var oldValue = _cellCandidates[cell];
 
-            _cellCandidates[cell] = _candidates.Column[x] | _candidates.Row[y] | _candidates.Box[box];
+            _cellCandidates[cell] = _candidates.Column[x] & _candidates.Row[y] & _candidates.Box[box];
 
             if (oldValue > 0)
             {
