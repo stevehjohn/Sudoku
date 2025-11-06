@@ -6,7 +6,7 @@ public static class UnitTables
 
     static UnitTables()
     {
-        Units = new byte[27 * 9 * 2];
+        Units = new byte[27 * 9 * 2 + 9];
 
         var i = 0;
 
@@ -53,6 +53,11 @@ public static class UnitTables
 
             Units[405 + i] = (byte) (y / 3 * 3 + x / 3);
         }
+
+        for (i = 0; i < 9; i++)
+        {
+            Units[486 + i] = (byte) (3 * (i / 3) * 9 + 3 * (i % 3));
+        }
     }
 
     public static ReadOnlySpan<byte> RowCells(int index) => Units.AsSpan(index * 9, 9);
@@ -66,4 +71,6 @@ public static class UnitTables
     public static byte CellColumn(int index) => Units[324 + index];
 
     public static byte CellBox(int index) => Units[405 + index];
+
+    public static ReadOnlySpan<byte> BoxStartIndices => Units.AsSpan(486, 9);
 }
