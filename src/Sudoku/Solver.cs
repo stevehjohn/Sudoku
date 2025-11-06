@@ -279,7 +279,9 @@ public class Solver
             var oldValue = _cellCandidates[cell];
 
             var x = UnitTables.CellColumn(cell);
+            
             var y = UnitTables.CellRow(cell);
+            
             var box = UnitTables.CellBox(cell);
 
             _cellCandidates[cell] = _candidates.Column[x] & _candidates.Row[y] & _candidates.Box[box];
