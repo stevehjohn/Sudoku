@@ -31,6 +31,8 @@ public class Solver
 
     private (Candidates Row, Candidates Column, Candidates Box) _candidates;
 
+    private int _candidateCount;
+
     public Solver(HistoryType historyType = HistoryType.None, SolveMethod solveMethod = SolveMethod.FindUnique)
     {
         _historyType = historyType;
@@ -240,7 +242,71 @@ public class Solver
             _cellCandidates[i] = 0;
         }
 
+        _candidateCount = candidateCount;
+
         return candidateCount > 0;
+    }
+
+    private bool UpdateCellCandidates(int updatedCell)
+    {
+        var inverseBit = ~(1 << (_workingCopy[updatedCell] - 1));
+
+        var x = UnitTables.CellColumn(updatedCell);
+
+        var y = UnitTables.CellRow(updatedCell);
+        
+        var box = UnitTables.CellBox(updatedCell);
+        
+        var rowCells = UnitTables.RowCells(y);
+
+        var columnCells = UnitTables.ColumnCells(x);
+
+        var boxCells = UnitTables.BoxCells(box);
+
+        Span<bool> updated = stackalloc bool[81];
+        
+        UpdateUnitCandidates(rowCells, inverseBit, updated);
+        
+        UpdateUnitCandidates(columnCells, inverseBit, updated);
+        
+        UpdateUnitCandidates(boxCells, inverseBit, updated);
+        
+        return _candidateCount > 0;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void UpdateUnitCandidates(ReadOnlySpan<byte> cells, int mask, Span<bool> updated)
+    {
+        for (var i = 0; i < 9; i++)
+        {
+            var cell = cells[i];
+
+            if (updated[cell])
+            {
+                continue;
+            }
+
+            var oldValue = _cellCandidates[cell];
+
+            _cellCandidates[cell] &= mask;
+
+            if (oldValue > 0)
+            {
+                if (_cellCandidates[cell] == 0)
+                {
+                    _candidateCount--;
+                }
+            }
+            else
+            {
+                if (_cellCandidates[cell] > 0)
+                {
+                    _candidateCount++;
+                }
+            }
+
+            updated[cell] = true;
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
