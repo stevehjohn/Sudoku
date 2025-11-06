@@ -190,17 +190,17 @@ public class Solver
                 continue;
             }
 
-            var x = i % 9;
+            var x = UnitTables.CellColumn(i);
 
-            var y = i / 9;
+            var y = UnitTables.CellRow(i);
 
-            var boxY = y / 3 * 3;
+            var box = UnitTables.CellBox(i);
 
             rowCandidates.Remove(y, _workingCopy[i]);
 
             columnCandidates.Remove(x, _workingCopy[i]);
 
-            boxCandidates.Remove(boxY + x / 3, _workingCopy[i]);
+            boxCandidates.Remove(box, _workingCopy[i]);
         }
 
         return (rowCandidates, columnCandidates, boxCandidates);
