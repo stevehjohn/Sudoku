@@ -241,9 +241,9 @@ public class Solver
         }
     }
 
-    private void UpdateCellCandidates(int updatedCell)
+    private void UpdateCellAndPeerCandidates(int updatedCell)
     {
-        UpdateCellCandidatesInternal(updatedCell);
+        UpdateCellCandidates(updatedCell);
         
         var peers = UnitTables.Peers(updatedCell);
 
@@ -251,11 +251,11 @@ public class Solver
         {
             var cell = peers[i];
             
-            UpdateCellCandidatesInternal(cell);
+            UpdateCellCandidates(cell);
         }
     }
 
-    private void UpdateCellCandidatesInternal(int cell)
+    private void UpdateCellCandidates(int cell)
     {
         if (_workingCopy[cell] > 0)
         {
