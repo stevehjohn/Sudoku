@@ -243,6 +243,21 @@ public class Solver
 
     private void UpdateCellCandidates(int updatedCell)
     {
+        if (_workingCopy[updatedCell] == 0)
+        {
+            _cellCandidates[updatedCell] = 0;
+        }
+        else
+        {
+            var x = UnitTables.CellColumn(updatedCell);
+            
+            var y = UnitTables.CellRow(updatedCell);
+            
+            var box = UnitTables.CellBox(updatedCell);
+
+            _cellCandidates[updatedCell] = _candidates.Column[x] & _candidates.Row[y] & _candidates.Box[box];
+        }
+
         var peers = UnitTables.Peers(updatedCell);
 
         for (var i = 0; i < peers.Length; i++)
