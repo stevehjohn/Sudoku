@@ -173,21 +173,6 @@ public class Generator
         return false;
     }
     
-    private static int CountValueInUnit(int[] puzzle, ReadOnlySpan<byte> unit, int value)
-    {
-        var count = 0;
-    
-        for (var i = 0; i < 9; i++)
-        {
-            if (puzzle[unit[i]] == value)
-            {
-                count++;
-            }
-        }
-
-        return count;
-    }
-    
     private void ShuffleFilledCells()
     {
         var count = _filledCells.Count;
