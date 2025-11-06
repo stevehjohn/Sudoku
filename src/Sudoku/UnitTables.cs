@@ -58,6 +58,24 @@ public static class UnitTables
         {
             Units[486 + i] = (byte) (3 * (i / 3) * 9 + 3 * (i % 3));
         }
+
+        var peers = new byte[20];
+            
+        for (i = 0; i < 81; i++)
+        {
+            Array.Fill(peers, (byte) 255);
+            
+            AddPeers(i, peers, RowCells(CellRow(i)));
+            
+            AddPeers(i, peers, ColumnCells(CellColumn(i)));
+            
+            AddPeers(i, peers, BoxCells(CellBox(i)));
+
+            for (var j = 0; j < 20; j++)
+            {
+                Units[495 + i * 20 + j] = peers[j];
+            }
+        }
     }
 
     public static ReadOnlySpan<byte> RowCells(int index) => Units.AsSpan(index * 9, 9);
@@ -75,4 +93,35 @@ public static class UnitTables
     public static ReadOnlySpan<byte> BoxStartIndices => Units.AsSpan(486, 9);
 
     public static ReadOnlySpan<byte> Peers(int index) => Units.AsSpan(495 + index * 20, 20);
+
+    private static void AddPeers(int cell, byte[] peers, ReadOnlySpan<byte> unit)
+    {
+        var unitIndex = 0;
+        
+        for (var i = 0; i < peers.Length; i++)
+        {
+            if (peers[i] != 255)
+            {
+                continue;
+            }
+
+            var unitCell = unit[unitIndex];
+
+            if (unitCell == cell)
+            {
+                continue;
+            }
+
+            if (peers[i] == unitCell)
+            {
+                unitIndex++;
+            
+                continue;
+            }
+
+            peers[i] = unitCell;
+
+            unitIndex++;
+        }
+    }
 }
