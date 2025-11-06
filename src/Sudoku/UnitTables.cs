@@ -6,7 +6,7 @@ public static class UnitTables
 
     static UnitTables()
     {
-        Units = new byte[27 * 9];
+        Units = new byte[27 * 9 * 2];
 
         var i = 0;
 
@@ -26,25 +26,44 @@ public static class UnitTables
             }
         }
 
-        for (var b = 0; b < 9; b++)
+        for (var box = 0; box < 9; box++)
         {
-            var r0 = 3 * (b / 3);
+            var row = 3 * (box / 3);
             
-            var c0 = b % 3 * 3;
+            var column = box % 3 * 3;
             
             for (var dy = 0; dy < 3; dy++)
             {
                 for (var dx = 0; dx < 3; dx++)
                 {
-                    Units[i++] = (byte) ((r0 + dy) * 9 + c0 + dx);
+                    Units[i++] = (byte) ((row + dy) * 9 + column + dx);
                 }
             }
         }
+
+        for (i = 0; i < 81; i++)
+        {
+            var y = i / 9;
+            
+            Units[243 + i] = (byte) y;
+
+            var x = i % 9;
+            
+            Units[324 + i] = (byte) x;
+
+            Units[402 + i] = (byte) (y / 3 * 3 + x / 3);
+        }
     }
 
-    public static ReadOnlySpan<byte> Row(int index) => Units.AsSpan(index * 9, 9);
+    public static ReadOnlySpan<byte> RowCells(int index) => Units.AsSpan(index * 9, 9);
 
-    public static ReadOnlySpan<byte> Column(int index) => Units.AsSpan(81 + index * 9, 9);
+    public static ReadOnlySpan<byte> ColumnCells(int index) => Units.AsSpan(81 + index * 9, 9);
 
-    public static ReadOnlySpan<byte> Box(int index) => Units.AsSpan(162 + index * 9, 9);
+    public static ReadOnlySpan<byte> BoxCells(int index) => Units.AsSpan(162 + index * 9, 9);
+
+    public static byte CellRow(int index) => Units[243 + index];
+
+    public static byte CellColumn(int index) => Units[324 + index];
+
+    public static byte CellBox(int index) => Units[405 + index];
 }

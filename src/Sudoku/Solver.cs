@@ -154,11 +154,11 @@ public class Solver
             {
                 var box = move.Position.Y / 3 * 3 + move.Position.X / 3;
                 
-                var changed = FindNakedPairs(UnitTables.Row(move.Position.Y), move.Position.Y, MoveType.NakedPairRow);
+                var changed = FindNakedPairs(UnitTables.RowCells(move.Position.Y), move.Position.Y, MoveType.NakedPairRow);
 
-                changed |= FindNakedPairs(UnitTables.Column(move.Position.X), move.Position.X, MoveType.NakedPairColumn);
+                changed |= FindNakedPairs(UnitTables.ColumnCells(move.Position.X), move.Position.X, MoveType.NakedPairColumn);
 
-                changed |= FindNakedPairs(UnitTables.Box(box), box, MoveType.NakedPairBox);
+                changed |= FindNakedPairs(UnitTables.BoxCells(box), box, MoveType.NakedPairBox);
 
                 if (changed)
                 {

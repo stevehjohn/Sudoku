@@ -113,9 +113,9 @@ public static class TreeGenerator
                     {
                         var unit = node.Move.Type switch
                         {
-                            MoveType.NakedPairRow => UnitTables.Row(metadata.UnitIndex),
-                            MoveType.NakedPairColumn => UnitTables.Column(metadata.UnitIndex),
-                            _ => UnitTables.Box(metadata.UnitIndex)
+                            MoveType.NakedPairRow => UnitTables.RowCells(metadata.UnitIndex),
+                            MoveType.NakedPairColumn => UnitTables.ColumnCells(metadata.UnitIndex),
+                            _ => UnitTables.BoxCells(metadata.UnitIndex)
                         };
 
                         var colour = unit.Contains((byte) i) ? "#000000" : "#a0a0a0";
