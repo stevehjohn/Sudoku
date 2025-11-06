@@ -140,7 +140,7 @@ public class Solver
 
             if (single != -1)
             {
-                return CreateNextSteps((Position: (X: single % 9, Y: single / 9), Values: _cellCandidates[single], ValueCount: 1));
+                return CreateNextSteps((Position: (X: UnitTables.CellColumn(single), Y: UnitTables.CellRow(single)), Values: _cellCandidates[single], ValueCount: 1));
             }
 
             var move = FindNakedSingle();
@@ -152,7 +152,7 @@ public class Solver
 
             if (_score < 55 && move.ValueCount < 4)
             {
-                var box = move.Position.Y / 3 * 3 + move.Position.X / 3;
+                var box = UnitTables.CellBox(move.Position.Y * 9 + move.Position.X);
                 
                 var changed = FindNakedPairs(UnitTables.RowCells(move.Position.Y), move.Position.Y, MoveType.NakedPairRow);
 
@@ -190,17 +190,17 @@ public class Solver
                 continue;
             }
 
-            var x = i % 9;
+            var x = UnitTables.CellColumn(i);
 
-            var y = i / 9;
+            var y = UnitTables.CellRow(i);
 
-            var boxY = y / 3 * 3;
+            var box = UnitTables.CellBox(i);
 
             rowCandidates.Remove(y, _workingCopy[i]);
 
             columnCandidates.Remove(x, _workingCopy[i]);
 
-            boxCandidates.Remove(boxY + x / 3, _workingCopy[i]);
+            boxCandidates.Remove(box, _workingCopy[i]);
         }
 
         return (rowCandidates, columnCandidates, boxCandidates);
@@ -386,7 +386,7 @@ public class Solver
                 continue;
             }
 
-            position = (i % 9, i / 9);
+            position = (UnitTables.CellColumn(i), UnitTables.CellRow(i));
 
             values = candidates;
 
@@ -492,7 +492,7 @@ public class Solver
 
             _workingCopy[cell] = value;
 
-            var box = move.Position.Y / 3 * 3 + move.Position.X / 3;
+            var box = UnitTables.CellBox(move.Position.Y * 9 + move.Position.X);
 
             _candidates.Row.Remove(move.Position.Y, value);
 
