@@ -243,45 +243,16 @@ public class Solver
 
     private void UpdateCellCandidates(int updatedCell)
     {
-        var x = UnitTables.CellColumn(updatedCell);
+        var peers = UnitTables.Peers(updatedCell);
 
-        var y = UnitTables.CellRow(updatedCell);
-
-        var box = UnitTables.CellBox(updatedCell);
-
-        var rowCells = UnitTables.RowCells(y);
-
-        var columnCells = UnitTables.ColumnCells(x);
-
-        var boxCells = UnitTables.BoxCells(box);
-
-        Span<bool> updated = stackalloc bool[81];
-
-        UpdateUnitCandidates(rowCells, updated);
-
-        UpdateUnitCandidates(columnCells, updated);
-
-        UpdateUnitCandidates(boxCells, updated);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void UpdateUnitCandidates(ReadOnlySpan<byte> cells, Span<bool> updated)
-    {
-        for (var i = 0; i < 9; i++)
+        for (var i = 0; i < peers.Length; i++)
         {
-            var cell = cells[i];
-
-            if (updated[cell])
-            {
-                continue;
-            }
-
+            var cell = peers[i];
+            
             if (_workingCopy[cell] > 0)
             {
                 _cellCandidates[cell] = 0;
 
-                updated[cell] = true;
-                
                 continue;
             }
 
@@ -309,8 +280,6 @@ public class Solver
                     _candidateCount++;
                 }
             }
-
-            updated[cell] = true;
         }
     }
 
