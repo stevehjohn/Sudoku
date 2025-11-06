@@ -549,7 +549,7 @@ public class Solver
 
             _candidates.Box.Remove(box, value);
 
-            UpdateCellCandidates(cell);
+            UpdateCellAndPeerCandidates(cell);
 
             _score--;
 
@@ -615,7 +615,7 @@ public class Solver
 
             _candidates.Box.Add(box, value);
 
-            UpdateCellCandidates(cell);
+            UpdateCellAndPeerCandidates(cell);
 
             if (_historyType != HistoryType.None)
             {
