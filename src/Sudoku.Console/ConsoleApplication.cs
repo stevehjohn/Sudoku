@@ -415,13 +415,16 @@ public class ConsoleApplication
         System.Console.CursorVisible = true;
     }
 
-    private static void ShowAttemptCount(int count)
+    private void ShowAttemptCount(int count)
     {
-        var x = System.Console.CursorLeft;
-        
-        System.Console.Write($" Attempt: {count}.");
+        lock (_lock)
+        {
+            var x = System.Console.CursorLeft;
 
-        System.Console.CursorLeft = x;
+            System.Console.Write($" Attempt: {count}.");
+
+            System.Console.CursorLeft = x;
+        }
     }
 
     private static void RunTestSuite()
