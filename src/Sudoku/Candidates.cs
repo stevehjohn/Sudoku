@@ -19,11 +19,11 @@ public struct Candidates
 
         if (index < 5)
         {
-            _high &= ~(1ul << (index * 9 + value - 1));
+            _high &= ~(1ul << ((index << 3) + index + value - 1));
         }
         else
         {
-            _low &= ~(1ul << ((index - 5) * 9 + value - 1));
+            _low &= ~(1ul << (((index - 5) << 3) + (index - 5) + value - 1));
         }
     }
 
@@ -36,11 +36,11 @@ public struct Candidates
 
         if (index < 5)
         {
-            _high |= 1ul << (index * 9 + value - 1);
+            _high |= 1ul << ((index << 3) + index + value - 1);
         }
         else
         {
-            _low |= 1ul << ((index - 5) * 9 + value - 1);
+            _low |= 1ul << (((index - 5) << 3) + (index - 5) + value - 1);
         }
     }
 
@@ -50,10 +50,10 @@ public struct Candidates
         {
             if (index < 5)
             {
-                return (int) (_high >> (index * 9)) & 0b1_1111_1111;
+                return (int) (_high >> (index << 3) + index) & 0b1_1111_1111;
             }
 
-            return (int) (_low >> ((index - 5) * 9)) & 0b1_1111_1111;
+            return (int) (_low >> (((index - 5) << 3) + (index - 5))) & 0b1_1111_1111;
         }
     }
 }
