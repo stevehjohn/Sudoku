@@ -474,6 +474,11 @@ public class Solver
                 else if (cell == mask)
                 {
                     count++;
+
+                    if (count > 2)
+                    {
+                        return false;
+                    }
                 }
             }
         }
