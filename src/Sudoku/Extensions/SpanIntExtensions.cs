@@ -21,11 +21,11 @@ public static class SpanIntExtensions
 
             var bit = (ushort) (1 << value);
 
-            var row = i / 9;
+            var row = UnitTables.CellRow(i);
 
-            var column = i % 9;
+            var column = UnitTables.CellColumn(i);
 
-            var box = row / 3 * 3 + column / 3;
+            var box = UnitTables.CellBox(i);
 
             if (((rowMask[row] | columnMask[column] | boxMask[box]) & bit) != 0)
             {
