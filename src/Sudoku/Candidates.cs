@@ -23,7 +23,9 @@ public struct Candidates
         }
         else
         {
-            _low &= ~(1ul << (((index - 5) << 3) + (index - 5) + value - 1));
+            index -= 5;
+            
+            _low &= ~(1ul << ((index << 3) + index + value - 1));
         }
     }
 
@@ -40,7 +42,9 @@ public struct Candidates
         }
         else
         {
-            _low |= 1ul << (((index - 5) << 3) + (index - 5) + value - 1);
+            index -= 5;
+            
+            _low |= 1ul << ((index << 3) + index + value - 1);
         }
     }
 
@@ -53,7 +57,9 @@ public struct Candidates
                 return (int) (_high >> (index << 3) + index) & 0b1_1111_1111;
             }
 
-            return (int) (_low >> (((index - 5) << 3) + (index - 5))) & 0b1_1111_1111;
+            index -= 5;
+            
+            return (int) (_low >> ((index << 3) + index)) & 0b1_1111_1111;
         }
     }
 }
