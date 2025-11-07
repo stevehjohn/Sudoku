@@ -536,6 +536,8 @@ public class Solver
     {
         var cell = move.Position.X + (move.Position.Y << 3) + move.Position.Y;
 
+        var box = UnitTables.CellBox((move.Position.Y << 3) + move.Position.Y + move.Position.X);
+
         var values = move.Values;
 
         while (values > 0)
@@ -545,8 +547,6 @@ public class Solver
             values &= values - 1;
 
             _workingCopy[cell] = value;
-
-            var box = UnitTables.CellBox(move.Position.Y * 9 + move.Position.X);
 
             _candidates.Row.Remove(move.Position.Y, value);
 
