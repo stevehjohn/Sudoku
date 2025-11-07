@@ -143,6 +143,19 @@ public class Generator
 
             var cellValue = puzzle[cellIndex];
 
+            var row = UnitTables.CellRow(cellIndex);
+            
+            var col = UnitTables.CellColumn(cellIndex);
+            
+            var box = UnitTables.CellBox(cellIndex);
+
+            if (WouldEmptyUnit(puzzle, UnitTables.RowCells(row), cellIndex)
+                || WouldEmptyUnit(puzzle, UnitTables.ColumnCells(col), cellIndex)
+                || WouldEmptyUnit(puzzle, UnitTables.BoxCells(box), cellIndex))
+            {
+                continue;
+            }
+
             puzzle[cellIndex] = 0;
 
             if (cancellationToken.IsCancellationRequested)
@@ -170,6 +183,17 @@ public class Generator
         }
 
         return false;
+    }
+    
+    private static bool WouldEmptyUnit(int[] puzzle, ReadOnlySpan<byte> unit, int removedCell)
+    {
+        for (var i = 0; i < 9; i++)
+        {
+            var cell = unit[i];
+            if (cell != removedCell && puzzle[cell] > 0)
+                return false;
+        }
+        return true;
     }
     
     private void ShuffleFilledCells()
