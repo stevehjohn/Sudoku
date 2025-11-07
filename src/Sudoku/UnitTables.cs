@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace Sudoku;
 
 public static class UnitTables
@@ -78,20 +80,27 @@ public static class UnitTables
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ReadOnlySpan<byte> RowCells(int index) => Units.AsSpan(index * 9, 9);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ReadOnlySpan<byte> ColumnCells(int index) => Units.AsSpan(81 + index * 9, 9);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ReadOnlySpan<byte> BoxCells(int index) => Units.AsSpan(162 + index * 9, 9);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte CellRow(int index) => Units[243 + index];
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte CellColumn(int index) => Units[324 + index];
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte CellBox(int index) => Units[405 + index];
 
     public static ReadOnlySpan<byte> BoxStartIndices => Units.AsSpan(486, 9);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ReadOnlySpan<byte> Peers(int index) => Units.AsSpan(495 + index * 20, 20);
 
     private static void AddPeers(int cell, byte[] peers, ReadOnlySpan<byte> unit)
