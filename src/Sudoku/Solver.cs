@@ -306,15 +306,15 @@ public class Solver
 
             var start = UnitTables.BoxStartIndices[i];
 
-            for (var y = 0; y < 3; y++)
+            var end = start + 27;
+            
+            for (var y = start; y < end; y += 9)
             {
-                var y9 = (y << 3) + y;
-
                 for (var x = 0; x < 3; x++)
                 {
-                    twoMask |= oneMask & _cellCandidates[start + y9 + x];
+                    twoMask |= oneMask & _cellCandidates[y + x];
 
-                    oneMask |= _cellCandidates[start + y9 + x];
+                    oneMask |= _cellCandidates[y + x];
                 }
             }
 
@@ -325,20 +325,20 @@ public class Solver
                 continue;
             }
 
-            for (var y = 0; y < 3; y++)
+            for (var y = start; y < end; y += 9)
             {
                 for (var x = 0; x < 3; x++)
                 {
-                    if ((_cellCandidates[start + (y << 3) + y + x] & once) <= 0)
+                    if ((_cellCandidates[y + x] & once) <= 0)
                     {
                         continue;
                     }
 
-                    _cellCandidates[start + (y << 3) + y + x] = once;
+                    _cellCandidates[y + x] = once;
 
                     _moveType = MoveType.HiddenSingle;
 
-                    return start + (y << 3) + y + x;
+                    return y + x;
                 }
             }
         }
