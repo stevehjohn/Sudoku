@@ -155,19 +155,19 @@ public class Solver
             if (_score < 55 && move.ValueCount < 4)
             {
                 var box = UnitTables.CellBox(move.Position.Y * 9 + move.Position.X);
-
+            
                 var changed = FindNakedPairs(UnitTables.RowCells(move.Position.Y), move.Position.Y, MoveType.NakedPairRow);
-
+            
                 changed |= FindNakedPairs(UnitTables.ColumnCells(move.Position.X), move.Position.X, MoveType.NakedPairColumn);
-
+            
                 changed |= FindNakedPairs(UnitTables.BoxCells(box), box, MoveType.NakedPairBox);
-
+            
                 if (changed)
                 {
                     continue;
                 }
             }
-
+            
             if (move.ValueCount == 0)
             {
                 return false;
