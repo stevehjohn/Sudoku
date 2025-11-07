@@ -150,9 +150,7 @@ public class Generator
                 return false;
             }
             
-            var result = _solver.Solve(puzzle, true);
-
-            var unique = result.Solved && result.SolutionCount == 1;
+            var unique = _solver.HasUniqueSolution(puzzle);
 
             if (unique && RemoveCell(puzzle, targetClues, cellsToRemove - 1, stopwatch, budgetTicks, i + 1, cancellationToken))
             {

@@ -110,6 +110,23 @@ public class Solver
             : new SudokuResult(_solution, true, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, 1, "Solved");
     }
 
+    public bool HasUniqueSolution(int[] puzzle)
+    {
+        _verifyOnly = true;
+
+        Initialise(new Span<int>(puzzle));
+
+        _candidates = GetSectionCandidates();
+        
+        GetCellCandidates();
+
+        _solutionCount = 0;
+
+        SolveStep();
+
+        return _solutionCount == 1;
+    }
+
     private void Initialise(Span<int> puzzle)
     {
         _solutionCount = 0;
