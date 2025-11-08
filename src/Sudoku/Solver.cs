@@ -621,7 +621,7 @@ public class Solver
 
                 _solutionCount++;
 
-                if (_solveMethod == SolveMethod.FindUnique && _solutionCount > 1)
+                if ((_solveMethod == SolveMethod.FindUnique || _verifyOnly) && _solutionCount > 1)
                 {
                     return true;
                 }
