@@ -637,13 +637,13 @@ public class Solver
                         if (_knownSolution[i] != _workingCopy[i])
                         {
                             _solutionCount = 2;
-
+                
                             return true;
                         }
                     }
-
+                
                     _solutionCount = 1;
-
+                
                     return true;
                 }
 
