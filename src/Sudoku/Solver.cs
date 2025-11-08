@@ -570,12 +570,12 @@ public class Solver
         {
             var value = BitOperations.TrailingZeroCount(values) + 1;
 
-            values &= values - 1;
-
-            if (_knownSolution != null && _knownSolution[cell] == value && BitOperations.PopCount((uint) values) > 1)
+            if (_knownSolution != null && _knownSolution[cell] == value && BitOperations.PopCount((uint) values) > 2)
             {
                 continue;
             }
+
+            values &= values - 1;
 
             _workingCopy[cell] = value;
 
