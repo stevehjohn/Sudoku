@@ -630,6 +630,23 @@ public class Solver
 
             if (_score == 0)
             {
+                if (_knownSolution != null && _verifyOnly)
+                {
+                    for (var i = 0; i < 81; i++)
+                    {
+                        if (_knownSolution[i] != _workingCopy[i])
+                        {
+                            _solutionCount = 2;
+
+                            return true;
+                        }
+                    }
+
+                    _solutionCount = 1;
+
+                    return true;
+                }
+
                 if (_solutionCount == 0 && ! _verifyOnly)
                 {
                     for (var j = 0; j < 81; j++)
