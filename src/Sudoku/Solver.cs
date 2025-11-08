@@ -33,6 +33,8 @@ public class Solver
 
     private int _candidateCount;
 
+    private int[] _knownSolution;
+
     public Solver(HistoryType historyType = HistoryType.None, SolveMethod solveMethod = SolveMethod.FindUnique)
     {
         _historyType = historyType;
@@ -110,11 +112,13 @@ public class Solver
             : new SudokuResult(_solution, true, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, 1, "Solved");
     }
 
-    public bool HasUniqueSolution(int[] puzzle)
+    public bool HasUniqueSolution(int[] puzzle, int[] knownSolution)
     {
         _verifyOnly = true;
 
         Initialise(new Span<int>(puzzle));
+
+        _knownSolution = knownSolution;
 
         _candidates = GetSectionCandidates();
         

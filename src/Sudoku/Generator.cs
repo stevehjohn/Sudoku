@@ -19,6 +19,8 @@ public class Generator
 
     private int _failedStamp;
 
+    private int[] _originalPuzzle = new int[81];
+
     public Action<int> AttemptHook { get; set; }
 
     public Generator()
@@ -41,6 +43,8 @@ public class Generator
         {
             return (false, puzzle);
         }
+        
+        Array.Copy(puzzle, _originalPuzzle, 81);
 
         var budgetSeconds = 0;
 
@@ -163,7 +167,7 @@ public class Generator
                 return false;
             }
 
-            var unique = _solver.HasUniqueSolution(puzzle);
+            var unique = _solver.HasUniqueSolution(puzzle, _originalPuzzle);
 
             if (unique && RemoveCell(puzzle, targetClues, cellsToRemove - 1, stopwatch, budgetTicks, i + 1, cancellationToken))
             {
