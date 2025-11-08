@@ -577,13 +577,25 @@ public class Solver
                 continue;
             }
 
+            _workingCopy[cell] = value;
+
+            _candidates.Row.Remove(move.Position.Y, value);
+
+            _candidates.Column.Remove(move.Position.X, value);
+
+            _candidates.Box.Remove(box, value);
+
+            UpdateCellAndPeerCandidates(cell);
+
+            _score--;
+
+            if (move.ValueCount > 1)
+            {
+                _moveType = MoveType.Guess;
+            }
+
             if (_historyType != HistoryType.None)
             {
-                if (move.ValueCount > 1)
-                {
-                    _moveType = MoveType.Guess;
-                }
-
                 var historyMove = new Move(move.Position.X, move.Position.Y, value, _moveType);
 
                 var historyCandidates = new List<int>();
@@ -601,84 +613,62 @@ public class Solver
                 _history?.Add(historyMove);
             }
 
-            if (CreateNextStep(cell, move.Position.X, move.Position.Y, box, value))
+            if (_score == 0)
             {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private bool CreateNextStep(int cell, int x, int y, int box, int value)
-    {
-        _workingCopy[cell] = value;
-
-        _candidates.Row.Remove(y, value);
-
-        _candidates.Column.Remove(x, value);
-
-        _candidates.Box.Remove(box, value);
-
-        UpdateCellAndPeerCandidates(cell);
-
-        _score--;
-
-        if (_score == 0)
-        {
-            if (_solutionCount == 0 && ! _verifyOnly)
-            {
-                for (var j = 0; j < 81; j++)
+                if (_solutionCount == 0 && ! _verifyOnly)
                 {
-                    _solution[j] = _workingCopy[j];
+                    for (var j = 0; j < 81; j++)
+                    {
+                        _solution[j] = _workingCopy[j];
+                    }
+                }
+
+                if (_solveMethod == SolveMethod.FindFirst)
+                {
+                    return true;
+                }
+
+                _solutionCount++;
+
+                if ((_solveMethod == SolveMethod.FindUnique || _verifyOnly) && _solutionCount > 1)
+                {
+                    return true;
                 }
             }
 
-            if (_solveMethod == SolveMethod.FindFirst)
+            _steps++;
+
+            if (SolveStep())
             {
                 return true;
             }
 
-            _solutionCount++;
+            _workingCopy[cell] = 0;
 
-            if ((_solveMethod == SolveMethod.FindUnique || _verifyOnly) && _solutionCount > 1)
+            _candidates.Row.Add(move.Position.Y, value);
+
+            _candidates.Column.Add(move.Position.X, value);
+
+            _candidates.Box.Add(box, value);
+
+            UpdateCellAndPeerCandidates(cell);
+
+            if (_historyType != HistoryType.None)
             {
-                return true;
+                if (_historyType == HistoryType.SolutionOnly)
+                {
+                    _history?.RemoveAt(_history.Count - 1);
+                }
+                else
+                {
+                    _history?.Add(new Move(move.Position.X, move.Position.Y, value, MoveType.Backtrack));
+                }
             }
+
+            _moveType = MoveType.Guess;
+
+            _score++;
         }
-
-        _steps++;
-
-        if (SolveStep())
-        {
-            return true;
-        }
-
-        _workingCopy[cell] = 0;
-
-        _candidates.Row.Add(y, value);
-
-        _candidates.Column.Add(x, value);
-
-        _candidates.Box.Add(box, value);
-
-        UpdateCellAndPeerCandidates(cell);
-
-        if (_historyType != HistoryType.None)
-        {
-            if (_historyType == HistoryType.SolutionOnly)
-            {
-                _history?.RemoveAt(_history.Count - 1);
-            }
-            else
-            {
-                _history?.Add(new Move(x, y, value, MoveType.Backtrack));
-            }
-        }
-
-        _moveType = MoveType.Guess;
-
-        _score++;
 
         return false;
     }
