@@ -566,16 +566,31 @@ public class Solver
 
         var values = move.Values;
 
-        while (values > 0)
+        var knownValue = 0;
+        
+        while (values > 0 || knownValue > 0)
         {
-            var value = BitOperations.TrailingZeroCount(values) + 1;
+            int value;
+
+            if (values == 0)
+            {
+                value = knownValue;
+
+                knownValue = 0;
+            }
+            else
+            {
+                value = BitOperations.TrailingZeroCount(values) + 1;
+
+                values &= values - 1;
+            }
 
             if (_knownSolution != null && _knownSolution[cell] == value && BitOperations.PopCount((uint) values) > 2)
             {
+                knownValue = value;
+                
                 continue;
             }
-
-            values &= values - 1;
 
             _workingCopy[cell] = value;
 
