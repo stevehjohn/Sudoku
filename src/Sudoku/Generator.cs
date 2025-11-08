@@ -19,7 +19,7 @@ public class Generator
 
     private int _failedStamp;
 
-    private int[] _originalPuzzle = new int[81];
+    private readonly int[] _originalPuzzle = new int[81];
 
     public Action<int> AttemptHook { get; set; }
 
