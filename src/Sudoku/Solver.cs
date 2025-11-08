@@ -571,19 +571,7 @@ public class Solver
             var value = BitOperations.TrailingZeroCount(values) + 1;
 
             values &= values - 1;
-
-            _workingCopy[cell] = value;
-
-            _candidates.Row.Remove(move.Position.Y, value);
-
-            _candidates.Column.Remove(move.Position.X, value);
-
-            _candidates.Box.Remove(box, value);
-
-            UpdateCellAndPeerCandidates(cell);
-
-            _score--;
-
+            
             if (move.ValueCount > 1)
             {
                 _moveType = MoveType.Guess;
@@ -608,62 +596,84 @@ public class Solver
                 _history?.Add(historyMove);
             }
 
-            if (_score == 0)
+            if (CreateNextStep(cell, move.Position.X, move.Position.Y, box, value))
             {
-                if (_solutionCount == 0 && ! _verifyOnly)
-                {
-                    for (var j = 0; j < 81; j++)
-                    {
-                        _solution[j] = _workingCopy[j];
-                    }
-                }
+                return true;
+            }
+        }
 
-                if (_solveMethod == SolveMethod.FindFirst)
-                {
-                    return true;
-                }
+        return false;
+    }
 
-                _solutionCount++;
+    private bool CreateNextStep(int cell, int x, int y, int box, int value)
+    {
+        _workingCopy[cell] = value;
 
-                if ((_solveMethod == SolveMethod.FindUnique || _verifyOnly) && _solutionCount > 1)
+        _candidates.Row.Remove(y, value);
+
+        _candidates.Column.Remove(x, value);
+
+        _candidates.Box.Remove(box, value);
+
+        UpdateCellAndPeerCandidates(cell);
+
+        _score--;
+
+        if (_score == 0)
+        {
+            if (_solutionCount == 0 && ! _verifyOnly)
+            {
+                for (var j = 0; j < 81; j++)
                 {
-                    return true;
+                    _solution[j] = _workingCopy[j];
                 }
             }
 
-            _steps++;
-
-            if (SolveStep())
+            if (_solveMethod == SolveMethod.FindFirst)
             {
                 return true;
             }
 
-            _workingCopy[cell] = 0;
+            _solutionCount++;
 
-            _candidates.Row.Add(move.Position.Y, value);
-
-            _candidates.Column.Add(move.Position.X, value);
-
-            _candidates.Box.Add(box, value);
-
-            UpdateCellAndPeerCandidates(cell);
-
-            if (_historyType != HistoryType.None)
+            if ((_solveMethod == SolveMethod.FindUnique || _verifyOnly) && _solutionCount > 1)
             {
-                if (_historyType == HistoryType.SolutionOnly)
-                {
-                    _history?.RemoveAt(_history.Count - 1);
-                }
-                else
-                {
-                    _history?.Add(new Move(move.Position.X, move.Position.Y, value, MoveType.Backtrack));
-                }
+                return true;
             }
-
-            _moveType = MoveType.Guess;
-
-            _score++;
         }
+
+        _steps++;
+
+        if (SolveStep())
+        {
+            return true;
+        }
+
+        _workingCopy[cell] = 0;
+
+        _candidates.Row.Add(y, value);
+
+        _candidates.Column.Add(x, value);
+
+        _candidates.Box.Add(box, value);
+
+        UpdateCellAndPeerCandidates(cell);
+
+        if (_historyType != HistoryType.None)
+        {
+            if (_historyType == HistoryType.SolutionOnly)
+            {
+                _history?.RemoveAt(_history.Count - 1);
+            }
+            else
+            {
+                _history?.Add(new Move(x, y, value, MoveType.Backtrack));
+            }
+        }
+
+        _moveType = MoveType.Guess;
+
+        _score++;
 
         return false;
     }
