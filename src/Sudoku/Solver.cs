@@ -120,6 +120,11 @@ public class Solver
         
         GetCellCandidates();
 
+        if (_candidateCount == 0)
+        {
+            return false;
+        }
+
         _solutionCount = 0;
 
         SolveStep();
