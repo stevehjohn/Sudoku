@@ -8,13 +8,13 @@ public class Generator
     private readonly int[][] _candidates = new int[81][];
 
     private readonly int[] _candidateCounts = new int[81];
-    
+
     private readonly Solver _solver = new();
 
     private readonly List<int> _filledCells = [];
 
     private readonly Random _random;
-    
+
     private readonly int[] _failed = new int[81];
 
     private int _failedStamp;
@@ -30,11 +30,11 @@ public class Generator
     {
         _random = new Random(seed);
     }
-    
+
     public (bool Succeeded, int[] Puzzle) Generate(int cluesToLeave, CancellationToken cancellationToken, bool useBudget = true)
     {
         var puzzle = new int[81];
-        
+
         InitialiseCandidates();
 
         if (! CreateSolvedPuzzle(puzzle, cancellationToken))
@@ -45,7 +45,7 @@ public class Generator
         var budgetSeconds = 0;
 
         var budgetMin = 3;
-        
+
         if (useBudget && ! Debugger.IsAttached)
         {
             budgetSeconds = 2;
@@ -63,7 +63,7 @@ public class Generator
         }
 
         var succeeded = true;
-        
+
         if (budgetSeconds == 0)
         {
             RemoveCells(puzzle, cluesToLeave, 81 - cluesToLeave, 0, cancellationToken);
@@ -71,13 +71,13 @@ public class Generator
         else
         {
             var attempts = 1;
-            
+
             while (! RemoveCells(puzzle, cluesToLeave, 81 - cluesToLeave, budgetSeconds, cancellationToken))
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
                     succeeded = false;
-                    
+
                     break;
                 }
 
@@ -94,11 +94,11 @@ public class Generator
 
         return (succeeded, puzzle);
     }
-    
+
     private bool RemoveCells(int[] puzzle, int targetClues, int cellsToRemove, int budgetSeconds, CancellationToken cancellationToken)
     {
         _filledCells.Clear();
-        
+
         for (var i = 0; i < 81; i++)
         {
             _filledCells.Add(i);
@@ -109,7 +109,7 @@ public class Generator
         var stopWatch = Stopwatch.StartNew();
 
         _failedStamp++;
-        
+
         return RemoveCell(puzzle, targetClues, cellsToRemove, stopWatch, budgetSeconds * Stopwatch.Frequency, 0, cancellationToken);
     }
 
@@ -144,9 +144,9 @@ public class Generator
             var cellValue = puzzle[cellIndex];
 
             var row = UnitTables.CellRow(cellIndex);
-            
+
             var col = UnitTables.CellColumn(cellIndex);
-            
+
             var box = UnitTables.CellBox(cellIndex);
 
             if (WouldEmptyUnit(puzzle, UnitTables.RowCells(row), cellIndex)
@@ -162,7 +162,7 @@ public class Generator
             {
                 return false;
             }
-            
+
             var unique = _solver.HasUniqueSolution(puzzle);
 
             if (unique && RemoveCell(puzzle, targetClues, cellsToRemove - 1, stopwatch, budgetTicks, i + 1, cancellationToken))
@@ -184,26 +184,30 @@ public class Generator
 
         return false;
     }
-    
+
     private static bool WouldEmptyUnit(int[] puzzle, ReadOnlySpan<byte> unit, int removedCell)
     {
         for (var i = 0; i < 9; i++)
         {
             var cell = unit[i];
+
             if (cell != removedCell && puzzle[cell] > 0)
+            {
                 return false;
+            }
         }
+
         return true;
     }
-    
+
     private void ShuffleFilledCells()
     {
         var count = _filledCells.Count;
-        
+
         for (var left = 0; left < count - 1; left++)
         {
             var right = left + _random.Next(count - left);
-            
+
             (_filledCells[left], _filledCells[right]) = (_filledCells[right], _filledCells[left]);
         }
     }
@@ -222,9 +226,9 @@ public class Generator
             var candidate = _candidates[cell][candidateIndex];
 
             _candidates[cell][candidateIndex] = _candidates[cell][_candidateCounts[cell] - 1];
-            
+
             _candidateCounts[cell]--;
-            
+
             puzzle[cell] = candidate;
 
             if (puzzle.IsValidSudoku())
@@ -232,7 +236,7 @@ public class Generator
                 return cell == 80 || CreateSolvedPuzzle(puzzle, cancellationToken, cell + 1);
             }
         }
-        
+
         puzzle[cell] = 0;
 
         _candidates[cell] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
