@@ -585,7 +585,7 @@ public class Solver
                 values &= values - 1;
             }
 
-            if (_knownSolution != null && _knownSolution[cell] == value && BitOperations.PopCount((uint) values) > 2)
+            if (_knownSolution != null && _knownSolution[cell] == value && BitOperations.PopCount((uint) values) > 0)
             {
                 knownValue = value;
                 
