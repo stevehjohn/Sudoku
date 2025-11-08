@@ -572,13 +572,13 @@ public class Solver
 
             values &= values - 1;
             
-            if (move.ValueCount > 1)
-            {
-                _moveType = MoveType.Guess;
-            }
-
             if (_historyType != HistoryType.None)
             {
+                if (move.ValueCount > 1)
+                {
+                    _moveType = MoveType.Guess;
+                }
+
                 var historyMove = new Move(move.Position.X, move.Position.Y, value, _moveType);
 
                 var historyCandidates = new List<int>();
