@@ -34,7 +34,9 @@ public class Solver
     private int[] _knownSolution;
 
     private readonly ushort[] _rowMask = new ushort[9];
-    private readonly ushort[] _colMask = new ushort[9];
+    
+    private readonly ushort[] _columnMask = new ushort[9];
+    
     private readonly ushort[] _boxMask = new ushort[9];
 
     public Solver(HistoryType historyType = HistoryType.None, SolveMethod solveMethod = SolveMethod.FindUnique)
@@ -158,7 +160,7 @@ public class Solver
 
         Array.Clear(_rowMask, 0, _rowMask.Length);
 
-        Array.Clear(_colMask, 0, _colMask.Length);
+        Array.Clear(_columnMask, 0, _columnMask.Length);
 
         Array.Clear(_boxMask, 0, _boxMask.Length);
 
@@ -183,7 +185,7 @@ public class Solver
 
             _rowMask[y] |= bit;
 
-            _colMask[x] |= bit;
+            _columnMask[x] |= bit;
 
             _boxMask[box] |= bit;
         }
@@ -253,7 +255,7 @@ public class Solver
 
                 var box = cellUnits[2];
 
-                _cellCandidates[i] = ~(_rowMask[y] | _colMask[x] | _boxMask[box]) & 0x1FF;
+                _cellCandidates[i] = ~(_rowMask[y] | _columnMask[x] | _boxMask[box]) & 0x1FF;
                 
                 if (_cellCandidates[i] != 0)
                 {
@@ -305,7 +307,7 @@ public class Solver
 
         var box = cellUnits[2];
         
-        _cellCandidates[cell] = ~(_rowMask[y] | _colMask[x] | _boxMask[box]) & 0x1FF;
+        _cellCandidates[cell] = ~(_rowMask[y] | _columnMask[x] | _boxMask[box]) & 0x1FF;
 
         if (oldValue > 0)
         {
@@ -605,7 +607,7 @@ public class Solver
 
             _rowMask[move.Position.Y] |= bit;
 
-            _colMask[move.Position.X] |= bit;
+            _columnMask[move.Position.X] |= bit;
 
             _boxMask[box] |= bit;
 
@@ -688,7 +690,7 @@ public class Solver
 
             _rowMask[move.Position.Y] &= (ushort) ~bit;
 
-            _colMask[move.Position.X] &= (ushort) ~bit;
+            _columnMask[move.Position.X] &= (ushort) ~bit;
 
             _boxMask[box] &= (ushort) ~bit;
 
