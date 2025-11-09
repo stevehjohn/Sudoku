@@ -1,8 +1,10 @@
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Sudoku.Extensions;
 
 namespace Sudoku;
 
+[StructLayout(LayoutKind.Sequential, Size = 16)]
 public struct Candidates
 {
     private ulong _high = ulong.MaxValue;
