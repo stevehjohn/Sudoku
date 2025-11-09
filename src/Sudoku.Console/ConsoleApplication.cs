@@ -329,6 +329,8 @@ public class ConsoleApplication
         }
 
         System.Console.CursorVisible = true;
+
+        System.Console.Title = "Sudoku";
     }
 
     private void PuzzleGenerated(int[] puzzle)
@@ -351,6 +353,8 @@ public class ConsoleApplication
             
             length++;
         }
+
+        System.Console.Title = $"Sudoku ({_count}/{_target})";
         
         Out($"{DateTime.Now:ddd d MMM HH:mm:ss} ({_count.ToString().PadLeft(length)}/{_target}):");
         
