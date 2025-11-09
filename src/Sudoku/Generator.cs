@@ -68,7 +68,15 @@ public class Generator
 
         if (budgetSeconds == 0)
         {
-            RemoveCells(puzzle, cluesToLeave, 81 - cluesToLeave, 0, cancellationToken);
+            while (! cancellationToken.IsCancellationRequested)
+            {
+                if (RemoveCells(puzzle, cluesToLeave, 81 - cluesToLeave, 0, cancellationToken))
+                {
+                    return (true, puzzle);
+                }
+                
+                Array.Copy(_originalPuzzle, puzzle, 81);
+            }
         }
         else
         {
