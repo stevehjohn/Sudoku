@@ -6,7 +6,7 @@ public static class BulkGenerator
 {
     public static void Generate(int quantity, int cluesToLeave, Action<int[]> callback)
     {
-        var workers = Environment.ProcessorCount / 2;
+        var workers = Math.Max(Environment.ProcessorCount / 2, 1);
 
         var count = 0;
 
@@ -50,6 +50,6 @@ public static class BulkGenerator
             }, CancellationToken.None);
         }
 
-        Task.WaitAll(tasks, cancellationToken);
+        Task.WaitAll(tasks, CancellationToken.None);
     }
 }
