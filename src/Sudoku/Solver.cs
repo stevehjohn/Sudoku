@@ -157,18 +157,22 @@ public class Solver
         }
 
         Array.Clear(_rowMask, 0, _rowMask.Length);
+
         Array.Clear(_colMask, 0, _colMask.Length);
+
         Array.Clear(_boxMask, 0, _boxMask.Length);
-        
+
         for (var i = 0; i < 81; i++)
         {
             var value = puzzle[i];
             if (value == 0) continue;
 
-            var bit = (ushort)(1 << (value - 1));
+            var bit = (ushort) (1 << (value - 1));
 
             _rowMask[UnitTables.CellRow(i)] |= bit;
+
             _colMask[UnitTables.CellColumn(i)] |= bit;
+
             _boxMask[UnitTables.CellBox(i)] |= bit;
         }
     }
@@ -199,19 +203,19 @@ public class Solver
             if (_score < 55 && move.ValueCount < 4)
             {
                 var box = UnitTables.CellBox(move.Position.Y * 9 + move.Position.X);
-            
+
                 var changed = FindNakedPairs(UnitTables.RowCells(move.Position.Y), move.Position.Y, MoveType.NakedPairRow);
-            
+
                 changed |= FindNakedPairs(UnitTables.ColumnCells(move.Position.X), move.Position.X, MoveType.NakedPairColumn);
-            
+
                 changed |= FindNakedPairs(UnitTables.BoxCells(box), box, MoveType.NakedPairBox);
-            
+
                 if (changed)
                 {
                     continue;
                 }
             }
-            
+
             if (move.ValueCount == 0)
             {
                 return false;
@@ -235,7 +239,7 @@ public class Solver
 
                 var box = UnitTables.CellBox(i);
 
-                _cellCandidates[i] = ~( _rowMask[y] | _colMask[x] | _boxMask[box] ) & 0x1FF;
+                _cellCandidates[i] = ~(_rowMask[y] | _colMask[x] | _boxMask[box]) & 0x1FF;
 
 
                 if (_cellCandidates[i] != 0)
@@ -258,13 +262,13 @@ public class Solver
     private void UpdateCellAndPeerCandidates(int updatedCell)
     {
         UpdateCellCandidates(updatedCell);
-        
+
         var peers = UnitTables.Peers(updatedCell);
 
         for (var i = 0; i < peers.Length; i++)
         {
             var cell = peers[i];
-            
+
             UpdateCellCandidates(cell);
         }
     }
@@ -286,7 +290,7 @@ public class Solver
 
         var box = UnitTables.CellBox(cell);
 
-        _cellCandidates[cell] = ~( _rowMask[y] | _colMask[x] | _boxMask[box] ) & 0x1FF;
+        _cellCandidates[cell] = ~(_rowMask[y] | _colMask[x] | _boxMask[box]) & 0x1FF;
 
         if (oldValue > 0)
         {
@@ -321,7 +325,7 @@ public class Solver
             var start = UnitTables.BoxStartIndices[i];
 
             var end = start + 27;
-            
+
             for (var y = start; y < end; y += 9)
             {
                 for (var x = 0; x < 3; x++)
@@ -555,7 +559,7 @@ public class Solver
         var values = move.Values;
 
         var knownValue = 0;
-        
+
         while (values > 0 || knownValue > 0)
         {
             int value;
@@ -576,20 +580,20 @@ public class Solver
             if (_knownSolution != null && _knownSolution[cell] == value && BitOperations.PopCount((uint) values) > 0)
             {
                 knownValue = value;
-                
+
                 continue;
             }
 
             _workingCopy[cell] = value;
 
-            var bit = (ushort)(1 << (value - 1));
-            
+            var bit = (ushort) (1 << (value - 1));
+
             _rowMask[move.Position.Y] |= bit;
-            
+
             _colMask[move.Position.X] |= bit;
-            
+
             _boxMask[box] |= bit;
-            
+
             UpdateCellAndPeerCandidates(cell);
 
             _score--;
@@ -627,13 +631,13 @@ public class Solver
                         if (_knownSolution[i] != _workingCopy[i])
                         {
                             _solutionCount = 2;
-                
+
                             return true;
                         }
                     }
-                
+
                     _solutionCount = 1;
-                
+
                     return true;
                 }
 
@@ -667,12 +671,12 @@ public class Solver
 
             _workingCopy[cell] = 0;
 
-            _rowMask[move.Position.Y] &= (ushort)~bit;
-            
-            _colMask[move.Position.X] &= (ushort)~bit;
-            
-            _boxMask[box] &= (ushort)~bit;
-            
+            _rowMask[move.Position.Y] &= (ushort) ~bit;
+
+            _colMask[move.Position.X] &= (ushort) ~bit;
+
+            _boxMask[box] &= (ushort) ~bit;
+
             UpdateCellAndPeerCandidates(cell);
 
             if (_historyType != HistoryType.None)
