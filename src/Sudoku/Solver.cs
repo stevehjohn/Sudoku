@@ -165,7 +165,11 @@ public class Solver
         for (var i = 0; i < 81; i++)
         {
             var value = puzzle[i];
-            if (value == 0) continue;
+
+            if (value == 0)
+            {
+                continue;
+            }
 
             var bit = (ushort) (1 << (value - 1));
 
