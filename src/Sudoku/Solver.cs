@@ -29,11 +29,13 @@ public class Solver
 
     private bool _verifyOnly;
 
-    private (Candidates Row, Candidates Column, Candidates Box) _candidates;
-
     private int _candidateCount;
 
     private int[] _knownSolution;
+
+    private readonly ushort[] _rowMask = new ushort[9];
+    private readonly ushort[] _colMask = new ushort[9];
+    private readonly ushort[] _boxMask = new ushort[9];
 
     public Solver(HistoryType historyType = HistoryType.None, SolveMethod solveMethod = SolveMethod.FindUnique)
     {
@@ -70,8 +72,6 @@ public class Solver
         }
 
         _history = _historyType != HistoryType.None ? [] : null;
-
-        _candidates = GetSectionCandidates();
 
         List<int>[] initialCandidates = null;
 
@@ -122,8 +122,6 @@ public class Solver
 
         _knownSolution = knownSolution;
 
-        _candidates = GetSectionCandidates();
-        
         GetCellCandidates();
 
         if (_candidateCount == 0)
@@ -156,6 +154,22 @@ public class Solver
             }
 
             _workingCopy[i] = puzzle[i];
+        }
+
+        Array.Clear(_rowMask, 0, _rowMask.Length);
+        Array.Clear(_colMask, 0, _colMask.Length);
+        Array.Clear(_boxMask, 0, _boxMask.Length);
+        
+        for (var i = 0; i < 81; i++)
+        {
+            var value = puzzle[i];
+            if (value == 0) continue;
+
+            var bit = (ushort)(1 << (value - 1));
+
+            _rowMask[UnitTables.CellRow(i)] |= bit;
+            _colMask[UnitTables.CellColumn(i)] |= bit;
+            _boxMask[UnitTables.CellBox(i)] |= bit;
         }
     }
 
@@ -207,37 +221,6 @@ public class Solver
         }
     }
 
-    private (Candidates Row, Candidates Column, Candidates Box) GetSectionCandidates()
-    {
-        var rowCandidates = new Candidates();
-
-        var columnCandidates = new Candidates();
-
-        var boxCandidates = new Candidates();
-
-        for (var i = 0; i < 81; i++)
-        {
-            if (_workingCopy[i] == 0)
-            {
-                continue;
-            }
-
-            var x = UnitTables.CellColumn(i);
-
-            var y = UnitTables.CellRow(i);
-
-            var box = UnitTables.CellBox(i);
-
-            rowCandidates.Remove(y, _workingCopy[i]);
-
-            columnCandidates.Remove(x, _workingCopy[i]);
-
-            boxCandidates.Remove(box, _workingCopy[i]);
-        }
-
-        return (rowCandidates, columnCandidates, boxCandidates);
-    }
-
     private void GetCellCandidates()
     {
         _candidateCount = 0;
@@ -252,7 +235,8 @@ public class Solver
 
                 var box = UnitTables.CellBox(i);
 
-                _cellCandidates[i] = _candidates.Column[x] & _candidates.Row[y] & _candidates.Box[box];
+                _cellCandidates[i] = ~( _rowMask[y] | _colMask[x] | _boxMask[box] ) & 0x1FF;
+
 
                 if (_cellCandidates[i] != 0)
                 {
@@ -302,7 +286,7 @@ public class Solver
 
         var box = UnitTables.CellBox(cell);
 
-        _cellCandidates[cell] = _candidates.Column[x] & _candidates.Row[y] & _candidates.Box[box];
+        _cellCandidates[cell] = ~( _rowMask[y] | _colMask[x] | _boxMask[box] ) & 0x1FF;
 
         if (oldValue > 0)
         {
@@ -598,12 +582,14 @@ public class Solver
 
             _workingCopy[cell] = value;
 
-            _candidates.Row.Remove(move.Position.Y, value);
-
-            _candidates.Column.Remove(move.Position.X, value);
-
-            _candidates.Box.Remove(box, value);
-
+            var bit = (ushort)(1 << (value - 1));
+            
+            _rowMask[move.Position.Y] |= bit;
+            
+            _colMask[move.Position.X] |= bit;
+            
+            _boxMask[box] |= bit;
+            
             UpdateCellAndPeerCandidates(cell);
 
             _score--;
@@ -681,12 +667,12 @@ public class Solver
 
             _workingCopy[cell] = 0;
 
-            _candidates.Row.Add(move.Position.Y, value);
-
-            _candidates.Column.Add(move.Position.X, value);
-
-            _candidates.Box.Add(box, value);
-
+            _rowMask[move.Position.Y] &= (ushort)~bit;
+            
+            _colMask[move.Position.X] &= (ushort)~bit;
+            
+            _boxMask[box] &= (ushort)~bit;
+            
             UpdateCellAndPeerCandidates(cell);
 
             if (_historyType != HistoryType.None)
