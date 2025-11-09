@@ -301,8 +301,11 @@ public class ConsoleApplication
 
             stopwatch.Stop();
         }
-        
-        System.Console.WriteLine();
+
+        if (puzzleCount > 1)
+        {
+            System.Console.WriteLine();
+        }
 
         Out($"\n Puzzles have been written to {filename}.");
 
