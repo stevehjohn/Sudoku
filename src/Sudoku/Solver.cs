@@ -246,8 +246,7 @@ public class Solver
                 var box = cellUnits[2];
 
                 _cellCandidates[i] = ~(_rowMask[y] | _colMask[x] | _boxMask[box]) & 0x1FF;
-
-
+                
                 if (_cellCandidates[i] != 0)
                 {
                     _candidateCount++;
