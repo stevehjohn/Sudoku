@@ -33,7 +33,7 @@ public static class BulkGenerator
                         break;
                     }
 
-                    var result = generator.Generate(cluesToLeave, cancellationToken, false);
+                    var result = generator.Generate(cluesToLeave, cancellationToken);
 
                     if (! result.Succeeded || cancellationToken.IsCancellationRequested)
                     {
