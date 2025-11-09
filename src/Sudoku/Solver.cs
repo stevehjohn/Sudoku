@@ -566,7 +566,7 @@ public class Solver
     {
         var cell = move.Position.X + (move.Position.Y << 3) + move.Position.Y;
 
-        var box = UnitTables.CellBox((move.Position.Y << 3) + move.Position.Y + move.Position.X);
+        var box = UnitTables.CellBox(cell);
 
         var values = move.Values;
 
