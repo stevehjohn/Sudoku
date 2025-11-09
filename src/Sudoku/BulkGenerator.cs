@@ -1,3 +1,5 @@
+// ReSharper disable AccessToDisposedClosure
+
 namespace Sudoku;
 
 public static class BulkGenerator
@@ -18,16 +20,18 @@ public static class BulkGenerator
 
             Task.Run(() =>
             {
-                while (true)
+                while (! cancellationToken.IsCancellationRequested)
                 {
-                    if (count >= quantity)
+                    if (Volatile.Read(ref count) >= quantity)
                     {
+                        cancellationTokenSource.Cancel();
+                        
                         break;
                     }
 
                     var result = generator.Generate(cluesToLeave, cancellationToken);
 
-                    if (! result.Succeeded)
+                    if (! result.Succeeded || cancellationToken.IsCancellationRequested)
                     {
                         continue;
                     }
@@ -36,6 +40,8 @@ public static class BulkGenerator
 
                     if (Interlocked.Increment(ref count) >= quantity)
                     {
+                        cancellationTokenSource.Cancel();
+                        
                         break;
                     }
                 }
