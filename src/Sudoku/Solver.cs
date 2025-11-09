@@ -321,7 +321,7 @@ public class Solver
             }
         }
 
-        if (_historyType == HistoryType.AllSteps)
+        if (_historyType == HistoryType.AllSteps && _cellCandidates[cell] == 0)
         {
             _history.Add(new Move(x, y, 0, MoveType.NoCandidates));
         }
