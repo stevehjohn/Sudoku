@@ -13,12 +13,14 @@ public static class BulkGenerator
         using var cancellationTokenSource = new CancellationTokenSource();
 
         var cancellationToken = cancellationTokenSource.Token;
+
+        var tasks = new Task[workers];
         
         for (var i = 0; i < workers; i++)
         {
             var generator = new Generator();
 
-            Task.Run(() =>
+            tasks[i] = Task.Run(() =>
             {
                 while (! cancellationToken.IsCancellationRequested)
                 {
@@ -47,5 +49,7 @@ public static class BulkGenerator
                 }
             }, cancellationToken);
         }
+
+        Task.WaitAll(tasks, cancellationToken);
     }
 }
