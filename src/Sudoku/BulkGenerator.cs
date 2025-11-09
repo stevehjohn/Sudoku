@@ -47,7 +47,7 @@ public static class BulkGenerator
                         break;
                     }
                 }
-            }, cancellationToken);
+            }, CancellationToken.None);
         }
 
         Task.WaitAll(tasks, cancellationToken);
