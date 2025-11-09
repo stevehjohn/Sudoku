@@ -266,10 +266,8 @@ public class Solver
                     _history.Add(new Move(x, y, 0, MoveType.NoCandidates));
                 }
             }
-            else
-            {
-                _cellCandidates[i] = 0;
-            }
+
+            _cellCandidates[i] = 0;
         }
     }
 
