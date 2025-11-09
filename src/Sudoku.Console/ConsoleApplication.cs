@@ -331,8 +331,12 @@ public class ConsoleApplication
         _lastPuzzle = puzzle;
 
         _count++;
+
+        var flattenedPuzzle = puzzle.FlattenPuzzle();
         
-        Out($"{DateTime.Now:MM/dd HH:mm} ({_count}/{_target}): {puzzle.FlattenPuzzle()}");
+        _writer.WriteLine(flattenedPuzzle);
+        
+        Out($"{DateTime.Now:MM/dd HH:mm} ({_count}/{_target}): {flattenedPuzzle}");
     }
 
     private static void RunTestSuite()
