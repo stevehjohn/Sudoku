@@ -46,6 +46,8 @@ public class Solver
     {
         var stopwatch = Stopwatch.StartNew();
 
+        _knownSolution = null;
+
         _verifyOnly = verifyOnly;
 
         Initialise(new Span<int>(puzzle));
@@ -132,6 +134,8 @@ public class Solver
         _solutionCount = 0;
 
         SolveStep();
+
+        _knownSolution = null;
 
         return _solutionCount == 1;
     }
