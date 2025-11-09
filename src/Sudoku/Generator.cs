@@ -153,12 +153,12 @@ public class Generator
 
             var row = UnitTables.CellRow(cellIndex);
 
-            var col = UnitTables.CellColumn(cellIndex);
+            var column = UnitTables.CellColumn(cellIndex);
 
             var box = UnitTables.CellBox(cellIndex);
 
             if (WouldEmptyUnit(puzzle, UnitTables.RowCells(row), cellIndex)
-                || WouldEmptyUnit(puzzle, UnitTables.ColumnCells(col), cellIndex)
+                || WouldEmptyUnit(puzzle, UnitTables.ColumnCells(column), cellIndex)
                 || WouldEmptyUnit(puzzle, UnitTables.BoxCells(box), cellIndex))
             {
                 continue;

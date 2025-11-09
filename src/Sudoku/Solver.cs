@@ -173,11 +173,19 @@ public class Solver
 
             var bit = (ushort) (1 << (value - 1));
 
-            _rowMask[UnitTables.CellRow(i)] |= bit;
+            var cellUnits = UnitTables.CellUnits(i);
 
-            _colMask[UnitTables.CellColumn(i)] |= bit;
+            var x = cellUnits[0];
 
-            _boxMask[UnitTables.CellBox(i)] |= bit;
+            var y = cellUnits[1];
+
+            var box = cellUnits[2];
+
+            _rowMask[y] |= bit;
+
+            _colMask[x] |= bit;
+
+            _boxMask[box] |= bit;
         }
     }
 
