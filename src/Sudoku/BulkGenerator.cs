@@ -15,6 +15,8 @@ public static class BulkGenerator
         var cancellationToken = cancellationTokenSource.Token;
 
         var tasks = new Task[workers];
+
+        var callbackLock = new Lock();
         
         for (var i = 0; i < workers; i++)
         {
@@ -45,7 +47,10 @@ public static class BulkGenerator
                         break;
                     }
 
-                    callback(result.Puzzle);
+                    lock (callbackLock)
+                    {
+                        callback(result.Puzzle);
+                    }
                 }
             }, CancellationToken.None);
         }
