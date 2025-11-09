@@ -9,7 +9,13 @@ public class ConsoleApplication
 {
     private List<string> _files;
 
-    private readonly Lock _lock = new();
+    private StreamWriter _writer;
+
+    private int[] _lastPuzzle;
+
+    private int _target;
+
+    private int _count;
     
     public void Run()
     {
@@ -275,121 +281,26 @@ public class ConsoleApplication
 
         Out($"\n {DateTime.Now:ddd d MMM HH:mm:ss}: Generating {clues} clue puzzle{(puzzleCount > 1 ? "s" : string.Empty)}...\n");
 
-        var recent = new List<string>();
-
-        var recentLock = new object();
-
-        var generated = 0;
-
-        int[] lastPuzzle = null;
-
-        var cancellationTokenSource = new CancellationTokenSource();
-
-        var cancellationToken = cancellationTokenSource.Token;
-
         using var stream = new FileStream(filename, FileMode.Create);
 
-        using var writer = new StreamWriter(stream);
+        _target = puzzleCount;
+
+        _count = 0;
         
-        writer.AutoFlush = true;
+        using (_writer = new StreamWriter(stream))
+        {
+            _writer.AutoFlush = true;
 
-        var top = 0;
-                
-        var oldMode = GCSettings.LatencyMode;
+            var oldMode = GCSettings.LatencyMode;
 
-        GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
+            GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
 
-        Parallel.For(0, int.MaxValue,
-            new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount / 2 },
-            (_, state) =>
-            {
-                if (state.IsStopped)
-                {
-                    return;
-                }
+            BulkGenerator.Generate(puzzleCount, clues, PuzzleGenerated);
 
-                lock (_lock)
-                {
-                    System.Console.CursorTop = 3;
+            GCSettings.LatencyMode = oldMode;
 
-                    System.Console.WriteLine($" Puzzle {Math.Min(generated, puzzleCount):N0}/{puzzleCount:N0}.               \n");
-                }
-
-                if (generated >= puzzleCount)
-                {
-                    return;
-                }
-
-                var generator = new Generator();
-
-                if (puzzleCount == 1)
-                {
-                    generator.AttemptHook = ShowAttemptCount;
-                }
-
-                var (succeeded, puzzle) = generator.Generate(clues, cancellationToken);
-
-                if (! succeeded)
-                {
-                    return;
-                }
-
-                lastPuzzle = puzzle;
-
-                var puzzleString = $"{string.Join(string.Empty, puzzle).Replace('0', '.')}";
-
-                lock (recentLock)
-                {
-                    recent.Insert(0, puzzleString);
-
-                    if (recent.Count > 20)
-                    {
-                        recent.RemoveAt(20);
-                    }
-                }
-
-                lock (_lock)
-                {
-                    if (generated < puzzleCount)
-                    {
-                        System.Console.CursorTop = 3;
-
-                        System.Console.WriteLine($" Puzzle {generated + 1:N0}/{puzzleCount:N0}.               \n");
-
-                        lock (recentLock)
-                        {
-                            foreach (var item in recent)
-                            {
-                                System.Console.WriteLine($" {item}");
-                            }
-                        }
-                        
-                        // ReSharper disable once AccessToDisposedClosure
-                        writer.WriteLine(puzzleString);
-
-                        top = System.Console.CursorTop;
-
-                        System.Console.Title = $"Sudoku ({generated + 1:N0}/{puzzleCount:N0})";
-                    }
-                }
-
-                var count = Interlocked.Increment(ref generated);
-
-                if (count >= puzzleCount)
-                {
-                    cancellationTokenSource.Cancel();
-                    
-                    stopwatch.Stop();
-                    
-                    state.Stop();
-                }
-            });
-
-        GCSettings.LatencyMode = oldMode;
-
-        stopwatch.Stop();
-
-        System.Console.CursorTop = top;
+            stopwatch.Stop();
+        }
 
         Out($"\n Puzzles have been written to {filename}.");
 
@@ -401,7 +312,7 @@ public class ConsoleApplication
         
         Out($"\n {puzzleCount:N0} {clues} clue puzzle(s) generated in {stopwatch.Elapsed:dd\\.hh\\:mm\\:ss\\.fff}, {rateText}.");
 
-        if (lastPuzzle != null)
+        if (_lastPuzzle != null)
         {
             System.Console.WriteLine();
             
@@ -409,22 +320,19 @@ public class ConsoleApplication
             
             System.Console.WriteLine();
             
-            lastPuzzle.DumpToConsole(1);
+            _lastPuzzle.DumpToConsole(1);
         }
 
         System.Console.CursorVisible = true;
     }
 
-    private void ShowAttemptCount(int count)
+    private void PuzzleGenerated(int[] puzzle)
     {
-        lock (_lock)
-        {
-            var x = System.Console.CursorLeft;
+        _lastPuzzle = puzzle;
 
-            System.Console.Write($" Attempt: {count}.");
-
-            System.Console.CursorLeft = x;
-        }
+        _count++;
+        
+        Out($"{DateTime.Now:MM/dd HH:mm} ({_count}/{_target}): {puzzle.FlattenPuzzle()}");
     }
 
     private static void RunTestSuite()

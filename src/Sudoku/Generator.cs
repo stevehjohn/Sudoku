@@ -21,8 +21,6 @@ public class Generator
 
     private readonly int[] _originalPuzzle = new int[81];
 
-    public Action<int> AttemptHook { get; set; }
-
     public Generator()
     {
         _random = new Random();
@@ -86,8 +84,6 @@ public class Generator
                 }
 
                 attempts++;
-
-                AttemptHook?.Invoke(attempts);
 
                 if (cluesToLeave < 20 && attempts % 10 == 0 && budgetSeconds < budgetMin)
                 {

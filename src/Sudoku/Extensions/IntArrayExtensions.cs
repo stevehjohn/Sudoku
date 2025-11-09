@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace Sudoku.Extensions;
 
 public static class IntArrayExtensions
@@ -41,6 +43,18 @@ public static class IntArrayExtensions
         SetPosition(left, top, line);
 
         Console.WriteLine("└───────┴───────┴───────┘");
+    }
+
+    public static string FlattenPuzzle(this int[] puzzle)
+    {
+        var builder = new StringBuilder();
+
+        for (var i = 0; i < puzzle.Length; i++)
+        {
+            builder.Append(puzzle[i] == 0 ? '.' : (char) ('0' + puzzle[i]));
+        }
+
+        return builder.ToString();
     }
 
     private static void SetPosition(int left, int top, int y)
