@@ -305,6 +305,8 @@ public class ConsoleApplication
         if (puzzleCount > 1)
         {
             System.Console.WriteLine();
+            System.Console.WriteLine();
+            System.Console.WriteLine();
         }
 
         Out($"\n Puzzles have been written to {filename}.");
