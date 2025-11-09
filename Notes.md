@@ -11,4 +11,3 @@ http://sudopedia.enjoysudoku.com/Invalid_Test_Cases.html
 
 - Good for visualising branches: 1.849.....9.............7......3....62.....4....85..1....1....6.7.....93..5......
 - Could add naked pair removals to the ConsoleSolveVisualiser.
-- Encapsulate a bulk generator rather than have the logic in the console app.
