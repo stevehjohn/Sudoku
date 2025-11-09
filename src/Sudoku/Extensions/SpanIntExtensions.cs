@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace Sudoku.Extensions;
 
 public static class SpanIntExtensions
@@ -41,4 +43,30 @@ public static class SpanIntExtensions
 
         return true;
     }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsValidSudoku(this Span<int> puzzle, int updatedCell)
+    {
+        var value = puzzle[updatedCell];
+
+        if (value == 0)
+        {
+            return true;
+        }
+
+        var peers = UnitTables.Peers(updatedCell);
+
+        for (var i = 0; i < peers.Length; i++)
+        {
+            var peerIndex = peers[i];
+
+            if (puzzle[peerIndex] == value)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 }

@@ -235,7 +235,7 @@ public class Generator
 
             puzzle[cell] = candidate;
 
-            if (puzzle.IsValidSudoku())
+            if (puzzle.IsValidSudoku(cell))
             {
                 return cell == 80 || CreateSolvedPuzzle(puzzle, cancellationToken, cell + 1);
             }
