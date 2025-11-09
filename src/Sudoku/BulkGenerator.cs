@@ -38,14 +38,14 @@ public static class BulkGenerator
                         continue;
                     }
 
-                    callback(result.Puzzle);
-
-                    if (Interlocked.Increment(ref count) >= quantity)
+                    if (Interlocked.Increment(ref count) > quantity)
                     {
                         cancellationTokenSource.Cancel();
                         
                         break;
                     }
+
+                    callback(result.Puzzle);
                 }
             }, CancellationToken.None);
         }
