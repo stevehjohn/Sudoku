@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Sudoku.Extensions;
 
 namespace Sudoku;
@@ -12,6 +13,7 @@ public struct Candidates
     {
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Remove(int index, int value)
     {
         if (value == 0)
@@ -31,6 +33,7 @@ public struct Candidates
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Add(int index, int value)
     {
         if (value == 0)
