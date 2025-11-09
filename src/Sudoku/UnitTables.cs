@@ -8,7 +8,7 @@ public static class UnitTables
 
     static UnitTables()
     {
-        Units = new byte[27 * 9 * 2 + 9 + 81 * 20];
+        Units = new byte[27 * 9 * 2 + 9 + 81 * 20 + 81 * 3];
 
         var i = 0;
 
@@ -78,6 +78,17 @@ public static class UnitTables
                 Units[495 + i * 20 + j] = peers[j];
             }
         }
+
+        for (i = 0; i < 81; i++)
+        {
+            var offset = 2_115 + i * 3;
+            
+            Units[offset + 0] = CellColumn(i);
+
+            Units[offset + 1] = CellRow(i);
+
+            Units[offset + 2] = CellBox(i);
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -97,6 +108,8 @@ public static class UnitTables
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte CellBox(int index) => Units[405 + index];
+
+    public static ReadOnlySpan<byte> CellUnits(int index) => Units.AsSpan(2_115 + index * 3, 3);
 
     public static ReadOnlySpan<byte> BoxStartIndices => Units.AsSpan(486, 9);
 

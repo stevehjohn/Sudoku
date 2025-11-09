@@ -233,11 +233,13 @@ public class Solver
         {
             if (_workingCopy[i] == 0)
             {
-                var x = UnitTables.CellColumn(i);
+                var cellUnits = UnitTables.CellUnits(i);
 
-                var y = UnitTables.CellRow(i);
+                var x = cellUnits[0];
 
-                var box = UnitTables.CellBox(i);
+                var y = cellUnits[1];
+
+                var box = cellUnits[2];
 
                 _cellCandidates[i] = ~(_rowMask[y] | _colMask[x] | _boxMask[box]) & 0x1FF;
 
@@ -284,12 +286,14 @@ public class Solver
 
         var oldValue = _cellCandidates[cell];
 
-        var x = UnitTables.CellColumn(cell);
+        var cellUnits = UnitTables.CellUnits(cell);
 
-        var y = UnitTables.CellRow(cell);
+        var x = cellUnits[0];
 
-        var box = UnitTables.CellBox(cell);
+        var y = cellUnits[1];
 
+        var box = cellUnits[2];
+        
         _cellCandidates[cell] = ~(_rowMask[y] | _colMask[x] | _boxMask[box]) & 0x1FF;
 
         if (oldValue > 0)
