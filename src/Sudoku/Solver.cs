@@ -383,7 +383,7 @@ public class Solver
 
             var twoMaskColumn = 0;
 
-            var y9 = (y << 3) + y;
+            var y9 = y.MultiplyByNine();
 
             for (var x = 0; x < 9; x++)
             {
@@ -391,9 +391,9 @@ public class Solver
 
                 oneMaskRow |= _cellCandidates[y9 + x];
 
-                twoMaskColumn |= oneMaskColumn & _cellCandidates[(x << 3) + x + y];
+                twoMaskColumn |= oneMaskColumn & _cellCandidates[x.MultiplyByNine() + y];
 
-                oneMaskColumn |= _cellCandidates[(x << 3) + x + y];
+                oneMaskColumn |= _cellCandidates[x.MultiplyByNine() + y];
             }
 
             var onceRow = oneMaskRow & ~twoMaskRow;
@@ -424,16 +424,16 @@ public class Solver
 
             for (var x = 0; x < 9; x++)
             {
-                if ((_cellCandidates[(x << 3) + x + y] & onceColumn) <= 0)
+                if ((_cellCandidates[x.MultiplyByNine() + y] & onceColumn) <= 0)
                 {
                     continue;
                 }
 
-                _cellCandidates[(x << 3) + x + y] = onceColumn;
+                _cellCandidates[x.MultiplyByNine() + y] = onceColumn;
 
                 _moveType = MoveType.HiddenSingle;
 
-                return (x << 3) + x + y;
+                return x.MultiplyByNine() + y;
             }
         }
 
@@ -564,7 +564,7 @@ public class Solver
 
     private bool CreateNextSteps(((int X, int Y) Position, int Values, int ValueCount) move)
     {
-        var cell = move.Position.X + (move.Position.Y << 3) + move.Position.Y;
+        var cell = move.Position.X + move.Position.Y.MultiplyByNine();
 
         var box = UnitTables.CellBox(cell);
 

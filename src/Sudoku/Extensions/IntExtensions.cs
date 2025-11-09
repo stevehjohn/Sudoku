@@ -1,4 +1,5 @@
 using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace Sudoku.Extensions;
 
@@ -18,5 +19,11 @@ public static class IntExtensions
         }
 
         return result;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int MultiplyByNine(this int value)
+    {
+        return (value << 3) + value;
     }
 }

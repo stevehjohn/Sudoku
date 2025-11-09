@@ -1,3 +1,5 @@
+using Sudoku.Extensions;
+
 namespace Sudoku;
 
 public struct Candidates
@@ -19,13 +21,13 @@ public struct Candidates
 
         if (index < 5)
         {
-            _high &= ~(1ul << ((index << 3) + index + value - 1));
+            _high &= ~(1ul << (index.MultiplyByNine() + value - 1));
         }
         else
         {
             index -= 5;
             
-            _low &= ~(1ul << ((index << 3) + index + value - 1));
+            _low &= ~(1ul << (index.MultiplyByNine() + value - 1));
         }
     }
 
@@ -38,13 +40,13 @@ public struct Candidates
 
         if (index < 5)
         {
-            _high |= 1ul << ((index << 3) + index + value - 1);
+            _high |= 1ul << (index.MultiplyByNine() + value - 1);
         }
         else
         {
             index -= 5;
             
-            _low |= 1ul << ((index << 3) + index + value - 1);
+            _low |= 1ul << (index.MultiplyByNine() + value - 1);
         }
     }
 
@@ -54,12 +56,12 @@ public struct Candidates
         {
             if (index < 5)
             {
-                return (int) (_high >> (index << 3) + index) & 0b1_1111_1111;
+                return (int) (_high >> index.MultiplyByNine()) & 0b1_1111_1111;
             }
 
             index -= 5;
             
-            return (int) (_low >> ((index << 3) + index)) & 0b1_1111_1111;
+            return (int) (_low >> (index.MultiplyByNine())) & 0b1_1111_1111;
         }
     }
 }
