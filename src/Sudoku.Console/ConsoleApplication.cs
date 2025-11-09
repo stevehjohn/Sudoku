@@ -301,6 +301,8 @@ public class ConsoleApplication
 
             stopwatch.Stop();
         }
+        
+        System.Console.WriteLine();
 
         Out($"\n Puzzles have been written to {filename}.");
 
@@ -347,7 +349,13 @@ public class ConsoleApplication
             length++;
         }
         
-        Out($"{DateTime.Now:MM/dd HH:mm} ({_count.ToString().PadLeft(length)}/{_target}): {flattenedPuzzle}");
+        Out($"{DateTime.Now:ddd d MMM HH:mm:ss} ({_count.ToString().PadLeft(length)}/{_target}):");
+        
+        System.Console.WriteLine();
+        
+        Out(flattenedPuzzle);
+
+        System.Console.CursorTop -= 3;
     }
 
     private static void RunTestSuite()
