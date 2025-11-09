@@ -247,7 +247,10 @@ public class Generator
 
         puzzle[cell] = 0;
 
-        _candidates[cell] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        for (var i = 0; i < 9; i++)
+        {
+            _candidates[cell][i] = i + 1;
+        }
 
         _candidateCounts[cell] = 9;
 
