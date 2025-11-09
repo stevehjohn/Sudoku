@@ -355,7 +355,10 @@ public class ConsoleApplication
         
         Out(flattenedPuzzle);
 
-        System.Console.CursorTop -= 3;
+        if (_target > 1)
+        {
+            System.Console.CursorTop -= 3;
+        }
     }
 
     private static void RunTestSuite()
