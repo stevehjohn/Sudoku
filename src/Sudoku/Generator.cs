@@ -263,9 +263,9 @@ public class Generator
             
             _unitCandidates.Row.Add(row, cellValue);
             
-            _unitCandidates.Column.Add(row, cellValue);
+            _unitCandidates.Column.Add(column, cellValue);
             
-            _unitCandidates.Box.Add(row, cellValue);
+            _unitCandidates.Box.Add(box, cellValue);
 
             if (cancellationToken.IsCancellationRequested)
             {
@@ -283,9 +283,9 @@ public class Generator
             
             _unitCandidates.Row.Remove(row, cellValue);
             
-            _unitCandidates.Column.Remove(row, cellValue);
+            _unitCandidates.Column.Remove(column, cellValue);
             
-            _unitCandidates.Box.Remove(row, cellValue);
+            _unitCandidates.Box.Remove(box, cellValue);
 
             _failed[cellIndex] = _failedStamp;
 
