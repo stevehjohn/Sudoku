@@ -237,11 +237,15 @@ public class Generator
                 continue;
             }
 
+            var swapped = false;
+            
             if (puzzle[80 - cellIndex] == 0 && i < 80)
             {
                 (_filledCells[i], _filledCells[80]) = (_filledCells[80], _filledCells[i]);
 
                 cellIndex = _filledCells[i];
+
+                swapped = true;
             }
 
             var cellValue = puzzle[cellIndex];
@@ -259,6 +263,13 @@ public class Generator
                 (_unitCandidates.Box[box] | bit) == 0x1FF)
             {
                 continue;
+            }
+
+            if (_unitCandidates.Row.Count(row) == 1 && ! swapped)
+            {
+                (_filledCells[i], _filledCells[80]) = (_filledCells[80], _filledCells[i]);
+
+                cellIndex = _filledCells[i];
             }
 
             puzzle[cellIndex] = 0;

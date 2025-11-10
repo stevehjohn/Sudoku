@@ -54,6 +54,8 @@ public struct Candidates
         }
     }
 
+    public int Count(int index) => BitOperations.PopCount((uint) this[index]);
+
     public int this[int index]
     {
         get
