@@ -4,6 +4,8 @@ namespace Sudoku;
 
 public static class BulkGenerator
 {
+    private const int SolvedPuzzleReuseCount = 100;
+    
     public static void Generate(int quantity, int cluesToLeave, Action<int[]> callback)
     {
         var workers = Math.Max(Environment.ProcessorCount / 2, 1);
@@ -24,7 +26,7 @@ public static class BulkGenerator
 
             tasks[i] = Task.Run(() =>
             {
-                var puzzleUsages = 0;
+                var puzzleUsages = -1;
 
                 var puzzle = new int[81];
                 
@@ -37,7 +39,7 @@ public static class BulkGenerator
                         break;
                     }
 
-                    if (puzzleUsages is 0 or > 100)
+                    if (puzzleUsages is < 0 or > SolvedPuzzleReuseCount)
                     {
                         var solved = false;
                         
@@ -45,6 +47,8 @@ public static class BulkGenerator
                         {
                             solved = generator.CreateSolvedPuzzle(puzzle, cancellationToken);
                         }
+
+                        puzzleUsages = 0;
                     }
 
                     var result = generator.Generate(puzzle, cluesToLeave, cancellationToken);
