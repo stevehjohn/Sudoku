@@ -148,16 +148,6 @@ public class Solver
 
         _score = 81;
 
-        for (var i = 0; i < 81; i++)
-        {
-            if (puzzle[i] != 0)
-            {
-                _score--;
-            }
-
-            _workingCopy[i] = puzzle[i];
-        }
-
         Array.Clear(_rowMask, 0, _rowMask.Length);
 
         Array.Clear(_columnMask, 0, _columnMask.Length);
@@ -167,6 +157,13 @@ public class Solver
         for (var i = 0; i < 81; i++)
         {
             var value = puzzle[i];
+
+            if (puzzle[i] != 0)
+            {
+                _score--;
+            }
+
+            _workingCopy[i] = puzzle[i];
 
             if (value == 0)
             {
