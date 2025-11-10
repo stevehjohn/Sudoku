@@ -124,8 +124,6 @@ public class Solver
 
         _knownSolution = knownSolution;
 
-        GetCellCandidates();
-
         if (_candidateCount == 0)
         {
             return false;
@@ -186,6 +184,8 @@ public class Solver
 
             _boxMask[box] |= bit;
         }
+
+        GetCellCandidates();
     }
 
     private bool SolveStep()
