@@ -228,7 +228,9 @@ public class Generator
 
         var backtracks = 0;
 
-        for (var i = start; i < _filledCells.Count; i++)
+        var filledCount = _filledCells.Count;
+
+        for (var i = start; i < filledCount; i++)
         {
             var cellIndex = _filledCells[i];
 
@@ -237,9 +239,9 @@ public class Generator
                 continue;
             }
 
-            if ((puzzle[80 - cellIndex] == 0 || _failed[cellIndex] == _failedStamp) && i < 80)
+            if ((puzzle[80 - cellIndex] == 0 || _failed[80 - cellIndex] == _failedStamp) && i < 80)
             {
-                (_filledCells[i], _filledCells[80]) = (_filledCells[80], _filledCells[i]);
+                (_filledCells[i], _filledCells[filledCount - 1]) = (_filledCells[filledCount - 1], _filledCells[i]);
 
                 cellIndex = _filledCells[i];
             }
