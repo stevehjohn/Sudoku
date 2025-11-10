@@ -48,15 +48,15 @@ public class Generator
     public (bool Succeeded, int[] Puzzle) Generate(int[] solvedPuzzle, int cluesToLeave, CancellationToken cancellationToken, bool useBudget = true)
     {
         var puzzle = new int[81];
-        
+
         Array.Copy(solvedPuzzle, puzzle, 81);
-        
+
         Array.Copy(solvedPuzzle, _originalPuzzle, 81);
-        
+
         _unitCandidates.Row.Clear();
-        
+
         _unitCandidates.Column.Clear();
-        
+
         _unitCandidates.Box.Clear();
 
         var budgetSeconds = 0;
@@ -89,7 +89,7 @@ public class Generator
                 {
                     return (true, puzzle);
                 }
-                
+
                 Array.Copy(_originalPuzzle, puzzle, 81);
             }
         }
@@ -123,12 +123,12 @@ public class Generator
         var puzzle = new int[81];
 
         var solved = false;
-                        
-        while (!  solved)
+
+        while (! solved)
         {
             solved = CreateSolvedPuzzle(puzzle, CancellationToken.None);
         }
-        
+
         return puzzle;
     }
 
@@ -138,7 +138,7 @@ public class Generator
         {
             puzzle[i] = 0;
         }
-        
+
         InitialiseCandidates();
 
         return CreateSolvedPuzzle(puzzle, 0, cancellationToken);
@@ -231,7 +231,7 @@ public class Generator
         for (var i = start; i < _filledCells.Count; i++)
         {
             var cellIndex = _filledCells[i];
-            
+
             if (_failed[cellIndex] == _failedStamp)
             {
                 continue;
@@ -252,19 +252,19 @@ public class Generator
 
             var box = UnitTables.CellBox(cellIndex);
 
-            if (WouldEmptyUnit(puzzle, UnitTables.RowCells(row), cellIndex)
-                || WouldEmptyUnit(puzzle, UnitTables.ColumnCells(column), cellIndex)
-                || WouldEmptyUnit(puzzle, UnitTables.BoxCells(box), cellIndex))
+            var bit = 1 << (cellValue - 1);
+
+            if ((_unitCandidates.Row[row] | bit) == 0x1FF ||
+                (_unitCandidates.Column[column] | bit) == 0x1FF ||
+                (_unitCandidates.Box[box] | bit) == 0x1FF)
             {
                 continue;
             }
 
-            puzzle[cellIndex] = 0;
-            
             _unitCandidates.Row.Add(row, cellValue);
-            
+
             _unitCandidates.Column.Add(column, cellValue);
-            
+
             _unitCandidates.Box.Add(box, cellValue);
 
             if (cancellationToken.IsCancellationRequested)
@@ -280,11 +280,11 @@ public class Generator
             }
 
             puzzle[cellIndex] = cellValue;
-            
+
             _unitCandidates.Row.Remove(row, cellValue);
-            
+
             _unitCandidates.Column.Remove(column, cellValue);
-            
+
             _unitCandidates.Box.Remove(box, cellValue);
 
             _failed[cellIndex] = _failedStamp;
@@ -298,21 +298,6 @@ public class Generator
         }
 
         return false;
-    }
-
-    private static bool WouldEmptyUnit(int[] puzzle, ReadOnlySpan<byte> unit, int removedCell)
-    {
-        for (var i = 0; i < 9; i++)
-        {
-            var cell = unit[i];
-
-            if (cell != removedCell && puzzle[cell] > 0)
-            {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     private void ShuffleFilledCells()
