@@ -39,8 +39,11 @@ public static class BulkGenerator
 
                     if (puzzleUsages == 0 || puzzleUsages > 100)
                     {
-                        while (! generator.CreateSolvedPuzzle(puzzle, cancellationToken) && ! cancellationToken.IsCancellationRequested)
+                        var solved = false;
+                        
+                        while (!  solved && ! cancellationToken.IsCancellationRequested)
                         {
+                            solved = generator.CreateSolvedPuzzle(puzzle, cancellationToken);
                         }
                     }
 

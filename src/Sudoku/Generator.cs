@@ -102,8 +102,11 @@ public class Generator
     {
         var puzzle = new int[81];
 
-        while (! CreateSolvedPuzzle(puzzle, CancellationToken.None))
+        var solved = false;
+                        
+        while (!  solved)
         {
+            solved = CreateSolvedPuzzle(puzzle, CancellationToken.None);
         }
         
         return puzzle;
@@ -118,7 +121,7 @@ public class Generator
         
         InitialiseCandidates();
 
-        return CreateSolvedPuzzle(puzzle, cancellationToken, 0);
+        return CreateSolvedPuzzle(puzzle, 0, cancellationToken);
     }
 
     private void InitialiseCandidates()
@@ -131,7 +134,7 @@ public class Generator
         }
     }
 
-    private bool CreateSolvedPuzzle(Span<int> puzzle, CancellationToken cancellationToken, int cell)
+    private bool CreateSolvedPuzzle(Span<int> puzzle, int cell, CancellationToken cancellationToken)
     {
         if (cancellationToken.IsCancellationRequested)
         {
@@ -152,7 +155,7 @@ public class Generator
 
             if (puzzle.IsValidSudoku(cell))
             {
-                return cell == 80 || CreateSolvedPuzzle(puzzle, cancellationToken, cell + 1);
+                return cell == 80 || CreateSolvedPuzzle(puzzle, cell + 1, cancellationToken);
             }
         }
 
@@ -165,7 +168,7 @@ public class Generator
 
         _candidateCounts[cell] = 9;
 
-        return CreateSolvedPuzzle(puzzle, cancellationToken, cell - 1);
+        return CreateSolvedPuzzle(puzzle, cell - 1, cancellationToken);
     }
 
     private bool RemoveCells(int[] puzzle, int targetClues, int cellsToRemove, int budgetSeconds, CancellationToken cancellationToken)
