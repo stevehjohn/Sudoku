@@ -97,6 +97,21 @@ Output:
 | 30    | 600,000   |
 | 25    | 450,000   |
 
+### Category Timings
+
+| Clues             | puzzles/s |
+|-------------------|-----------|
+| Benchmarks        | 11,000    |
+| Easy              | 550,000   |
+| Medium            | 600,000   |
+| Hard              | 400,000   |
+| Diabolical        | 300,000   |
+| Top 50k Hardest   | 100,000   |
+| Minimum Clues     | 60,000    |
+| Sample 2 million  | 15,000    |
+
+World's hardest solved in 1,278μs.
+
 ### Generating Sudokus
 
 ```csharp
