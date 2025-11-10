@@ -8,7 +8,7 @@ public static class UnitTables
 
     static UnitTables()
     {
-        Units = new byte[27 * 9 * 2 + 9 + 81 * 20 + 81 * 3];
+        Units = new byte[27 * 9 * 2 + 81 * 20 + 81 * 3];
 
         var i = 0;
 
@@ -56,11 +56,6 @@ public static class UnitTables
             Units[405 + i] = (byte) (y / 3 * 3 + x / 3);
         }
 
-        for (i = 0; i < 9; i++)
-        {
-            Units[486 + i] = (byte) (3 * (i / 3) * 9 + 3 * (i % 3));
-        }
-
         var peers = new byte[20];
             
         for (i = 0; i < 81; i++)
@@ -75,13 +70,13 @@ public static class UnitTables
 
             for (var j = 0; j < 20; j++)
             {
-                Units[495 + i * 20 + j] = peers[j];
+                Units[486 + i * 20 + j] = peers[j];
             }
         }
 
         for (i = 0; i < 81; i++)
         {
-            var offset = 2_115 + i * 3;
+            var offset = 2_106 + i * 3;
             
             Units[offset + 0] = CellColumn(i);
 
@@ -109,12 +104,10 @@ public static class UnitTables
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte CellBox(int index) => Units[405 + index];
 
-    public static ReadOnlySpan<byte> CellUnits(int index) => Units.AsSpan(2_115 + index * 3, 3);
-
-    public static ReadOnlySpan<byte> BoxStartIndices => Units.AsSpan(486, 9);
+    public static ReadOnlySpan<byte> CellUnits(int index) => Units.AsSpan(2_106 + index * 3, 3);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ReadOnlySpan<byte> Peers(int index) => Units.AsSpan(495 + index * 20, 20);
+    public static ReadOnlySpan<byte> Peers(int index) => Units.AsSpan(486 + index * 20, 20);
 
     private static void AddPeers(int cell, byte[] peers, ReadOnlySpan<byte> unit)
     {
