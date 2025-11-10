@@ -229,9 +229,11 @@ public class Generator
                 continue;
             }
 
-            if (puzzle[80 - cellIndex] == 0)
+            if (puzzle[80 - cellIndex] == 0 && i < 80)
             {
                 (_filledCells[i], _filledCells[80]) = (_filledCells[80], _filledCells[i]);
+
+                cellIndex = _filledCells[i];
             }
 
             var cellValue = puzzle[cellIndex];
