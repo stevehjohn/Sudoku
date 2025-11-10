@@ -253,10 +253,10 @@ public class Generator
             var box = UnitTables.CellBox(cellIndex);
 
             var bit = 1 << (cellValue - 1);
-
-            if (_unitCandidates.Row[row] == bit
-                || _unitCandidates.Column[column] == bit
-                || _unitCandidates.Box[box] == bit)
+            
+            if ((_unitCandidates.Row[row] | bit) == 0x1FF ||
+                (_unitCandidates.Column[column] | bit) == 0x1FF ||
+                (_unitCandidates.Box[box] | bit) == 0x1FF)
             {
                 continue;
             }
