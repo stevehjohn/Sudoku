@@ -21,6 +21,8 @@ public class Generator
 
     private readonly int[] _originalPuzzle = new int[81];
 
+    private (Candidates Row, Candidates Column, Candidates Box) _unitCandidates = (new Candidates(), new Candidates(), new Candidates());
+
     public Generator()
     {
         _random = new Random();
@@ -50,6 +52,12 @@ public class Generator
         Array.Copy(solvedPuzzle, puzzle, 81);
         
         Array.Copy(solvedPuzzle, _originalPuzzle, 81);
+        
+        _unitCandidates.Row.Clear();
+        
+        _unitCandidates.Column.Clear();
+        
+        _unitCandidates.Box.Clear();
 
         var budgetSeconds = 0;
 

@@ -12,6 +12,13 @@ public struct Candidates
     {
     }
 
+    public void Clear()
+    {
+        _high = 0;
+
+        _low = 0;
+    }
+
     public void Remove(int index, int value)
     {
         if (value == 0)
@@ -26,6 +33,23 @@ public struct Candidates
         else
         {
             _low &= ~(1ul << ((index - 5).MultiplyByNine() + value - 1));
+        }
+    }
+
+    public void Add(int index, int value)
+    {
+        if (value == 0)
+        {
+            return;
+        }
+
+        if (index < 5)
+        {
+            _high |= 1ul << (index.MultiplyByNine() + value - 1);
+        }
+        else
+        {
+            _low |= 1ul << ((index - 5).MultiplyByNine() + value - 1);
         }
     }
 
