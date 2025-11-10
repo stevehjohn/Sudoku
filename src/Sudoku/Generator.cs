@@ -31,6 +31,18 @@ public class Generator
         _random = new Random(seed);
     }
 
+    public (bool Succeeded, int[] Puzzle) Generate(int cluesToLeave)
+    {
+        return Generate(cluesToLeave, CancellationToken.None);
+    }
+
+    public (bool Succeeded, int[] Puzzle) Generate(int cluesToLeave, CancellationToken cancellationToken)
+    {
+        var puzzle = CreateSolvedPuzzle();
+
+        return Generate(puzzle, cluesToLeave, cancellationToken);
+    }
+
     public (bool Succeeded, int[] Puzzle) Generate(int[] solvedPuzzle, int cluesToLeave, CancellationToken cancellationToken, bool useBudget = true)
     {
         var puzzle = new int[81];
