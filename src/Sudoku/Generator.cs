@@ -281,7 +281,7 @@ public class Generator
                 return false;
             }
 
-            var unique = _solver.HasUniqueSolution(puzzle, _originalPuzzle);
+            var unique = i < 9 || _solver.HasUniqueSolution(puzzle, _originalPuzzle);
 
             if (unique && RemoveCell(puzzle, targetClues, cellsToRemove - 1, stopwatch, budgetTicks, i + 1, cancellationToken))
             {
