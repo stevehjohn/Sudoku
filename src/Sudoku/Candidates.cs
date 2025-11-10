@@ -1,3 +1,4 @@
+using System.Numerics;
 using Sudoku.Extensions;
 
 namespace Sudoku;
@@ -53,6 +54,11 @@ public struct Candidates
         }
     }
 
+    public int Count(int index)
+    {
+        return BitOperations.PopCount((uint) this[index]);
+    }
+
     public int this[int index]
     {
         get
@@ -69,7 +75,7 @@ public struct Candidates
             if (index < 5)
             {
                 index = index.MultiplyByNine();
-                
+
                 var mask = ~(0b1_1111_1111ul << index);
 
                 _high = (_high & mask) | (((ulong) value & 0b1_1111_1111) << index);
@@ -78,7 +84,7 @@ public struct Candidates
             }
 
             index = (index - 5).MultiplyByNine();
-            
+
             var maskLow = ~(0b1_1111_1111ul << index);
 
             _low = (_low & maskLow) | (((ulong) value & 0b1_1111_1111) << index);
