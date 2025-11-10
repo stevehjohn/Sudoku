@@ -274,11 +274,9 @@ public class Solver
         }
     }
 
-    private void UpdateCellAndPeerCandidates(int updatedCell)
+    private void UpdateCellAndPeerCandidates(int updatedCell, ReadOnlySpan<byte> peers)
     {
         UpdateCellCandidates(updatedCell);
-
-        var peers = UnitTables.Peers(updatedCell);
 
         for (var i = 0; i < peers.Length; i++)
         {
@@ -607,7 +605,9 @@ public class Solver
 
             _boxMask[box] |= bit;
 
-            UpdateCellAndPeerCandidates(cell);
+            var peers = UnitTables.Peers(cell);
+
+            UpdateCellAndPeerCandidates(cell, peers);
 
             _score--;
 
@@ -690,7 +690,7 @@ public class Solver
 
             _boxMask[box] &= (ushort) ~bit;
 
-            UpdateCellAndPeerCandidates(cell);
+            UpdateCellAndPeerCandidates(cell, peers);
 
             if (_historyType != HistoryType.None)
             {
