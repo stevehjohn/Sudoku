@@ -244,6 +244,11 @@ public class Generator
                 (_filledCells[i], _filledCells[filledCount - 1]) = (_filledCells[filledCount - 1], _filledCells[i]);
 
                 cellIndex = _filledCells[i];
+
+                if (_failed[cellIndex] == _failedStamp)
+                {
+                    continue;
+                }
             }
 
             var cellValue = puzzle[cellIndex];
