@@ -339,18 +339,15 @@ public class Solver
 
             var twoMask = 0;
 
-            var start = UnitTables.BoxStartIndices[i];
+            var cells = UnitTables.BoxCells(i);
 
-            var end = start + 27;
-
-            for (var y = start; y < end; y += 9)
+            for (var cellIndex = 0; cellIndex < 9; cellIndex++)
             {
-                for (var x = 0; x < 3; x++)
-                {
-                    twoMask |= oneMask & _cellCandidates[y + x];
+                var cell = cells[cellIndex];
+                
+                twoMask |= oneMask & _cellCandidates[cell];
 
-                    oneMask |= _cellCandidates[y + x];
-                }
+                oneMask |= _cellCandidates[cell];
             }
 
             var once = oneMask & ~twoMask;
@@ -360,21 +357,20 @@ public class Solver
                 continue;
             }
 
-            for (var y = start; y < end; y += 9)
+            for (var cellIndex = 0; cellIndex < 9; cellIndex++)
             {
-                for (var x = 0; x < 3; x++)
+                var cell = cells[cellIndex];
+                
+                if ((_cellCandidates[cell] & once) <= 0)
                 {
-                    if ((_cellCandidates[y + x] & once) <= 0)
-                    {
-                        continue;
-                    }
-
-                    _cellCandidates[y + x] = once;
-
-                    _moveType = MoveType.HiddenSingle;
-
-                    return y + x;
+                    continue;
                 }
+
+                _cellCandidates[cell] = once;
+
+                _moveType = MoveType.HiddenSingle;
+
+                return cell;
             }
         }
 
