@@ -39,15 +39,8 @@ public static class BulkGenerator
 
                     if (puzzleUsages == 0 || puzzleUsages > 100)
                     {
-                        generator.InitialiseCandidates();
-                        
-                        Array.Fill(puzzle, 0);
-                        
                         while (! generator.CreateSolvedPuzzle(puzzle, cancellationToken) && ! cancellationToken.IsCancellationRequested)
                         {
-                            generator.InitialiseCandidates();
-                            
-                            Array.Fill(puzzle, 0);
                         }
                     }
 

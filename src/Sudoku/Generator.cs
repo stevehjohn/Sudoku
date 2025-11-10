@@ -98,7 +98,29 @@ public class Generator
         return (succeeded, puzzle);
     }
 
-    public bool CreateSolvedPuzzle(Span<int> puzzle, CancellationToken cancellationToken, int cell = 0)
+    public bool CreateSolvedPuzzle(Span<int> puzzle, CancellationToken cancellationToken)
+    {
+        for (var i = 0; i < 81; i++)
+        {
+            puzzle[i] = 0;
+        }
+        
+        InitialiseCandidates();
+
+        return CreateSolvedPuzzle(puzzle, cancellationToken, 0);
+    }
+
+    private void InitialiseCandidates()
+    {
+        for (var i = 0; i < 81; i++)
+        {
+            _candidates[i] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+            _candidateCounts[i] = 9;
+        }
+    }
+
+    private bool CreateSolvedPuzzle(Span<int> puzzle, CancellationToken cancellationToken, int cell)
     {
         if (cancellationToken.IsCancellationRequested)
         {
@@ -249,16 +271,6 @@ public class Generator
             var right = left + _random.Next(count - left);
 
             (_filledCells[left], _filledCells[right]) = (_filledCells[right], _filledCells[left]);
-        }
-    }
-
-    public void InitialiseCandidates()
-    {
-        for (var i = 0; i < 81; i++)
-        {
-            _candidates[i] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
-            _candidateCounts[i] = 9;
         }
     }
 }
