@@ -184,7 +184,7 @@ public class Generator
 
             backtracks++;
 
-            if ((targetClues < 24 && backtracks > 3) || cancellationToken.IsCancellationRequested)
+            if ((targetClues < 24 && backtracks > 5) || cancellationToken.IsCancellationRequested)
             {
                 return false;
             }
