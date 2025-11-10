@@ -24,6 +24,10 @@ public static class BulkGenerator
 
             tasks[i] = Task.Run(() =>
             {
+                var puzzleUsages = 0;
+
+                var puzzle = new int[81];
+                
                 while (! cancellationToken.IsCancellationRequested)
                 {
                     if (Volatile.Read(ref count) >= quantity)
@@ -33,7 +37,23 @@ public static class BulkGenerator
                         break;
                     }
 
-                    var result = generator.Generate(cluesToLeave, cancellationToken);
+                    if (puzzleUsages == 0 || puzzleUsages > 100_000)
+                    {
+                        generator.InitialiseCandidates();
+                        
+                        Array.Fill(puzzle, 0);
+                        
+                        while (! generator.CreateSolvedPuzzle(puzzle, cancellationToken) && ! cancellationToken.IsCancellationRequested)
+                        {
+                            generator.InitialiseCandidates();
+                            
+                            Array.Fill(puzzle, 0);
+                        }
+                    }
+
+                    var result = generator.Generate(puzzle, cluesToLeave, cancellationToken);
+
+                    puzzleUsages++;
 
                     if (! result.Succeeded || cancellationToken.IsCancellationRequested)
                     {
