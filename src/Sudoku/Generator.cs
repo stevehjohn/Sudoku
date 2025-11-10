@@ -260,6 +260,12 @@ public class Generator
             }
 
             puzzle[cellIndex] = 0;
+            
+            _unitCandidates.Row.Add(row, cellValue);
+            
+            _unitCandidates.Column.Add(row, cellValue);
+            
+            _unitCandidates.Box.Add(row, cellValue);
 
             if (cancellationToken.IsCancellationRequested)
             {
@@ -274,6 +280,12 @@ public class Generator
             }
 
             puzzle[cellIndex] = cellValue;
+            
+            _unitCandidates.Row.Remove(row, cellValue);
+            
+            _unitCandidates.Column.Remove(row, cellValue);
+            
+            _unitCandidates.Box.Remove(row, cellValue);
 
             _failed[cellIndex] = _failedStamp;
 
