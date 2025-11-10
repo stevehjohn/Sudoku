@@ -4,8 +4,6 @@ namespace Sudoku;
 
 public static class BulkGenerator
 {
-    private const int SolvedPuzzleReuseCount = 100;
-    
     public static void Generate(int quantity, int cluesToLeave, Action<int[]> callback)
     {
         var workers = Math.Max(Environment.ProcessorCount / 2, 1);
@@ -19,7 +17,14 @@ public static class BulkGenerator
         var tasks = new Task[workers];
 
         var callbackLock = new Lock();
-        
+
+        var solvedPuzzleReuseCount = cluesToLeave switch
+        {
+            < 20 => int.MaxValue,
+            < 25 => 1000,
+            _ => 1
+        };
+
         for (var i = 0; i < workers; i++)
         {
             var generator = new Generator();
@@ -29,21 +34,21 @@ public static class BulkGenerator
                 var puzzleUsages = -1;
 
                 var puzzle = new int[81];
-                
+
                 while (! cancellationToken.IsCancellationRequested)
                 {
                     if (Volatile.Read(ref count) >= quantity)
                     {
                         cancellationTokenSource.Cancel();
-                        
+
                         break;
                     }
 
-                    if (puzzleUsages is < 0 or > SolvedPuzzleReuseCount)
+                    if (puzzleUsages < 0 || puzzleUsages > solvedPuzzleReuseCount)
                     {
                         var solved = false;
-                        
-                        while (!  solved && ! cancellationToken.IsCancellationRequested)
+
+                        while (! solved && ! cancellationToken.IsCancellationRequested)
                         {
                             solved = generator.CreateSolvedPuzzle(puzzle, cancellationToken);
                         }
@@ -63,7 +68,7 @@ public static class BulkGenerator
                     if (Interlocked.Increment(ref count) > quantity)
                     {
                         cancellationTokenSource.Cancel();
-                        
+
                         break;
                     }
 
