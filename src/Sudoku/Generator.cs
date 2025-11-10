@@ -98,6 +98,17 @@ public class Generator
         return (succeeded, puzzle);
     }
 
+    public int[] CreateSolvedPuzzle()
+    {
+        var puzzle = new int[81];
+
+        while (! CreateSolvedPuzzle(puzzle, CancellationToken.None))
+        {
+        }
+        
+        return puzzle;
+    }
+
     public bool CreateSolvedPuzzle(Span<int> puzzle, CancellationToken cancellationToken)
     {
         for (var i = 0; i < 81; i++)
