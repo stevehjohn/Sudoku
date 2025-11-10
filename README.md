@@ -87,6 +87,16 @@ Output:
  Solved
 ```
 
+### Solver Timings
+
+| Clues | puzzles/s |
+|-------|-----------|
+| 17    | 100,000   |
+| 40    | 900,000   |
+| 37    | 850,000   |
+| 30    | 600,000   |
+| 25    | 450,000   |
+
 ### Generating Sudokus
 
 ```csharp
