@@ -237,15 +237,11 @@ public class Generator
                 continue;
             }
 
-            var swapped = false;
-            
             if (puzzle[80 - cellIndex] == 0 && i < 80)
             {
                 (_filledCells[i], _filledCells[80]) = (_filledCells[80], _filledCells[i]);
 
                 cellIndex = _filledCells[i];
-
-                swapped = true;
             }
 
             var cellValue = puzzle[cellIndex];
