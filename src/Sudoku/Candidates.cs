@@ -1,3 +1,5 @@
+using Sudoku.Extensions;
+
 namespace Sudoku;
 
 public struct Candidates
@@ -19,11 +21,11 @@ public struct Candidates
 
         if (index < 5)
         {
-            _high &= ~(1ul << (index * 9 + value - 1));
+            _high &= ~(1ul << (index.MultiplyByNine() + value - 1));
         }
         else
         {
-            _low &= ~(1ul << ((index - 5) * 9 + value - 1));
+            _low &= ~(1ul << ((index - 5).MultiplyByNine() + value - 1));
         }
     }
 
@@ -33,25 +35,29 @@ public struct Candidates
         {
             if (index < 5)
             {
-                return (int) (_high >> (index * 9)) & 0b1_1111_1111;
+                return (int) (_high >> index.MultiplyByNine()) & 0b1_1111_1111;
             }
 
-            return (int) (_low >> ((index - 5) * 9)) & 0b1_1111_1111;
+            return (int) (_low >> (index - 5).MultiplyByNine()) & 0b1_1111_1111;
         }
         set
         {
             if (index < 5)
             {
-                var mask = ~(0b1_1111_1111ul << (index * 9));
+                index = index.MultiplyByNine();
                 
-                _high = (_high & mask) | (((ulong) value & 0b1_1111_1111) << (index * 9));
-                
+                var mask = ~(0b1_1111_1111ul << index);
+
+                _high = (_high & mask) | (((ulong) value & 0b1_1111_1111) << index);
+
                 return;
             }
 
-            var maskLow = ~(0b1_1111_1111ul << ((index - 5) * 9));
+            index = (index - 5).MultiplyByNine();
             
-            _low = (_low & maskLow) | (((ulong) value & 0b1_1111_1111) << ((index - 5) * 9));
+            var maskLow = ~(0b1_1111_1111ul << index);
+
+            _low = (_low & maskLow) | (((ulong) value & 0b1_1111_1111) << index);
         }
     }
 }
