@@ -223,10 +223,15 @@ public class Generator
         for (var i = start; i < _filledCells.Count; i++)
         {
             var cellIndex = _filledCells[i];
-
+            
             if (_failed[cellIndex] == _failedStamp)
             {
                 continue;
+            }
+
+            if (puzzle[80 - cellIndex] == 0)
+            {
+                (_filledCells[i], _filledCells[80]) = (_filledCells[80], _filledCells[i]);
             }
 
             var cellValue = puzzle[cellIndex];
