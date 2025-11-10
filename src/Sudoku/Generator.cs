@@ -265,13 +265,6 @@ public class Generator
                 continue;
             }
 
-            if (_unitCandidates.Row.Count(row) == 1 && ! swapped)
-            {
-                (_filledCells[i], _filledCells[80]) = (_filledCells[80], _filledCells[i]);
-
-                cellIndex = _filledCells[i];
-            }
-
             puzzle[cellIndex] = 0;
 
             _unitCandidates.Row.Add(row, cellValue);
