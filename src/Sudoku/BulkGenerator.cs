@@ -37,7 +37,7 @@ public static class BulkGenerator
                         break;
                     }
 
-                    if (puzzleUsages == 0 || puzzleUsages > 100_000)
+                    if (puzzleUsages == 0 || puzzleUsages > 100)
                     {
                         generator.InitialiseCandidates();
                         
