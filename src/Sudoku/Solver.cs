@@ -204,7 +204,7 @@ public class Solver
                 return CreateNextSteps((Position: (X: UnitTables.CellColumn(single), Y: UnitTables.CellRow(single)), Values: _cellCandidates[single], ValueCount: 1));
             }
 
-            var move = FindNakedSingle();
+            var move = FindLeastRemainingCandidates();
 
             if (move.ValueCount == 1)
             {
@@ -437,13 +437,13 @@ public class Solver
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private ((int X, int Y) Position, int Values, int ValueCount) FindNakedSingle()
+    private ((int X, int Y) Position, int Values, int ValueCount) FindLeastRemainingCandidates()
     {
         var position = (X: -1, Y: -1);
 
         var values = 0;
 
-        var valueCount = 0b11_1111_1111;
+        var valueCount = 10;
 
         for (var i = 0; i < 81; i++)
         {
