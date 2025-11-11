@@ -19,8 +19,6 @@ public class Generator
 
     private readonly int[] _originalPuzzle = new int[81];
 
-    private readonly int[] _cellCandidates = new int[81];
-
     private (Candidates Row, Candidates Column, Candidates Box) _unitCandidates = (new Candidates(), new Candidates(), new Candidates());
 
     private int _failedStamp;
@@ -153,8 +151,6 @@ public class Generator
             _candidates[i] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
             _candidateCounts[i] = 9;
-
-            _cellCandidates[i] = 0;
         }
     }
 
