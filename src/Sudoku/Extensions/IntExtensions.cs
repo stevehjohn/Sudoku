@@ -5,25 +5,28 @@ namespace Sudoku.Extensions;
 
 public static class IntExtensions
 {
-    public static List<int> BitsToCandidates(this int bits)
+    extension(int bits)
     {
-        var result = new List<int>();
-
-        while (bits > 0)
+        public List<int> BitsToCandidates()
         {
-            var value = BitOperations.TrailingZeroCount(bits) + 1;
+            var result = new List<int>();
 
-            bits &= bits - 1;
+            while (bits > 0)
+            {
+                var value = BitOperations.TrailingZeroCount(bits) + 1;
+
+                bits &= bits - 1;
             
-            result.Add(value);
+                result.Add(value);
+            }
+
+            return result;
         }
 
-        return result;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int MultiplyByNine(this int value)
-    {
-        return (value << 3) + value;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int MultiplyByNine()
+        {
+            return (bits << 3) + bits;
+        }
     }
 }

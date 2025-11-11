@@ -4,57 +4,60 @@ namespace Sudoku.Extensions;
 
 public static class IntArrayExtensions
 {
-    public static void DumpToConsole(this int[] array, int left = -1, int top = -1)
+    extension(int[] array)
     {
-        SetPosition(left, top, 0);
-        
-        Console.WriteLine("┌───────┬───────┬───────┐");
-
-        var line = 1;
-        
-        for (var y = 0; y < 9; y++)
+        public void DumpToConsole(int left = -1, int top = -1)
         {
-            SetPosition(left, top, line++);
-            
-            Console.Write("│");
+            SetPosition(left, top, 0);
+        
+            Console.WriteLine("┌───────┬───────┬───────┐");
 
-            for (var x = 0; x < 9; x++)
+            var line = 1;
+        
+            for (var y = 0; y < 9; y++)
             {
-                Console.Write(array[x + y * 9] == 0 ? "  " : $" {array[x + y * 9]}");
+                SetPosition(left, top, line++);
+            
+                Console.Write("│");
 
-                if (x is 2 or 5)
+                for (var x = 0; x < 9; x++)
                 {
-                    Console.Write(" │");
+                    Console.Write(array[x + y * 9] == 0 ? "  " : $" {array[x + y * 9]}");
+
+                    if (x is 2 or 5)
+                    {
+                        Console.Write(" │");
+                    }
                 }
-            }
 
-            Console.WriteLine(" │");
+                Console.WriteLine(" │");
 
-            if (y is not (2 or 5))
-            {
-                continue;
+                if (y is not (2 or 5))
+                {
+                    continue;
+                }
+            
+                SetPosition(left, top, line++);
+            
+                Console.WriteLine("├───────┼───────┼───────┤");
             }
-            
-            SetPosition(left, top, line++);
-            
-            Console.WriteLine("├───────┼───────┼───────┤");
-        }
         
-        SetPosition(left, top, line);
+            SetPosition(left, top, line);
 
-        Console.WriteLine("└───────┴───────┴───────┘");
-    }
-
-    public static string FlattenPuzzle(this int[] puzzle)
-    {
-        var builder = new StringBuilder();
-
-        for (var i = 0; i < puzzle.Length; i++)
-        {
-            builder.Append(puzzle[i] == 0 ? '.' : (char) ('0' + puzzle[i]));
+            Console.WriteLine("└───────┴───────┴───────┘");
         }
 
-        return builder.ToString();
+        public string FlattenPuzzle()
+        {
+            var builder = new StringBuilder();
+
+            for (var i = 0; i < array.Length; i++)
+            {
+                builder.Append(array[i] == 0 ? '.' : (char) ('0' + array[i]));
+            }
+
+            return builder.ToString();
+        }
     }
 
     private static void SetPosition(int left, int top, int y)
