@@ -78,7 +78,7 @@ public class Generator
         {
             while (! cancellationToken.IsCancellationRequested)
             {
-                if (RemoveCells(puzzle, 81 - cluesToLeave, 0, cancellationToken))
+                if (RemoveCells(puzzle, 81 - cluesToLeave, 0, cancellationToken) == RemoveResult.Success)
                 {
                     return (true, puzzle);
                 }
@@ -90,8 +90,17 @@ public class Generator
         {
             var attempts = 1;
 
-            while (! RemoveCells(puzzle, 81 - cluesToLeave, budgetSeconds, cancellationToken))
+            var result = RemoveResult.Failure;
+
+            while (result != RemoveResult.Success)
             {
+                result = RemoveCells(puzzle, 81 - cluesToLeave, budgetSeconds, cancellationToken);
+
+                if (result == RemoveResult.Failure)
+                {
+                    Array.Copy(_originalPuzzle, puzzle, 81);
+                }
+
                 if (cancellationToken.IsCancellationRequested)
                 {
                     succeeded = false;
@@ -147,7 +156,7 @@ public class Generator
         }
     }
 
-    private bool RemoveCells(int[] puzzle, int cellsToRemove, int budgetSeconds, CancellationToken cancellationToken)
+    private RemoveResult RemoveCells(int[] puzzle, int cellsToRemove, int budgetSeconds, CancellationToken cancellationToken)
     {
         CreateAndShuffleFilledCells();
 
@@ -158,21 +167,21 @@ public class Generator
         return RemoveCell(puzzle, cellsToRemove, stopWatch, budgetSeconds * Stopwatch.Frequency, 0, cancellationToken);
     }
 
-    private bool RemoveCell(int[] puzzle, int cellsToRemove, Stopwatch stopwatch, long budgetTicks, int start, CancellationToken cancellationToken)
+    private RemoveResult RemoveCell(int[] puzzle, int cellsToRemove, Stopwatch stopwatch, long budgetTicks, int start, CancellationToken cancellationToken)
     {
         if (cellsToRemove == 0)
         {
-            return true;
+            return RemoveResult.Success;
         }
 
         if ((budgetTicks > 0 && stopwatch.ElapsedTicks > budgetTicks) || cancellationToken.IsCancellationRequested)
         {
-            return false;
+            return RemoveResult.BudgetExceeded;
         }
 
         if (_filledCells.Count - start < cellsToRemove)
         {
-            return false;
+            return RemoveResult.Failure;
         }
 
         var filledCount = _filledCells.Count;
@@ -181,7 +190,7 @@ public class Generator
         {
             if (cancellationToken.IsCancellationRequested)
             {
-                return false;
+                return RemoveResult.Cancelled;
             }
 
             var cellIndex = _filledCells[i];
@@ -197,14 +206,14 @@ public class Generator
 
             if (cancellationToken.IsCancellationRequested)
             {
-                return false;
+                return RemoveResult.Cancelled;
             }
 
             var unique = _solver.HasUniqueSolution(puzzle, _originalPuzzle);
 
-            if (unique && RemoveCell(puzzle, cellsToRemove - 1, stopwatch, budgetTicks, i + 1, cancellationToken))
+            if (unique && RemoveCell(puzzle, cellsToRemove - 1, stopwatch, budgetTicks, i + 1, cancellationToken) == RemoveResult.Success)
             {
-                return true;
+                return RemoveResult.Success;
             }
 
             puzzle[cellIndex] = cellValue;
@@ -212,7 +221,7 @@ public class Generator
             _failed[cellIndex] = _failedStamp;
         }
 
-        return false;
+        return RemoveResult.Failure;
     }
     
     private void CreateAndShuffleFilledCells()
