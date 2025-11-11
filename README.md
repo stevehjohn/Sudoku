@@ -13,7 +13,7 @@ Use + and - to zoom in and out. [Screenshot](screenshot.png).
 
 ## Usage in Code
 
-### Solving Sudokus
+### Solving Puzzles
 
 ```csharp
 var puzzle = new int[81];
