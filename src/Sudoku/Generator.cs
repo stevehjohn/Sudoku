@@ -198,18 +198,6 @@ public class Generator
                 continue;
             }
 
-            if ((puzzle[80 - cellIndex] == 0 || _failed[80 - cellIndex] == _failedStamp) && i < 80)
-            {
-                (_filledCells[i], _filledCells[filledCount - 1]) = (_filledCells[filledCount - 1], _filledCells[i]);
-
-                cellIndex = _filledCells[i];
-
-                if (_failed[cellIndex] == _failedStamp)
-                {
-                    continue;
-                }
-            }
-
             var cellValue = puzzle[cellIndex];
 
             var row = UnitTables.CellRow(cellIndex);
