@@ -99,12 +99,12 @@ public class Generator
                 switch (result)
                 {
                     case RemoveResult.BudgetExceeded or RemoveResult.Cancelled:
-                        
+
                         return (false, puzzle);
-                    
+
                     case RemoveResult.Failure:
                         Array.Copy(_originalPuzzle, puzzle, 81);
-                        
+
                         break;
                 }
 
@@ -218,9 +218,14 @@ public class Generator
 
             var unique = _solver.HasUniqueSolution(puzzle, _originalPuzzle);
 
-            if (unique && RemoveCell(puzzle, cellsToRemove - 1, stopwatch, budgetTicks, i + 1, cancellationToken) == RemoveResult.Success)
+            if (unique)
             {
-                return RemoveResult.Success;
+                var result = RemoveCell(puzzle, cellsToRemove - 1, stopwatch, budgetTicks, i + 1, cancellationToken);
+
+                if (result != RemoveResult.Failure)
+                {
+                    return result;
+                }
             }
 
             puzzle[cellIndex] = cellValue;
@@ -230,7 +235,7 @@ public class Generator
 
         return RemoveResult.Failure;
     }
-    
+
     private void CreateAndShuffleFilledCells()
     {
         _filledCells.Clear();
@@ -253,7 +258,7 @@ public class Generator
         }
 
         var centre = _random.Next(39) * 2;
-        
+
         _filledCells.Insert(centre, 40);
     }
 
