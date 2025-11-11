@@ -154,43 +154,6 @@ public class Generator
         }
     }
 
-    private bool CreateSolvedPuzzle(Span<int> puzzle, int cell, CancellationToken cancellationToken)
-    {
-        if (cancellationToken.IsCancellationRequested)
-        {
-            return false;
-        }
-
-        while (_candidateCounts[cell] > 0)
-        {
-            var candidateIndex = _random.Next(_candidateCounts[cell]);
-
-            var candidate = _candidates[cell][candidateIndex];
-
-            _candidates[cell][candidateIndex] = _candidates[cell][_candidateCounts[cell] - 1];
-
-            _candidateCounts[cell]--;
-
-            puzzle[cell] = candidate;
-
-            if (puzzle.IsValidSudoku(cell))
-            {
-                return cell == 80 || CreateSolvedPuzzle(puzzle, cell + 1, cancellationToken);
-            }
-        }
-
-        puzzle[cell] = 0;
-
-        for (var i = 0; i < 9; i++)
-        {
-            _candidates[cell][i] = i + 1;
-        }
-
-        _candidateCounts[cell] = 9;
-
-        return CreateSolvedPuzzle(puzzle, cell - 1, cancellationToken);
-    }
-
     private bool RemoveCells(int[] puzzle, int cellsToRemove, int budgetSeconds, CancellationToken cancellationToken)
     {
         CreateAndShuffleFilledCells();
@@ -322,5 +285,42 @@ public class Generator
         var centre = _random.Next(39) * 2;
         
         _filledCells.Insert(centre, 40);
+    }
+
+    private bool CreateSolvedPuzzle(Span<int> puzzle, int cell, CancellationToken cancellationToken)
+    {
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return false;
+        }
+
+        while (_candidateCounts[cell] > 0)
+        {
+            var candidateIndex = _random.Next(_candidateCounts[cell]);
+
+            var candidate = _candidates[cell][candidateIndex];
+
+            _candidates[cell][candidateIndex] = _candidates[cell][_candidateCounts[cell] - 1];
+
+            _candidateCounts[cell]--;
+
+            puzzle[cell] = candidate;
+
+            if (puzzle.IsValidSudoku(cell))
+            {
+                return cell == 80 || CreateSolvedPuzzle(puzzle, cell + 1, cancellationToken);
+            }
+        }
+
+        puzzle[cell] = 0;
+
+        for (var i = 0; i < 9; i++)
+        {
+            _candidates[cell][i] = i + 1;
+        }
+
+        _candidateCounts[cell] = 9;
+
+        return CreateSolvedPuzzle(puzzle, cell - 1, cancellationToken);
     }
 }
