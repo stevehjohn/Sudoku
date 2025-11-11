@@ -120,7 +120,10 @@ public class Solver
     {
         _verifyOnly = true;
 
-        Initialise(new Span<int>(puzzle));
+        if (! Initialise(new Span<int>(puzzle)))
+        {
+            return false;
+        }
 
         _knownSolution = knownSolution;
 
@@ -138,7 +141,7 @@ public class Solver
         return _solutionCount == 1;
     }
 
-    private void Initialise(Span<int> puzzle)
+    private bool Initialise(Span<int> puzzle)
     {
         _solutionCount = 0;
 
@@ -185,7 +188,7 @@ public class Solver
             _boxMask[box] |= bit;
         }
 
-        GetCellCandidates();
+        return GetCellCandidates();
     }
 
     private bool SolveStep()
@@ -236,7 +239,7 @@ public class Solver
         }
     }
 
-    private void GetCellCandidates()
+    private bool GetCellCandidates()
     {
         _candidateCount = 0;
 
@@ -265,10 +268,14 @@ public class Solver
                 {
                     _history.Add(new Move(x, y, 0, MoveType.NoCandidates));
                 }
+
+                return false;
             }
 
             _cellCandidates[i] = 0;
         }
+
+        return true;
     }
 
     private void UpdateCellAndPeerCandidates(int updatedCell, ReadOnlySpan<byte> peers)
