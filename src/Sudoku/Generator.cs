@@ -96,14 +96,16 @@ public class Generator
             {
                 result = RemoveCells(puzzle, 81 - cluesToLeave, budgetSeconds, cancellationToken);
 
-                if (result is RemoveResult.BudgetExceeded or RemoveResult.Cancelled)
+                switch (result)
                 {
-                    return (false, puzzle);
-                }
-
-                if (result == RemoveResult.Failure)
-                {
-                    Array.Copy(_originalPuzzle, puzzle, 81);
+                    case RemoveResult.BudgetExceeded or RemoveResult.Cancelled:
+                        
+                        return (false, puzzle);
+                    
+                    case RemoveResult.Failure:
+                        Array.Copy(_originalPuzzle, puzzle, 81);
+                        
+                        break;
                 }
 
                 if (cancellationToken.IsCancellationRequested)
