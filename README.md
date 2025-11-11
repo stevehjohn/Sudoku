@@ -112,7 +112,7 @@ Output:
 
 World's hardest solved in 1,278μs.
 
-### Generating Sudokus
+### Generating Puzzles
 
 ```csharp
 var generator = new Generator();
