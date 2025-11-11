@@ -101,9 +101,9 @@ public class Generator
 
                 attempts++;
 
-                if (cluesToLeave < 20 && attempts % 10 == 0 && budgetSeconds < budgetMax)
+                if (attempts % 10 == 0 && budgetSeconds < budgetMax)
                 {
-                    budgetSeconds++;
+                    budgetSeconds *= 2;
                 }
             }
         }
