@@ -302,16 +302,25 @@ public class Generator
     {
         _filledCells.Clear();
 
-        for (var i = 0; i < 81; i++)
+        for (var i = 0; i < 40; i++)
         {
             _filledCells.Add(i);
         }
 
-        for (var left = 0; left < 80; left++)
+        for (var left = 0; left < 39; left++)
         {
-            var right = left + _random.Next(81 - left);
+            var right = left + _random.Next(40 - left);
 
             (_filledCells[left], _filledCells[right]) = (_filledCells[right], _filledCells[left]);
         }
+
+        for (var i = 39; i >= 0; i--)
+        {
+            _filledCells.Insert(i + 1, 80 - _filledCells[i]);
+        }
+
+        var centre = _random.Next(81);
+        
+        _filledCells.Insert(centre, 40);
     }
 }
