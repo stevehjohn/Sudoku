@@ -174,7 +174,7 @@ public class Generator
             return RemoveResult.Success;
         }
 
-        if ((budgetTicks > 0 && stopwatch.ElapsedTicks > budgetTicks) || cancellationToken.IsCancellationRequested)
+        if (budgetTicks > 0 && stopwatch.ElapsedTicks > budgetTicks)
         {
             return RemoveResult.BudgetExceeded;
         }
