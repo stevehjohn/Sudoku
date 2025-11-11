@@ -319,7 +319,7 @@ public class Generator
             _filledCells.Insert(i + 1, 80 - _filledCells[i]);
         }
 
-        var centre = _random.Next(81);
+        var centre = _random.Next(39) * 2;
         
         _filledCells.Insert(centre, 40);
     }
