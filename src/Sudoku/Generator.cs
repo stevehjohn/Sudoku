@@ -85,7 +85,7 @@ public class Generator
         {
             while (! cancellationToken.IsCancellationRequested)
             {
-                if (RemoveCells(puzzle, cluesToLeave, 81 - cluesToLeave, 0, cancellationToken))
+                if (RemoveCells(puzzle, 81 - cluesToLeave, 0, cancellationToken))
                 {
                     return (true, puzzle);
                 }
@@ -97,7 +97,7 @@ public class Generator
         {
             var attempts = 1;
 
-            while (! RemoveCells(puzzle, cluesToLeave, 81 - cluesToLeave, budgetSeconds, cancellationToken))
+            while (! RemoveCells(puzzle, 81 - cluesToLeave, budgetSeconds, cancellationToken))
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -191,7 +191,7 @@ public class Generator
         return CreateSolvedPuzzle(puzzle, cell - 1, cancellationToken);
     }
 
-    private bool RemoveCells(int[] puzzle, int targetClues, int cellsToRemove, int budgetSeconds, CancellationToken cancellationToken)
+    private bool RemoveCells(int[] puzzle, int cellsToRemove, int budgetSeconds, CancellationToken cancellationToken)
     {
         _filledCells.Clear();
 
@@ -206,10 +206,10 @@ public class Generator
 
         _failedStamp++;
 
-        return RemoveCell(puzzle, targetClues, cellsToRemove, stopWatch, budgetSeconds * Stopwatch.Frequency, 0, cancellationToken);
+        return RemoveCell(puzzle, cellsToRemove, stopWatch, budgetSeconds * Stopwatch.Frequency, 0, cancellationToken);
     }
 
-    private bool RemoveCell(int[] puzzle, int targetClues, int cellsToRemove, Stopwatch stopwatch, long budgetTicks, int start, CancellationToken cancellationToken)
+    private bool RemoveCell(int[] puzzle, int cellsToRemove, Stopwatch stopwatch, long budgetTicks, int start, CancellationToken cancellationToken)
     {
         if (cellsToRemove == 0)
         {
@@ -226,12 +226,15 @@ public class Generator
             return false;
         }
 
-        var backtracks = 0;
-
         var filledCount = _filledCells.Count;
 
         for (var i = start; i < filledCount; i++)
         {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return false;
+            }
+
             var cellIndex = _filledCells[i];
 
             if (_failed[cellIndex] == _failedStamp)
@@ -283,7 +286,7 @@ public class Generator
 
             var unique = i < 9 || _solver.HasUniqueSolution(puzzle, _originalPuzzle);
 
-            if (unique && RemoveCell(puzzle, targetClues, cellsToRemove - 1, stopwatch, budgetTicks, i + 1, cancellationToken))
+            if (unique && RemoveCell(puzzle, cellsToRemove - 1, stopwatch, budgetTicks, i + 1, cancellationToken))
             {
                 return true;
             }
@@ -297,13 +300,6 @@ public class Generator
             _unitCandidates.Box.Remove(box, cellValue);
 
             _failed[cellIndex] = _failedStamp;
-
-            backtracks++;
-
-            if ((targetClues < 24 && backtracks > 5) || cancellationToken.IsCancellationRequested)
-            {
-                return false;
-            }
         }
 
         return false;
