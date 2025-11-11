@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Numerics;
 using Sudoku.Extensions;
 
 namespace Sudoku;
@@ -17,8 +16,6 @@ public class Generator
     private readonly Random _random;
 
     private readonly int[] _failed = new int[81];
-
-    private readonly int[] _rectangleCandidates = new int[81];
 
     private int _failedStamp;
 
@@ -256,13 +253,6 @@ public class Generator
 
             var cellValue = puzzle[cellIndex];
 
-            if (WouldCreateUniqueRectangle(cellIndex, cellValue))
-            {
-                _failed[cellIndex] = _failedStamp;
-                
-                continue;
-            }
-
             var row = UnitTables.CellRow(cellIndex);
 
             var column = UnitTables.CellColumn(cellIndex);
@@ -318,90 +308,6 @@ public class Generator
 
         return false;
     }
-
-    private bool WouldCreateUniqueRectangle(int index, int value)
-    {
-        var cellCandidates = CellCandidates(index);
-        
-        if (BitOperations.PopCount((uint) cellCandidates) != 1)
-        {
-            return false;
-        }
-
-        var bit = 1 << (value - 1);
-
-        if (cellCandidates == bit)
-        {
-            return false;
-        }
-
-        var mask = cellCandidates | bit;
-
-        var count = 0;
-        
-        for (var i = 0; i < 81; i++)
-        {
-            if (i == index)
-            {
-                continue;
-            }
-
-            if (CellCandidates(i) == mask)
-            {
-                _rectangleCandidates[count] = i;
-
-                count++;
-            }
-        }
-
-        if (count < 3)
-        {
-            return false;
-        }
-        
-        var pairs = new bool[9, 9];
-
-        var row = UnitTables.CellRow(_rectangleCandidates[index]);
-            
-        var column = UnitTables.CellColumn(_rectangleCandidates[index]);
-            
-        pairs[row, column] = true;
-
-        for (var i = 0; i < count; i++)
-        {
-            row = UnitTables.CellRow(_rectangleCandidates[i]);
-            
-            column = UnitTables.CellColumn(_rectangleCandidates[i]);
-            
-            pairs[row, column] = true;
-        }
-
-        for (var r1 = 0; r1 < 9; r1++)
-        {
-            for (var r2 = r1 + 1; r2 < 9; r2++)
-            {
-                for (var c1 = 0; c1 < 9; c1++)
-                {
-                    for (var c2 = c1 + 1; c2 < 9; c2++)
-                    {
-                        if (pairs[r1, c1] &&
-                            pairs[r1, c2] &&
-                            pairs[r2, c1] &&
-                            pairs[r2, c2])
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        
-        return false;
-    }
-
-    private int CellCandidates(int index) => _unitCandidates.Row[UnitTables.CellRow(index)]
-                                             & _unitCandidates.Column[UnitTables.CellColumn(index)]
-                                             & _unitCandidates.Box[UnitTables.CellBox(index)];
     
     private void ShuffleFilledCells()
     {
