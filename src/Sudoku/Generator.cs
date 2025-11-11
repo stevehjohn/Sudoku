@@ -19,6 +19,8 @@ public class Generator
 
     private readonly int[] _originalPuzzle = new int[81];
 
+    private (Candidates Row, Candidates Column, Candidates Box) _unitCandidates = (new Candidates(), new Candidates(), new Candidates());
+
     private int _failedStamp;
 
     public Generator()
@@ -50,6 +52,12 @@ public class Generator
         Array.Copy(solvedPuzzle, puzzle, 81);
 
         Array.Copy(solvedPuzzle, _originalPuzzle, 81);
+
+        _unitCandidates.Row.Clear();
+
+        _unitCandidates.Column.Clear();
+
+        _unitCandidates.Box.Clear();
 
         var budgetSeconds = 0;
 
@@ -192,8 +200,29 @@ public class Generator
 
             var cellValue = puzzle[cellIndex];
 
-            puzzle[cellIndex] = 0;
+            var row = UnitTables.CellRow(cellIndex);
+
+            var column = UnitTables.CellColumn(cellIndex);
+
+            var box = UnitTables.CellBox(cellIndex);
+
+            var bit = 1 << (cellValue - 1);
             
+            if ((_unitCandidates.Row[row] | bit) == 0x1FF ||
+                (_unitCandidates.Column[column] | bit) == 0x1FF ||
+                (_unitCandidates.Box[box] | bit) == 0x1FF)
+            {
+                continue;
+            }
+
+            puzzle[cellIndex] = 0;
+
+            _unitCandidates.Row.Add(row, cellValue);
+
+            _unitCandidates.Column.Add(column, cellValue);
+
+            _unitCandidates.Box.Add(box, cellValue);
+
             if (cancellationToken.IsCancellationRequested)
             {
                 return false;
@@ -207,6 +236,12 @@ public class Generator
             }
 
             puzzle[cellIndex] = cellValue;
+
+            _unitCandidates.Row.Remove(row, cellValue);
+
+            _unitCandidates.Column.Remove(column, cellValue);
+
+            _unitCandidates.Box.Remove(box, cellValue);
 
             _failed[cellIndex] = _failedStamp;
         }
