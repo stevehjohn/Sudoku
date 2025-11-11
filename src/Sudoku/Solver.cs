@@ -467,14 +467,12 @@ public class Solver
 
             valueCount = count;
 
-            if (count != 1)
+            if (count == 1)
             {
-                continue;
+                _moveType = MoveType.NakedSingle;
+
+                return (position, values, valueCount);
             }
-
-            _moveType = MoveType.NakedSingle;
-
-            return (position, values, valueCount);
         }
 
         return (position, values, valueCount);
