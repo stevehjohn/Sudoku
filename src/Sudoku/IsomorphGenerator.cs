@@ -136,11 +136,9 @@ public static class IsomorphGenerator
 
     private static void FlipVertically(Span<int> puzzle)
     {
-        for (var column = 0; column < 5; column++)
+        for (var sourceX = 0; sourceX < 5; sourceX++)
         {
-            var sourceX = column * 9;
-
-            var targetX = 8 - column;
+            var targetX = 8 - sourceX;
             
             for (var x = 0; x < 81; x += 9)
             {
