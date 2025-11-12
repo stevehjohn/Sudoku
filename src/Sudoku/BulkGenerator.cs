@@ -6,7 +6,7 @@ namespace Sudoku;
 
 public static class BulkGenerator
 {
-    public static void Generate(int quantity, int cluesToLeave, Action<int[]> callback)
+    public static void Generate(int quantity, int cluesToLeave, int isomorphCount, Action<int[]> callback)
     {
         var workers = Math.Max(Environment.ProcessorCount / 2, 1);
 
@@ -19,16 +19,6 @@ public static class BulkGenerator
         var tasks = new Task[workers];
 
         var callbackLock = new Lock();
-
-        var isomorphCount = cluesToLeave switch
-        {
-            19 => 1_000,
-            20 => 100,
-            21 => 50,
-            22 => 25,
-            23 => 10,
-            _ => 0
-        };
 
         var solvedPuzzleReuseCount = cluesToLeave switch
         {

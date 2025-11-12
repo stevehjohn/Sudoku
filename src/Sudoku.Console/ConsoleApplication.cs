@@ -259,10 +259,21 @@ public class ConsoleApplication
             return;
         }
 
-        GeneratePuzzles(clues, puzzles);
+        System.Console.Write("\n Number of isomophs to generate: ");
+
+        response = System.Console.ReadLine();
+
+        if (! int.TryParse(response, out var isomorphs))
+        {
+            Out("\n Invalid input.");
+
+            return;
+        }
+
+        GeneratePuzzles(clues, puzzles, isomorphs);
     }
 
-    private void GeneratePuzzles(int clues, int puzzleCount)
+    private void GeneratePuzzles(int clues, int puzzleCount, int isomorphCount)
     {
         System.Console.Clear();
 
@@ -295,7 +306,7 @@ public class ConsoleApplication
 
             GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
 
-            BulkGenerator.Generate(puzzleCount, clues, PuzzleGenerated);
+            BulkGenerator.Generate(puzzleCount, clues, isomorphCount, PuzzleGenerated);
 
             GCSettings.LatencyMode = oldMode;
 
