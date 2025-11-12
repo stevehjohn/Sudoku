@@ -103,7 +103,12 @@ public static class IsomorphGenerator
         switch (Random.Shared.Next(2))
         {
             case 0:
-                Rotate(puzzle, Random.Shared.Next(3));
+                var times = Random.Shared.Next(3) + 1;
+
+                for (var i = 0; i < times; i++)
+                {
+                    RotateClockwise(puzzle);
+                }
                 
                 break;
             
@@ -121,10 +126,24 @@ public static class IsomorphGenerator
         }
     }
 
-    private static void Rotate(Span<int> puzzle, int times)
+    private static void RotateClockwise(Span<int> puzzle)
     {
+        var copy = new int[81];
+
+        for (var x = 0; x < 9; x++)
+        {
+            for (var y = 0; y < 9; y++)
+            {
+                copy[x + y * 9] = puzzle[(8 - x) * 9 + y];
+            }
+        }
+
+        for (var i = 0; i < 81; i++)
+        {
+            puzzle[i] = copy[i];
+        }
     }
-    
+
     private static void FlipHorizontally(Span<int> puzzle)
     {
         for (var row = 0; row < 5; row++)
