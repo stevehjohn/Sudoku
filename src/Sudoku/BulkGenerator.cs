@@ -28,7 +28,7 @@ public static class BulkGenerator
             _ => 1
         };
 
-        var totalQuantity = quantity * isomorphCount;
+        var totalQuantity = quantity * Math.Max(isomorphCount, 1);
 
         for (var i = 0; i < workers; i++)
         {
