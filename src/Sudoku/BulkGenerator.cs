@@ -1,10 +1,12 @@
 // ReSharper disable AccessToDisposedClosure
 
+using Sudoku.Extensions;
+
 namespace Sudoku;
 
 public static class BulkGenerator
 {
-    public static void Generate(int quantity, int cluesToLeave, Action<int[]> callback)
+    public static void Generate(int quantity, int cluesToLeave, int isomorphCount, Action<int[]> callback)
     {
         var workers = Math.Max(Environment.ProcessorCount / 2, 1);
 
@@ -25,7 +27,9 @@ public static class BulkGenerator
             < 25 => 1_000,
             _ => 1
         };
-        
+
+        var totalQuantity = quantity * Math.Max(isomorphCount, 1);
+
         for (var i = 0; i < workers; i++)
         {
             var generator = new Generator();
@@ -38,7 +42,7 @@ public static class BulkGenerator
 
                 while (! cancellationToken.IsCancellationRequested)
                 {
-                    if (Volatile.Read(ref count) >= quantity)
+                    if (Volatile.Read(ref count) >= totalQuantity)
                     {
                         cancellationTokenSource.Cancel();
 
@@ -66,7 +70,7 @@ public static class BulkGenerator
                         continue;
                     }
 
-                    if (Interlocked.Increment(ref count) > quantity)
+                    if (Interlocked.Increment(ref count) > totalQuantity)
                     {
                         cancellationTokenSource.Cancel();
 
@@ -76,6 +80,26 @@ public static class BulkGenerator
                     lock (callbackLock)
                     {
                         callback(result.Puzzle);
+                    }
+
+                    if (isomorphCount > 0)
+                    {
+                        var isomorphs = IsomorphGenerator.CreateIsomorphs(result.Puzzle, isomorphCount, cancellationToken);
+
+                        for (var isomorph = 0; isomorph < isomorphCount; isomorph++)
+                        {
+                            if (Interlocked.Increment(ref count) > totalQuantity)
+                            {
+                                cancellationTokenSource.Cancel();
+
+                                break;
+                            }
+                            
+                            lock (callbackLock)
+                            {
+                                callback(isomorphs[isomorph]);
+                            }
+                        }
                     }
                 }
             }, CancellationToken.None);
