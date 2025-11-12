@@ -20,6 +20,8 @@ public static class IsomorphGenerator
 
             SwapBands(puzzle);
 
+            SwapStacks(puzzle);
+
             count--;
         }
 
@@ -35,7 +37,7 @@ public static class IsomorphGenerator
         for (var i = 0; i < 81; i++)
         {
             var cell = puzzle[i];
-            
+
             if (cell == 0)
             {
                 continue;
@@ -54,12 +56,33 @@ public static class IsomorphGenerator
         var source = sourceBand * 27;
 
         var target = targetBand * 27;
-        
+
         for (var row = 0; row < 27; row += 9)
         {
             for (var x = 0; x < 9; x++)
             {
                 var offset = row + x;
+
+                (puzzle[source + offset], puzzle[target + offset]) = (puzzle[target + offset], puzzle[source + offset]);
+            }
+        }
+    }
+
+    private static void SwapStacks(Span<int> puzzle)
+    {
+        var sourceStack = Random.Shared.Next(3);
+
+        var targetStack = (Random.Shared.Next(2) + sourceStack + 1) % 3;
+
+        var source = sourceStack * 3;
+
+        var target = targetStack * 3;
+
+        for (var column = 0; column < 3; column++)
+        {
+            for (var y = 0; y < 81; y += 9)
+            {
+                var offset = column + y;
 
                 (puzzle[source + offset], puzzle[target + offset]) = (puzzle[target + offset], puzzle[source + offset]);
             }
