@@ -67,7 +67,7 @@ public static class BulkGenerator
                     {
                         continue;
                     }
-
+                        
                     if (Interlocked.Increment(ref count) > quantity)
                     {
                         cancellationTokenSource.Cancel();
