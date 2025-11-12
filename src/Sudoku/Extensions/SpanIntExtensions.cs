@@ -4,7 +4,7 @@ namespace Sudoku.Extensions;
 
 public static class SpanIntExtensions
 {
-    extension(Span<int> puzzle)
+    extension(Span<int> array)
     {
         public bool IsValidSudoku()
         {
@@ -16,7 +16,7 @@ public static class SpanIntExtensions
 
             for (var i = 0; i < 81; i++)
             {
-                var value = puzzle[i];
+                var value = array[i];
 
                 if (value == 0)
                 {
@@ -49,7 +49,7 @@ public static class SpanIntExtensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsValidSudoku(int updatedCell)
         {
-            var value = puzzle[updatedCell];
+            var value = array[updatedCell];
 
             if (value == 0)
             {
@@ -62,13 +62,24 @@ public static class SpanIntExtensions
             {
                 var peerIndex = peers[i];
 
-                if (puzzle[peerIndex] == value)
+                if (array[peerIndex] == value)
                 {
                     return false;
                 }
             }
 
             return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Shuffle()
+        {
+            for (var left = 0; left < array.Length - 1; left++)
+            {
+                var right = left + Random.Shared.Next(array.Length - left);
+
+                (array[left], array[right]) = (array[right], array[left]);
+            }
         }
     }
 }
