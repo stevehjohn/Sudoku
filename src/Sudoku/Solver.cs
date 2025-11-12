@@ -334,6 +334,49 @@ public class Solver
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void CheckPointing(ReadOnlySpan<int> box, ReadOnlySpan<int> line)
+    {
+        for (var d = 0; d < 9; d++)
+        {
+            var lineMask = 0;
+
+            var count = 0;
+        
+            var digitBit = 1 << d;
+
+            for (var i = 0; i < 9; i++)
+            {
+                if ((_cellCandidates[line[i]] & digitBit) > 0)
+                {
+                    lineMask |= 1 << i;
+
+                    count++;
+                }
+            }
+
+            if (count is 0 or > 3)
+            {
+                continue;
+            }
+            
+            if ((lineMask & 0b000_111_111) == 0 || (lineMask & 0b111_000_111) == 0 || (lineMask & 0b111_111_000) == 0)
+            {
+                for (var i = 0; i < 9; i++)
+                {
+                    var cellIndex = box[i];
+
+                    if (line.Contains(cellIndex))
+                    {
+                        continue;
+                    }
+
+                    _cellCandidates[cellIndex] &= ~digitBit;
+                }
+            }
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private int FindHiddenSingle()
     {
         for (var i = 0; i < 9; i++)
