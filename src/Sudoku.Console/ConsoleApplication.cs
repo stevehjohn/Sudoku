@@ -294,7 +294,7 @@ public class ConsoleApplication
 
         using var stream = new FileStream(filename, FileMode.Create);
 
-        _target = puzzleCount;
+        _target = puzzleCount * Math.Max(isomorphCount, 1);
 
         _count = 0;
         
