@@ -20,6 +20,16 @@ public static class BulkGenerator
 
         var callbackLock = new Lock();
 
+        var isomorphCount = cluesToLeave switch
+        {
+            19 => 10_000,
+            20 => 1_000,
+            21 => 300,
+            22 => 18,
+            23 => 3,
+            _ => 0
+        };
+
         var solvedPuzzleReuseCount = cluesToLeave switch
         {
             < 19 => 1_000_000,
@@ -27,7 +37,7 @@ public static class BulkGenerator
             < 25 => 1_000,
             _ => 1
         };
-        
+
         for (var i = 0; i < workers; i++)
         {
             var generator = new Generator();
@@ -67,7 +77,7 @@ public static class BulkGenerator
                     {
                         continue;
                     }
-                        
+
                     if (Interlocked.Increment(ref count) > quantity)
                     {
                         cancellationTokenSource.Cancel();
@@ -78,6 +88,19 @@ public static class BulkGenerator
                     lock (callbackLock)
                     {
                         callback(result.Puzzle);
+                    }
+
+                    if (isomorphCount > 0)
+                    {
+                        var isomorphs = IsomorphGenerator.CreateIsomorphs(result.Puzzle, isomorphCount, cancellationToken);
+
+                        for (var isomorph = 0; isomorph < isomorphCount; isomorph++)
+                        {
+                            lock (callbackLock)
+                            {
+                                callback(isomorphs[isomorph]);
+                            }
+                        }
                     }
                 }
             }, CancellationToken.None);

@@ -4,13 +4,13 @@ namespace Sudoku;
 
 public static class IsomorphGenerator
 {
-    public static List<int[]> CreateIsomorphs(int[] puzzle, int count)
+    public static List<int[]> CreateIsomorphs(int[] puzzle, int count, CancellationToken cancellationToken)
     {
         var unique = new HashSet<string>();
         
         var isomorphs = new List<int[]>();
 
-        while (unique.Count < count)
+        while (unique.Count < count && ! cancellationToken.IsCancellationRequested)
         {
             var isomorph = new int[81];
 
