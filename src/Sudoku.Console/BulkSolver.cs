@@ -63,7 +63,7 @@ public class BulkSolver
             {
                 MaxDegreeOfParallelism = Environment.ProcessorCount - 1
             },
-            () => new Solver(historyType),
+            () => new Solver(historyType, SolveMethod.FindFirst),
             (i, _, solver) =>
             {
                 var solution = solver.Solve(_puzzles[i].Puzzle);
