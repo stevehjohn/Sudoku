@@ -22,6 +22,8 @@ public static class IsomorphGenerator
 
             SwapStacks(puzzle);
 
+            RotateOrFlip(puzzle);
+
             count--;
         }
 
@@ -85,6 +87,64 @@ public static class IsomorphGenerator
                 var offset = column + y;
 
                 (puzzle[source + offset], puzzle[target + offset]) = (puzzle[target + offset], puzzle[source + offset]);
+            }
+        }
+    }
+
+    private static void RotateOrFlip(Span<int> puzzle)
+    {
+        switch (Random.Shared.Next(2))
+        {
+            case 0:
+                Rotate(puzzle, Random.Shared.Next(3));
+                
+                break;
+            
+            case 1:
+                // TODO: Flip H or V
+                if (Random.Shared.Next(2) == 0)
+                {
+                    FlipHorizontally(puzzle);
+                }
+                else
+                {
+                    FlipVertically(puzzle);
+                }
+
+                break;
+        }
+    }
+
+    private static void Rotate(Span<int> puzzle, int times)
+    {
+    }
+    
+    private static void FlipHorizontally(Span<int> puzzle)
+    {
+        for (var row = 0; row < 5; row++)
+        {
+            var sourceY = row * 9;
+
+            var targetY = (8 - row) * 9;
+            
+            for (var x = 0; x < 9; x++)
+            {
+                (puzzle[sourceY + x], puzzle[targetY + x]) = (puzzle[targetY + x], puzzle[sourceY + x]);
+            }
+        }
+    }
+
+    private static void FlipVertically(Span<int> puzzle)
+    {
+        for (var column = 0; column < 5; column++)
+        {
+            var sourceX = column * 9;
+
+            var targetX = 8 - column;
+            
+            for (var x = 0; x < 81; x += 9)
+            {
+                (puzzle[sourceX + x], puzzle[targetX + x]) = (puzzle[targetX + x], puzzle[sourceX + x]);
             }
         }
     }
