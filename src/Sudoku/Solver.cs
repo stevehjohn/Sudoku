@@ -443,7 +443,7 @@ public class Solver
 
         return -1;
     }
-
+    
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private ((int X, int Y) Position, int Values, int ValueCount) FindLeastRemainingCandidates()
     {
