@@ -231,17 +231,12 @@ public class Solver
 
             var move = FindLeastRemainingCandidates();
 
-            if (move.ValueCount == 1)
+            return move.ValueCount switch
             {
-                return CreateNextSteps(move);
-            }
-
-            if (move.ValueCount == 0)
-            {
-                return false;
-            }
-
-            return CreateNextSteps(move);
+                1 => CreateNextSteps(move),
+                0 => false,
+                _ => CreateNextSteps(move)
+            };
         }
     }
 
