@@ -207,27 +207,33 @@ public class Solver
                 return CreateNextSteps((Position: (X: UnitTables.CellColumn(single), Y: UnitTables.CellRow(single)), Values: _cellCandidates[single], ValueCount: 1));
             }
 
+            var changed = false;
+
+            for (var unitType = 0; unitType < 3; unitType++)
+            {
+                for (var i = 0; i < 9; i++)
+                {
+                    var cells = unitType switch
+                    {
+                        0 => UnitTables.RowCells(i),
+                        1 => UnitTables.ColumnCells(i),
+                        _ => UnitTables.BoxCells(i)
+                    };
+
+                    changed |= FindNakedPairs(cells, i, (MoveType)unitType);
+                }
+            }
+
+            if (changed)
+            {
+                continue;
+            }
+
             var move = FindLeastRemainingCandidates();
 
             if (move.ValueCount == 1)
             {
                 return CreateNextSteps(move);
-            }
-
-            if (_score < 55 && move.ValueCount < 4)
-            {
-                var box = UnitTables.CellBox(move.Position.Y * 9 + move.Position.X);
-
-                var changed = FindNakedPairs(UnitTables.RowCells(move.Position.Y), move.Position.Y, MoveType.NakedPairRow);
-
-                changed |= FindNakedPairs(UnitTables.ColumnCells(move.Position.X), move.Position.X, MoveType.NakedPairColumn);
-
-                changed |= FindNakedPairs(UnitTables.BoxCells(box), box, MoveType.NakedPairBox);
-
-                if (changed)
-                {
-                    continue;
-                }
             }
 
             if (move.ValueCount == 0)
