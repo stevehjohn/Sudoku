@@ -22,11 +22,11 @@ public static class BulkGenerator
 
         var isomorphCount = cluesToLeave switch
         {
-            19 => 10_000,
-            20 => 1_000,
-            21 => 300,
-            22 => 18,
-            23 => 3,
+            19 => 1_000,
+            20 => 100,
+            21 => 50,
+            22 => 25,
+            23 => 10,
             _ => 0
         };
 
@@ -96,6 +96,13 @@ public static class BulkGenerator
 
                         for (var isomorph = 0; isomorph < isomorphCount; isomorph++)
                         {
+                            if (Interlocked.Increment(ref count) > quantity)
+                            {
+                                cancellationTokenSource.Cancel();
+
+                                break;
+                            }
+                            
                             lock (callbackLock)
                             {
                                 callback(isomorphs[isomorph]);
