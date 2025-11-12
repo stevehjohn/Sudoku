@@ -42,7 +42,7 @@ public static class BulkGenerator
 
                 while (! cancellationToken.IsCancellationRequested)
                 {
-                    if (Volatile.Read(ref count) >= quantity)
+                    if (Volatile.Read(ref count) >= totalQuantity)
                     {
                         cancellationTokenSource.Cancel();
 
