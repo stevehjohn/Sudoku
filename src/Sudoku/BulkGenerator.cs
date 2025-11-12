@@ -1,5 +1,7 @@
 // ReSharper disable AccessToDisposedClosure
 
+using Sudoku.Extensions;
+
 namespace Sudoku;
 
 public static class BulkGenerator
