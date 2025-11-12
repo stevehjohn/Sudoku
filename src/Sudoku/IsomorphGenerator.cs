@@ -24,6 +24,10 @@ public static class IsomorphGenerator
 
             RotateOrFlip(isomorph);
 
+            SwapBandRows(isomorph);
+            
+            SwapStackColumns(isomorph);
+
             if (unique.Add(isomorph.FlattenPuzzle()))
             {
                 isomorphs.Add(isomorph);
@@ -146,6 +150,42 @@ public static class IsomorphGenerator
             {
                 (puzzle[sourceX + x], puzzle[targetX + x]) = (puzzle[targetX + x], puzzle[sourceX + x]);
             }
+        }
+    }
+
+    private static void SwapBandRows(Span<int> puzzle)
+    {
+        var band = Random.Shared.Next(3) * 27;
+        
+        var sourceRow = Random.Shared.Next(3);
+
+        var targetRow = (Random.Shared.Next(2) + sourceRow + 1) % 3;
+
+        var sourceOffset = band + sourceRow * 9;
+
+        var targetOffset = band + targetRow * 9;
+        
+        for (var x = 0; x < 9; x++)
+        {
+            (puzzle[sourceOffset + x], puzzle[targetOffset + x]) = (puzzle[targetOffset + x], puzzle[sourceOffset + x]);
+        }
+    }
+
+    private static void SwapStackColumns(Span<int> puzzle)
+    {
+        var stack = Random.Shared.Next(3) * 3;
+        
+        var sourceColumn = Random.Shared.Next(3);
+
+        var targetColumn = (Random.Shared.Next(2) + sourceColumn + 1) % 3;
+
+        var sourceOffset = stack + sourceColumn;
+
+        var targetOffset = stack + targetColumn;
+        
+        for (var y = 0; y < 81; y += 9)
+        {
+            (puzzle[sourceOffset + y], puzzle[targetOffset + y]) = (puzzle[targetOffset + y], puzzle[sourceOffset + y]);
         }
     }
 }
