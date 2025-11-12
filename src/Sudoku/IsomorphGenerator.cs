@@ -4,11 +4,11 @@ namespace Sudoku;
 
 public static class IsomorphGenerator
 {
-    public static List<int[]> CreateIsomorphs(int count, int[] puzzle)
+    public static HashSet<int[]> CreateIsomorphs(int count, int[] puzzle)
     {
-        var isomorphs = new List<int[]>();
+        var isomorphs = new HashSet<int[]>();
 
-        while (count > 0)
+        while (isomorphs.Count < count)
         {
             var isomorph = new int[81];
 
@@ -23,8 +23,6 @@ public static class IsomorphGenerator
             SwapStacks(puzzle);
 
             RotateOrFlip(puzzle);
-
-            count--;
         }
 
         return isomorphs;
