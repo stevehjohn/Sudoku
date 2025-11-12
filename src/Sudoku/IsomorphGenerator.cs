@@ -104,7 +104,6 @@ public static class IsomorphGenerator
                 break;
             
             case 1:
-                // TODO: Flip H or V
                 if (Random.Shared.Next(2) == 0)
                 {
                     FlipHorizontally(puzzle);
