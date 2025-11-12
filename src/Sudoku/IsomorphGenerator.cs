@@ -4,7 +4,7 @@ namespace Sudoku;
 
 public static class IsomorphGenerator
 {
-    public static List<int[]> CreateIsomorphs(int count, int[] puzzle)
+    public static List<int[]> CreateIsomorphs(int[] puzzle, int count)
     {
         var unique = new HashSet<string>();
         
