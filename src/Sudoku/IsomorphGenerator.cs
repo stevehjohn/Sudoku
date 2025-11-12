@@ -18,6 +18,8 @@ public static class IsomorphGenerator
 
             RelabelDigits(puzzle);
 
+            SwapBands(puzzle);
+
             count--;
         }
 
@@ -40,6 +42,23 @@ public static class IsomorphGenerator
             }
 
             puzzle[i] = digits[cell - 1];
+        }
+    }
+
+    private static void SwapBands(Span<int> puzzle)
+    {
+        var source = Random.Shared.Next(3) * 27;
+
+        var target = (Random.Shared.Next(2) + source + 1) % 3 * 27;
+
+        for (var row = 0; row < 27; row += 9)
+        {
+            for (var x = 0; x < 9; x++)
+            {
+                var offset = row + x;
+
+                (puzzle[source + offset], puzzle[target + offset]) = (puzzle[target + offset], puzzle[source + offset]);
+            }
         }
     }
 }
