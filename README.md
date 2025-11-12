@@ -11,6 +11,49 @@ Use + and - to zoom in and out. [Screenshot](screenshot.png).
 - [Random 2](https://html-preview.github.io/?url=https://github.com/stevehjohn/Sudoku/blob/master/Visualisations/vis-2.html)
 - [Random 3](https://html-preview.github.io/?url=https://github.com/stevehjohn/Sudoku/blob/master/Visualisations/vis-3.html)
 
+## Quick Usage
+
+There are scripts in the root of the repo that will run the console app for you.
+
+Windows: `run.bat` macOS/Linux `./run.sh`.
+
+The console app looks like this:
+
+```
+ Please select the puzzle set to solve or an option below:
+
+    1: 19 Clues
+    2: 2 Million
+    3: 20 Clues
+    4: 21 Clues
+    5: 22 Clues
+    6: Benchmarks
+    7: Diabolical
+    8: Easy
+    9: Euler
+   10: Generated 2m x 25
+   11: Generated 2m x 30
+   12: Generated 2m x 37
+   13: Generated 2m x 40
+   14: Generated 2m x 50
+   15: Generated
+   16: Hard
+   17: Least Steps
+   18: Medium
+   19: Minimum Clues
+   20: Most Steps
+   21: Top 50K Toughest
+   22: World Hardest
+
+    B: Generate tree branch diagram for last most steps
+    V: Visualise last most steps
+    L: See log of last most steps
+    E: Enter manually
+    T: Test suite
+    G: Generate puzzles
+    Q: Exit application
+```
+
 ## Usage in Code
 
 ### Solving Puzzles
