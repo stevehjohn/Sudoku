@@ -4,25 +4,30 @@ namespace Sudoku;
 
 public static class IsomorphGenerator
 {
-    public static HashSet<int[]> CreateIsomorphs(int count, int[] puzzle)
+    public static List<int[]> CreateIsomorphs(int count, int[] puzzle)
     {
-        var isomorphs = new HashSet<int[]>();
+        var unique = new HashSet<string>();
+        
+        var isomorphs = new List<int[]>();
 
-        while (isomorphs.Count < count)
+        while (unique.Count < count)
         {
             var isomorph = new int[81];
 
-            isomorphs.Add(isomorph);
-
             Array.Copy(puzzle, isomorph, 81);
 
-            RelabelDigits(puzzle);
+            RelabelDigits(isomorph);
 
-            SwapBands(puzzle);
+            SwapBands(isomorph);
 
-            SwapStacks(puzzle);
+            SwapStacks(isomorph);
 
-            RotateOrFlip(puzzle);
+            RotateOrFlip(isomorph);
+
+            if (unique.Add(isomorph.FlattenPuzzle()))
+            {
+                isomorphs.Add(isomorph);
+            }
         }
 
         return isomorphs;
