@@ -207,28 +207,6 @@ public class Solver
                 return CreateNextSteps((Position: (X: UnitTables.CellColumn(single), Y: UnitTables.CellRow(single)), Values: _cellCandidates[single], ValueCount: 1));
             }
 
-            var changed = false;
-
-            for (var unitType = 0; unitType < 3; unitType++)
-            {
-                for (var i = 0; i < 9; i++)
-                {
-                    var cells = unitType switch
-                    {
-                        0 => UnitTables.RowCells(i),
-                        1 => UnitTables.ColumnCells(i),
-                        _ => UnitTables.BoxCells(i)
-                    };
-
-                    changed |= FindNakedPairs(cells, i, (MoveType)unitType);
-                }
-            }
-
-            if (changed)
-            {
-                continue;
-            }
-
             var move = FindLeastRemainingCandidates();
 
             return move.ValueCount switch
@@ -484,84 +462,6 @@ public class Solver
         }
 
         return (position, values, valueCount);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool FindNakedPairs(ReadOnlySpan<byte> unit, int unitIndex, MoveType moveType)
-    {
-        var mask = 0;
-
-        var count = 1;
-
-        for (var i = 0; i < 9; i++)
-        {
-            var cell = _cellCandidates[unit[i]];
-
-            if (BitOperations.PopCount((uint) cell) == 2)
-            {
-                if (mask == 0)
-                {
-                    mask = cell;
-                }
-                else if (cell == mask)
-                {
-                    count++;
-
-                    if (count > 2)
-                    {
-                        return false;
-                    }
-                }
-            }
-        }
-
-        if (count == 2)
-        {
-            var metadata = new NakedPairMetadata(unitIndex);
-
-            for (var i = 0; i < 9; i++)
-            {
-                var index = unit[i];
-
-                var cell = _cellCandidates[index];
-
-                if (cell == mask)
-                {
-                    metadata.Pair.Add(index);
-
-                    continue;
-                }
-
-                var overlap = cell & mask;
-
-                if (overlap == 0)
-                {
-                    continue;
-                }
-
-                var remaining = cell & ~overlap;
-
-                if (remaining != cell)
-                {
-                    metadata.Affected.Add(index);
-
-                    _cellCandidates[index] = remaining;
-                }
-            }
-
-            if (_historyType != HistoryType.None && metadata.Affected.Count > 0)
-            {
-                var move = new Move(0, 0, mask, moveType);
-
-                move.AddMetadata(metadata);
-
-                _history.Add(move);
-            }
-
-            return metadata.Affected.Count > 0;
-        }
-
-        return false;
     }
 
     private bool CreateNextSteps(((int X, int Y) Position, int Values, int ValueCount) move)
