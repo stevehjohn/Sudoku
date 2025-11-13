@@ -200,7 +200,7 @@ public class Solver
 
         while (true)
         {
-            var single = FindSingle();
+            var single = FindNakedSingle();
 
             if (single != -1)
             {
@@ -319,7 +319,7 @@ public class Solver
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private int FindSingle()
+    private int FindNakedSingle()
     {
         for (var i = 0; i < 81; i++)
         {
@@ -330,6 +330,8 @@ public class Solver
 
             if (BitOperations.PopCount((uint) _cellCandidates[i]) == 1)
             {
+                _moveType = MoveType.NakedSingle;
+                
                 return i;
             }
         }
@@ -478,13 +480,6 @@ public class Solver
             values = candidates;
 
             valueCount = count;
-
-            if (count == 1)
-            {
-                _moveType = MoveType.NakedSingle;
-
-                return (position, values, valueCount);
-            }
         }
 
         return (position, values, valueCount);
