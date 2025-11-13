@@ -95,36 +95,7 @@ public static class TreeGenerator
                 case MoveType.NoCandidates when node.Move.X == x && node.Move.Y == y:
                     puzzle.Append("<span class='added'>ⓧ</span>");
                     break;
-
-                case MoveType.NakedPairRow:
-                case MoveType.NakedPairColumn:
-                case MoveType.NakedPairBox:
-                    var metadata = node.Move.GetMetadata<NakedPairMetadata>();
-
-                    if (metadata.Pair.Contains(i))
-                    {
-                        puzzle.Append(Numbers[9]);
-                    }
-                    else if (metadata.Affected.Contains(i))
-                    {
-                        puzzle.Append(Numbers[10]);
-                    }
-                    else
-                    {
-                        var unit = node.Move.Type switch
-                        {
-                            MoveType.NakedPairRow => UnitTables.RowCells(metadata.UnitIndex),
-                            MoveType.NakedPairColumn => UnitTables.ColumnCells(metadata.UnitIndex),
-                            _ => UnitTables.BoxCells(metadata.UnitIndex)
-                        };
-
-                        var colour = unit.Contains((byte) i) ? "#000000" : "#a0a0a0";
-
-                        puzzle.Append($"<span style='color: {colour}'>{(node[i] == 0 ? "<pre>&nbsp;</pre>" : node[i])}</span>");
-                    }
-
-                    break;
-
+                
                 case MoveType.Guess:
                 default:
                     puzzle.Append(node[i] == 0 ? "<pre>&nbsp;</pre>" : node[i]);
@@ -162,12 +133,6 @@ public static class TreeGenerator
 
                 case MoveType.NoCandidates:
                     content = content.Replace("{class}", "deadEnd").Replace("{type}", "No Candidate");
-                    break;
-
-                case MoveType.NakedPairRow:
-                case MoveType.NakedPairColumn:
-                case MoveType.NakedPairBox:
-                    content = content.Replace("{class}", "nakedPair").Replace("{type}", "Naked Pair");
                     break;
 
                 case MoveType.HiddenSingle:

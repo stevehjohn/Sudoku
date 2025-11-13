@@ -92,26 +92,6 @@ public class SudokuResult
                     Console.WriteLine($" - No candidates at ({move.X}, {move.Y})");
                     break;
 
-                case MoveType.NakedPairRow:
-                case MoveType.NakedPairColumn:
-                case MoveType.NakedPairBox:
-                    var type = move.Type switch
-                    {
-                        MoveType.NakedPairRow => "row",
-                        MoveType.NakedPairColumn => "column",
-                        _ => "box"
-                    };
-
-                    var unit = move.Type switch
-                    {
-                        MoveType.NakedPairRow => move.Y,
-                        MoveType.NakedPairColumn => move.X,
-                        _ => move.Y / 3 * 3 + move.X / 3
-                    };
-                    
-                    Console.WriteLine($" - Naked pair ({string.Join(", ", move.Value.BitsToCandidates())}) in {type} {unit}");
-                    break;
-                
                 case MoveType.None:
                 case MoveType.Guess:
                 case MoveType.Backtrack:
