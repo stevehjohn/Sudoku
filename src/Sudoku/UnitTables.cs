@@ -87,12 +87,6 @@ public static class UnitTables
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ReadOnlySpan<byte> RowCells(int index) => Units.AsSpan(index * 9, 9);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ReadOnlySpan<byte> ColumnCells(int index) => Units.AsSpan(81 + index * 9, 9);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ReadOnlySpan<byte> BoxCells(int index) => Units.AsSpan(162 + index * 9, 9);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -108,6 +102,10 @@ public static class UnitTables
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ReadOnlySpan<byte> Peers(int index) => Units.AsSpan(486 + index * 20, 20);
+
+    private static ReadOnlySpan<byte> RowCells(int index) => Units.AsSpan(index * 9, 9);
+
+    private static ReadOnlySpan<byte> ColumnCells(int index) => Units.AsSpan(81 + index * 9, 9);
 
     private static void AddPeers(int cell, byte[] peers, ReadOnlySpan<byte> unit)
     {
