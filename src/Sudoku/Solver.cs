@@ -198,31 +198,28 @@ public class Solver
             return false;
         }
 
-        while (true)
+        var single = FindNakedSingle();
+
+        if (single != -1)
         {
-            var single = FindNakedSingle();
-
-            if (single != -1)
-            {
-                return CreateNextSteps((Position: (X: UnitTables.CellColumn(single), Y: UnitTables.CellRow(single)), Values: _cellCandidates[single], ValueCount: 1));
-            }
-            
-            single = FindHiddenSingle();
-
-            if (single != -1)
-            {
-                return CreateNextSteps((Position: (X: UnitTables.CellColumn(single), Y: UnitTables.CellRow(single)), Values: _cellCandidates[single], ValueCount: 1));
-            }
-
-            var move = FindLeastRemainingCandidates();
-
-            return move.ValueCount switch
-            {
-                1 => CreateNextSteps(move),
-                0 => false,
-                _ => CreateNextSteps(move)
-            };
+            return CreateNextSteps((Position: (X: UnitTables.CellColumn(single), Y: UnitTables.CellRow(single)), Values: _cellCandidates[single], ValueCount: 1));
         }
+        
+        single = FindHiddenSingle();
+
+        if (single != -1)
+        {
+            return CreateNextSteps((Position: (X: UnitTables.CellColumn(single), Y: UnitTables.CellRow(single)), Values: _cellCandidates[single], ValueCount: 1));
+        }
+
+        var move = FindLeastRemainingCandidates();
+
+        return move.ValueCount switch
+        {
+            1 => CreateNextSteps(move),
+            0 => false,
+            _ => CreateNextSteps(move)
+        };
     }
 
     private bool GetCellCandidates()
