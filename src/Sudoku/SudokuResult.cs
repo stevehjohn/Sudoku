@@ -81,7 +81,7 @@ public class SudokuResult
             switch (move.Type)
             {
                 case MoveType.NakedSingle:
-                    Console.WriteLine($" - Last possible number {move.Value} at ({move.X}, {move.Y})");
+                    Console.WriteLine($" - Naked single {move.Value} at ({move.X}, {move.Y})");
                     break;
 
                 case MoveType.HiddenSingle:
