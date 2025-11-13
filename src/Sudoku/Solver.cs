@@ -200,7 +200,14 @@ public class Solver
 
         while (true)
         {
-            var single = FindHiddenSingle();
+            var single = FindSingle();
+
+            if (single != -1)
+            {
+                return CreateNextSteps((Position: (X: UnitTables.CellColumn(single), Y: UnitTables.CellRow(single)), Values: _cellCandidates[single], ValueCount: 1));
+            }
+            
+            single = FindHiddenSingle();
 
             if (single != -1)
             {
@@ -309,6 +316,25 @@ public class Solver
         {
             _history.Add(new Move(x, y, 0, MoveType.NoCandidates));
         }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private int FindSingle()
+    {
+        for (var i = 0; i < 81; i++)
+        {
+            if (_workingCopy[i] != 0)
+            {
+                continue;
+            }
+
+            if (BitOperations.PopCount((uint) _cellCandidates[i]) == 1)
+            {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
