@@ -294,7 +294,7 @@ public class ConsoleApplication
 
         using var stream = new FileStream(filename, FileMode.Create);
 
-        _target = puzzleCount * Math.Max(isomorphCount, 1);
+        _target = puzzleCount;
 
         _count = 0;
         
@@ -325,8 +325,8 @@ public class ConsoleApplication
         var rate = puzzleCount / stopwatch.Elapsed.TotalSeconds;
 
         var rateText = rate < 1
-            ? $"{stopwatch.Elapsed.TotalSeconds / puzzleCount:N2} unique second(s)/puzzle"
-            : $"{puzzleCount / stopwatch.Elapsed.TotalSeconds:N2} unique puzzle(s)/second";
+            ? $"{stopwatch.Elapsed.TotalSeconds / puzzleCount:N2} second(s)/puzzle"
+            : $"{puzzleCount / stopwatch.Elapsed.TotalSeconds:N2} puzzle(s)/second";
         
         Out($"\n {puzzleCount:N0} {clues} clue puzzle(s) generated in {stopwatch.Elapsed:dd\\.hh\\:mm\\:ss\\.fff}, {rateText}.");
 
