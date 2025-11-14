@@ -77,6 +77,8 @@ public class Generator
                 puzzle = CreateSolvedPuzzle();
 
                 Array.Copy(puzzle, _originalPuzzle, 81);
+
+                puzzleUseCount = 0;
             }
             else
             {
