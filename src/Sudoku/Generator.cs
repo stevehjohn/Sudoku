@@ -17,6 +17,8 @@ public class Generator
 
     private readonly int[] _failed = new int[81];
 
+    private readonly int[] _failedDepth = new int[81];
+
     private readonly int[] _originalPuzzle = new int[81];
 
     private int _failedStamp;
@@ -126,7 +128,7 @@ public class Generator
         return RemoveCell(puzzle, cellsToRemove, stopWatch, budgetSeconds * Stopwatch.Frequency, 0, cancellationToken);
     }
 
-    private RemoveResult RemoveCell(int[] puzzle, int cellsToRemove, Stopwatch stopwatch, long budgetTicks, int start, CancellationToken cancellationToken)
+    private RemoveResult RemoveCell(int[] puzzle, int cellsToRemove, Stopwatch stopwatch, long budgetTicks, int depth, CancellationToken cancellationToken)
     {
         if (cellsToRemove == 0)
         {
@@ -138,14 +140,14 @@ public class Generator
             return RemoveResult.BudgetExceeded;
         }
 
-        if (_filledCells.Count - start < cellsToRemove)
+        if (_filledCells.Count - depth < cellsToRemove)
         {
             return RemoveResult.Failure;
         }
 
         var filledCount = _filledCells.Count;
 
-        for (var i = start; i < filledCount; i++)
+        for (var i = depth; i < filledCount; i++)
         {
             if (cancellationToken.IsCancellationRequested)
             {
@@ -154,7 +156,7 @@ public class Generator
 
             var cellIndex = _filledCells[i];
 
-            if (_failed[cellIndex] == _failedStamp)
+            if (_failed[cellIndex] == _failedStamp && _failedDepth[cellIndex] >= depth)
             {
                 continue;
             }
@@ -183,6 +185,8 @@ public class Generator
             puzzle[cellIndex] = cellValue;
 
             _failed[cellIndex] = _failedStamp;
+
+            _failedDepth[cellIndex] = depth;
         }
 
         return RemoveResult.Failure;
