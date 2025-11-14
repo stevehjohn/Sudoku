@@ -72,7 +72,7 @@ public class Generator
 
             InitialiseClueCounts();
 
-            if (cluesToLeave < 20 && puzzleUseCount > 100)
+            if (cluesToLeave < 22 && puzzleUseCount > 100)
             {
                 puzzle = CreateSolvedPuzzle();
 
