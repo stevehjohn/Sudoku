@@ -58,6 +58,8 @@ public class Generator
         Array.Copy(solvedPuzzle, _originalPuzzle, 81);
 
         var puzzleUseCount = 0;
+
+        InitialiseClueCounts();
         
         while (! cancellationToken.IsCancellationRequested)
         {
