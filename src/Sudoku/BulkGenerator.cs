@@ -25,8 +25,6 @@ public static class BulkGenerator
             _ => 1
         };
 
-        var totalQuantity = quantity * Math.Max(isomorphCount, 1);
-
         for (var i = 0; i < workers; i++)
         {
             var generator = new Generator();
@@ -39,7 +37,7 @@ public static class BulkGenerator
 
                 while (! cancellationToken.IsCancellationRequested)
                 {
-                    if (Volatile.Read(ref count) >= totalQuantity)
+                    if (Volatile.Read(ref count) >= quantity)
                     {
                         cancellationTokenSource.Cancel();
 
@@ -67,7 +65,7 @@ public static class BulkGenerator
                         continue;
                     }
 
-                    if (Interlocked.Increment(ref count) > totalQuantity)
+                    if (Interlocked.Increment(ref count) > quantity)
                     {
                         cancellationTokenSource.Cancel();
 
@@ -85,7 +83,7 @@ public static class BulkGenerator
 
                         for (var isomorph = 0; isomorph < isomorphCount; isomorph++)
                         {
-                            if (Interlocked.Increment(ref count) > totalQuantity)
+                            if (Interlocked.Increment(ref count) > quantity)
                             {
                                 cancellationTokenSource.Cancel();
 

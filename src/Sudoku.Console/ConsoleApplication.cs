@@ -248,7 +248,7 @@ public class ConsoleApplication
             return;
         }
 
-        System.Console.Write("\n Number of puzzles to generate: ");
+        System.Console.Write("\n Total number of puzzles to generate: ");
 
         response = System.Console.ReadLine();
 
@@ -259,7 +259,7 @@ public class ConsoleApplication
             return;
         }
 
-        System.Console.Write("\n Number of isomophs to generate: ");
+        System.Console.Write("\n Number of isomorphs to generate: ");
 
         response = System.Console.ReadLine();
 
