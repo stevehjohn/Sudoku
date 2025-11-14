@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Sudoku.Extensions;
 
 namespace Sudoku;
@@ -61,7 +60,7 @@ public class Generator
         {
             InitialiseDigitCounts();
             
-            if (RemoveCells(puzzle, 81 - cluesToLeave, 0, cancellationToken) == RemoveResult.Success)
+            if (RemoveCells(puzzle, 81 - cluesToLeave, cancellationToken) == RemoveResult.Success)
             {
                 return (true, puzzle);
             }
@@ -129,27 +128,20 @@ public class Generator
         }
     }
 
-    private RemoveResult RemoveCells(int[] puzzle, int cellsToRemove, int budgetSeconds, CancellationToken cancellationToken)
+    private RemoveResult RemoveCells(int[] puzzle, int cellsToRemove, CancellationToken cancellationToken)
     {
         CreateAndShuffleFilledCells();
 
-        var stopWatch = Stopwatch.StartNew();
-
         _failedStamp++;
 
-        return RemoveCell(puzzle, cellsToRemove, stopWatch, budgetSeconds * Stopwatch.Frequency, 0, cancellationToken);
+        return RemoveCell(puzzle, cellsToRemove, 0, cancellationToken);
     }
 
-    private RemoveResult RemoveCell(int[] puzzle, int cellsToRemove, Stopwatch stopwatch, long budgetTicks, int depth, CancellationToken cancellationToken)
+    private RemoveResult RemoveCell(int[] puzzle, int cellsToRemove, int depth, CancellationToken cancellationToken)
     {
         if (cellsToRemove == 0)
         {
             return RemoveResult.Success;
-        }
-
-        if (budgetTicks > 0 && stopwatch.ElapsedTicks > budgetTicks)
-        {
-            return RemoveResult.BudgetExceeded;
         }
 
         if (_filledCells.Count - depth < cellsToRemove)
@@ -193,7 +185,7 @@ public class Generator
 
             if (unique)
             {
-                var result = RemoveCell(puzzle, cellsToRemove - 1, stopwatch, budgetTicks, i + 1, cancellationToken);
+                var result = RemoveCell(puzzle, cellsToRemove - 1, i + 1, cancellationToken);
 
                 if (result != RemoveResult.Failure)
                 {
