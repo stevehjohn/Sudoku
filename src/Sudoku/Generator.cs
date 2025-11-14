@@ -74,6 +74,8 @@ public class Generator
             if (cluesToLeave < 20 && puzzleUseCount > 100)
             {
                 puzzle = CreateSolvedPuzzle();
+
+                Array.Copy(puzzle, _originalPuzzle, 81);
             }
             else
             {
