@@ -19,12 +19,6 @@ public class Generator
 
     private readonly int[] _originalPuzzle = new int[81];
 
-    private readonly int[] _rowClueCounts = new int[9];
-
-    private readonly int[] _columnClueCounts = new int[9];
-
-    private readonly int[] _boxClueCounts = new int[9];
-
     private int _failedStamp;
 
     public Generator()
@@ -59,8 +53,6 @@ public class Generator
 
         var puzzleUseCount = 0;
 
-        InitialiseClueCounts();
-        
         while (! cancellationToken.IsCancellationRequested)
         {
             if (RemoveCells(puzzle, 81 - cluesToLeave, 0, cancellationToken) == RemoveResult.Success)
@@ -69,8 +61,6 @@ public class Generator
             }
 
             puzzleUseCount++;
-
-            InitialiseClueCounts();
 
             if (cluesToLeave < 22 && puzzleUseCount > 100)
             {
@@ -113,18 +103,6 @@ public class Generator
         InitialiseCandidates();
 
         return CreateSolvedPuzzle(puzzle, 0, cancellationToken);
-    }
-
-    private void InitialiseClueCounts()
-    {
-        for (var i = 0; i < 9; i++)
-        {
-            _rowClueCounts[i] = 9;
-
-            _columnClueCounts[i] = 9;
-
-            _boxClueCounts[i] = 9;
-        }
     }
 
     private void InitialiseCandidates()
@@ -181,25 +159,6 @@ public class Generator
                 continue;
             }
 
-            var row = cellIndex / 9;
-
-            var column = cellIndex % 9;
-
-            var box = UnitTables.CellBox(cellIndex);
-
-            if (_rowClueCounts[row] + _columnClueCounts[column] + _boxClueCounts[box] == 1)
-            {
-                _failed[cellIndex] = _failedStamp;
-                
-                continue;
-            }
-
-            _rowClueCounts[row]--;
-
-            _columnClueCounts[column]--;
-
-            _boxClueCounts[box]--;
-
             var cellValue = puzzle[cellIndex];
 
             puzzle[cellIndex] = 0;
@@ -222,12 +181,6 @@ public class Generator
             }
 
             puzzle[cellIndex] = cellValue;
-
-            _rowClueCounts[row]++;
-
-            _columnClueCounts[column]++;
-
-            _boxClueCounts[box]++;
 
             _failed[cellIndex] = _failedStamp;
         }
