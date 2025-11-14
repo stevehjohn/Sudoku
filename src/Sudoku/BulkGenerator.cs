@@ -20,9 +20,9 @@ public static class BulkGenerator
 
         var solvedPuzzleReuseCount = cluesToLeave switch
         {
-            < 22 => int.MaxValue,
-            < 25 => 1_000,
-            _ => 1
+            < 22 => 10,
+            < 25 => 100,
+            _ => 1_000
         };
 
         for (var i = 0; i < workers; i++)
