@@ -175,7 +175,7 @@ public class Generator
 
             var cellValue = puzzle[cellIndex];
 
-            if (_digitCounts[cellValue] == 1)
+            if (_digitCounts[cellValue] == 1 && cellsToRemove > 7)
             {
                 continue;
             }
