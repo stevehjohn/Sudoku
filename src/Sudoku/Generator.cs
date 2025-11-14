@@ -70,7 +70,6 @@ public class Generator
 
             InitialiseClueCounts();
 
-            // What are reasonable values to use here?
             if (cluesToLeave < 20 && puzzleUseCount > 100)
             {
                 puzzle = CreateSolvedPuzzle();
