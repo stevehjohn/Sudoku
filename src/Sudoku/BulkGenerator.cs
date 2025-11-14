@@ -80,7 +80,7 @@ public static class BulkGenerator
                         callback(result.Puzzle);
                     }
 
-                    if (isomorphCount > 0)
+                    if (isomorphCount > 0 && ! cancellationToken.IsCancellationRequested)
                     {
                         var isomorphs = IsomorphGenerator.CreateIsomorphs(result.Puzzle, isomorphCount, cancellationToken);
 
