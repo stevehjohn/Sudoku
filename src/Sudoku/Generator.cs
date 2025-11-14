@@ -57,8 +57,6 @@ public class Generator
 
         Array.Copy(solvedPuzzle, _originalPuzzle, 81);
         
-        InitialiseClueCounts();
-
         while (! cancellationToken.IsCancellationRequested)
         {
             if (RemoveCells(puzzle, 81 - cluesToLeave, 0, cancellationToken) == RemoveResult.Success)
@@ -66,6 +64,8 @@ public class Generator
                 return (true, puzzle);
             }
             
+            InitialiseClueCounts();
+
             Array.Copy(_originalPuzzle, puzzle, 81);
         }
 
