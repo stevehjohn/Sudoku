@@ -56,6 +56,8 @@ public class Generator
         Array.Copy(solvedPuzzle, puzzle, 81);
 
         Array.Copy(solvedPuzzle, _originalPuzzle, 81);
+        
+        InitialiseClueCounts();
 
         while (! cancellationToken.IsCancellationRequested)
         {
@@ -63,7 +65,7 @@ public class Generator
             {
                 return (true, puzzle);
             }
-
+            
             Array.Copy(_originalPuzzle, puzzle, 81);
         }
 
@@ -91,6 +93,13 @@ public class Generator
             puzzle[i] = 0;
         }
 
+        InitialiseCandidates();
+
+        return CreateSolvedPuzzle(puzzle, 0, cancellationToken);
+    }
+
+    private void InitialiseClueCounts()
+    {
         for (var i = 0; i < 9; i++)
         {
             _rowClueCounts[i] = 9;
@@ -99,10 +108,6 @@ public class Generator
 
             _boxClueCounts[i] = 9;
         }
-
-        InitialiseCandidates();
-
-        return CreateSolvedPuzzle(puzzle, 0, cancellationToken);
     }
 
     private void InitialiseCandidates()
