@@ -21,6 +21,8 @@ public class Generator
 
     private readonly int[] _originalPuzzle = new int[81];
 
+    private readonly int[] _digitCounts = new int[10];
+
     private int _failedStamp;
 
     public Generator()
@@ -57,6 +59,8 @@ public class Generator
 
         while (! cancellationToken.IsCancellationRequested)
         {
+            InitialiseDigitCounts();
+            
             if (RemoveCells(puzzle, 81 - cluesToLeave, 0, cancellationToken) == RemoveResult.Success)
             {
                 return (true, puzzle);
@@ -79,6 +83,14 @@ public class Generator
         }
 
         return (false, puzzle);
+    }
+
+    private void InitialiseDigitCounts()
+    {
+        for (var i = 1; i < 10; i++)
+        {
+            _digitCounts[i] = 9;
+        }
     }
 
     public int[] CreateSolvedPuzzle()
@@ -163,7 +175,14 @@ public class Generator
 
             var cellValue = puzzle[cellIndex];
 
+            if (_digitCounts[cellValue] == 1)
+            {
+                continue;
+            }
+
             puzzle[cellIndex] = 0;
+
+            _digitCounts[cellValue]--;
 
             if (cancellationToken.IsCancellationRequested)
             {
@@ -183,6 +202,8 @@ public class Generator
             }
 
             puzzle[cellIndex] = cellValue;
+
+            _digitCounts[cellValue]++;
 
             _failed[cellIndex] = _failedStamp;
 
