@@ -61,8 +61,7 @@ public class Generator
 
             budgetMax = cluesToLeave switch
             {
-                < 18 => int.MaxValue,
-                < 19 => 3_600,
+                < 19 => int.MaxValue,
                 < 20 => 120,
                 < 21 => 25,
                 21 => 20,
