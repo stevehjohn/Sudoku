@@ -43,7 +43,7 @@ public class Generator
         return Generate(puzzle, cluesToLeave, cancellationToken);
     }
 
-    public (bool Succeeded, int[] Puzzle) Generate(int[] solvedPuzzle, int cluesToLeave, CancellationToken cancellationToken, bool useBudget = true)
+    public (bool Succeeded, int[] Puzzle) Generate(int[] solvedPuzzle, int cluesToLeave, CancellationToken cancellationToken)
     {
         var puzzle = new int[81];
 
@@ -51,79 +51,17 @@ public class Generator
 
         Array.Copy(solvedPuzzle, _originalPuzzle, 81);
 
-        var budgetSeconds = 0;
-
-        var budgetMax = 3;
-
-        if (useBudget && ! Debugger.IsAttached)
+        while (! cancellationToken.IsCancellationRequested)
         {
-            budgetSeconds = 2;
-
-            budgetMax = cluesToLeave switch
+            if (RemoveCells(puzzle, 81 - cluesToLeave, 0, cancellationToken) == RemoveResult.Success)
             {
-                < 19 => int.MaxValue,
-                < 20 => 120,
-                < 21 => 25,
-                21 => 20,
-                22 => 10,
-                23 => 8,
-                _ => budgetMax
-            };
-        }
-
-        var succeeded = true;
-
-        if (budgetSeconds == 0)
-        {
-            while (! cancellationToken.IsCancellationRequested)
-            {
-                if (RemoveCells(puzzle, 81 - cluesToLeave, 0, cancellationToken) == RemoveResult.Success)
-                {
-                    return (true, puzzle);
-                }
-
-                Array.Copy(_originalPuzzle, puzzle, 81);
+                return (true, puzzle);
             }
-        }
-        else
-        {
-            var attempts = 1;
 
-            var result = RemoveResult.Failure;
-
-            while (result != RemoveResult.Success)
-            {
-                result = RemoveCells(puzzle, 81 - cluesToLeave, budgetSeconds, cancellationToken);
-
-                switch (result)
-                {
-                    case RemoveResult.BudgetExceeded or RemoveResult.Cancelled:
-
-                        return (false, puzzle);
-
-                    case RemoveResult.Failure:
-                        Array.Copy(_originalPuzzle, puzzle, 81);
-
-                        break;
-                }
-
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    succeeded = false;
-
-                    break;
-                }
-
-                attempts++;
-
-                if (attempts % 10 == 0 && budgetSeconds < budgetMax)
-                {
-                    budgetSeconds *= 2;
-                }
-            }
+            Array.Copy(_originalPuzzle, puzzle, 81);
         }
 
-        return (succeeded, puzzle);
+        return (false, puzzle);
     }
 
     public int[] CreateSolvedPuzzle()
