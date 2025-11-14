@@ -159,11 +159,11 @@ public class Generator
                 continue;
             }
 
-            var row = UnitTables.CellRow(i);
+            var row = cellIndex / 9;
 
-            var column = UnitTables.CellColumn(i);
+            var column = cellIndex % 9;
 
-            var box = UnitTables.CellBox(i);
+            var box = UnitTables.CellBox(cellIndex);
 
             if (_rowClueCounts[row] + _columnClueCounts[column] + _boxClueCounts[box] == 1)
             {
