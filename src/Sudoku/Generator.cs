@@ -141,6 +141,11 @@ public class Generator
     {
         if (cellsToRemove == 0)
         {
+            if (depth > 79)
+            {
+                File.AppendAllLines("~/Sudoku.log", [ $"{DateTime.Now:ddd d MMM HH:mm:ss}: {puzzle.FlattenPuzzle()}" ]);
+            }
+
             return RemoveResult.Success;
         }
 
