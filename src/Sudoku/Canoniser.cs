@@ -53,12 +53,12 @@ public static class Canoniser
         {
             swapped = false;
 
-            for (var pass = 0; pass < 2; pass++)
+            for (var pass = 0; pass < 20; pass++)
             {
-                NormaliseDigits(puzzle);
-
                 for (var i = 0; i < 3; i++)
                 {
+                    NormaliseDigits(puzzle);
+
                     swapped |= PermuteBand(puzzle, i);
                 }
 
