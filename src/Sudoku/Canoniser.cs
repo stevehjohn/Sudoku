@@ -15,6 +15,8 @@ public static class Canoniser
             PermuteBand(workingCopy, i);
         }
 
+        PermuteBands(workingCopy);
+
         return workingCopy;
     }
 
@@ -70,9 +72,27 @@ public static class Canoniser
         }
     }
 
+    private static void PermuteBands(Span<int> puzzle)
+    {
+        for (var pass = 0; pass < 2; pass++)
+        {
+            for (var i = 0; i < 2 - pass; i++)
+            {
+                var firstRowStart = i * 27;
+
+                var secondRowStart = (i + 1) * 27;
+                
+                if (Compare(puzzle.Slice(secondRowStart, 27), puzzle.Slice(firstRowStart, 27)) < 0)
+                {
+                    SwapBands(puzzle, i * 27 + i, (i + 1) * 27);
+                }
+            }
+        }
+    }
+
     private static int Compare(ReadOnlySpan<int> left, ReadOnlySpan<int> right)
     {
-        for (var i = 0; i < 9; i++)
+        for (var i = 0; i < left.Length; i++)
         {
             if (left[i] < right[i])
             {
@@ -97,6 +117,18 @@ public static class Canoniser
         for (var i = 0; i < 9; i++)
         {
             (puzzle[firstRow + i], puzzle[secondRow + i]) = (puzzle[secondRow + i], puzzle[firstRow + i]);
+        }
+    }
+
+    private static void SwapBands(Span<int> puzzle, int firstBand, int secondBand)
+    {
+        firstBand *= 27;
+
+        secondBand *= 27;
+        
+        for (var i = 0; i < 27; i++)
+        {
+            (puzzle[firstBand + i], puzzle[secondBand + i]) = (puzzle[secondBand + i], puzzle[firstBand + i]);
         }
     }
 }
