@@ -32,7 +32,7 @@ public class BulkSolver
 
     private bool _findUnique;
 
-    public BulkSolver((int[] Puzzle, int Clues)[] puzzles, bool findUnique)
+    public BulkSolver((int[] Puzzle, int Clues)[] puzzles, bool findUnique = false)
     {
         _puzzles = puzzles;
 
