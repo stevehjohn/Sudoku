@@ -8,8 +8,13 @@ public static class Canoniser
         
         Array.Copy(puzzle, workingCopy, 81);
 
-        NormaliseDigits(puzzle);
-        
+        NormaliseDigits(workingCopy);
+
+        for (var i = 0; i < 3; i++)
+        {
+            PermuteBand(workingCopy, i);
+        }
+
         return workingCopy;
     }
 
@@ -22,6 +27,11 @@ public static class Canoniser
         for (var i = 0; i < 81; i++)
         {
             var cellValue = puzzle[i];
+
+            if (cellValue == 0)
+            {
+                continue;
+            }
 
             if (mappings[cellValue] == 0)
             {
@@ -42,8 +52,21 @@ public static class Canoniser
 
     private static void PermuteBand(Span<int> puzzle, int band)
     {
-        for (var i = 0; i < 3; i++)
+        var bandStart = band * 27;
+        
+        for (var pass = 0; pass < 2; pass++)
         {
+            for (var i = 0; i < 2 - pass; i++)
+            {
+                var firstRowStart = bandStart + i * 9;
+
+                var secondRowStart = bandStart + (i + 1) * 9;
+                
+                if (Compare(puzzle.Slice(secondRowStart, 9), puzzle.Slice(firstRowStart, 9)) < 0)
+                {
+                    SwapRows(puzzle, band * 3 + i, band * 3 + i + 1);
+                }
+            }
         }
     }
 
