@@ -60,18 +60,20 @@ public static class Canoniser
     private static void PermuteBand(Span<int> puzzle, int band)
     {
         var bandStart = band * 27;
+
+        var firstRow = band * 3;
         
         for (var pass = 0; pass < 2; pass++)
         {
             for (var i = 0; i < 2 - pass; i++)
             {
-                var firstBandStart = bandStart + i * 9;
+                var firstRowStart = bandStart + i * 9;
 
-                var secondBandStart = bandStart + (i + 1) * 9;
+                var secondRowStart = bandStart + (i + 1) * 9;
                 
-                if (Compare(puzzle.Slice(secondBandStart, 9), puzzle.Slice(firstBandStart, 9)) < 0)
+                if (Compare(puzzle.Slice(secondRowStart, 9), puzzle.Slice(firstRowStart, 9)) < 0)
                 {
-                    SwapRows(puzzle, firstBandStart, secondBandStart);
+                    SwapRows(puzzle, firstRow + i, firstRow + i + 1);
                 }
             }
         }
@@ -83,13 +85,13 @@ public static class Canoniser
         {
             for (var i = 0; i < 2 - pass; i++)
             {
-                var firstRowStart = i * 27;
+                var firstBandStart = i * 27;
 
-                var secondRowStart = (i + 1) * 27;
+                var secondBandStart = (i + 1) * 27;
                 
-                if (Compare(puzzle.Slice(secondRowStart, 27), puzzle.Slice(firstRowStart, 27)) < 0)
+                if (Compare(puzzle.Slice(secondBandStart, 27), puzzle.Slice(firstBandStart, 27)) < 0)
                 {
-                    SwapBands(puzzle, firstRowStart, secondRowStart);
+                    SwapBands(puzzle, i, i + 1);
                 }
             }
         }
@@ -97,6 +99,17 @@ public static class Canoniser
 
     private static void Transpose(Span<int> puzzle)
     {
+        for (var y = 0; y < 9; y++)
+        {
+            for (var x = y + 1; x < 9; x++)
+            {
+                var left = y * 9 + x;
+
+                var right = x * 9 + y;
+
+                (puzzle[left], puzzle[right]) = (puzzle[right], puzzle[left]);
+            }
+        }
     }
 
     private static int Compare(ReadOnlySpan<int> left, ReadOnlySpan<int> right)
