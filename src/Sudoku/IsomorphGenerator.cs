@@ -144,7 +144,7 @@ public static class IsomorphGenerator
         }
     }
 
-    private static void FlipHorizontally(Span<int> puzzle)
+    private static void FlipVertically(Span<int> puzzle)
     {
         for (var row = 0; row < 5; row++)
         {
@@ -159,7 +159,7 @@ public static class IsomorphGenerator
         }
     }
 
-    private static void FlipVertically(Span<int> puzzle)
+    private static void FlipHorizontally(Span<int> puzzle)
     {
         for (var sourceX = 0; sourceX < 5; sourceX++)
         {
