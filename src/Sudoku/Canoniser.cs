@@ -2,7 +2,7 @@ namespace Sudoku;
 
 public static class Canoniser
 {
-    public static Span<int> CanonisePuzzle(Span<int> puzzle)
+    public static int[] CanonisePuzzle(Span<int> puzzle)
     {
         var firstCanon = new Span<int>(new int[81]);
         
@@ -18,7 +18,18 @@ public static class Canoniser
         
         Canonise(secondCanon);
 
-        return Compare(firstCanon, secondCanon) < 0 ? firstCanon : secondCanon;
+        var result = new int[81];
+
+        if (Compare(firstCanon, secondCanon) < 0)
+        {
+            firstCanon.CopyTo(result);
+        }
+        else
+        {
+            secondCanon.CopyTo(result);
+        }
+
+        return result;
     }
 
     private static void Canonise(Span<int> puzzle)
