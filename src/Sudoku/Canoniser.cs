@@ -70,6 +70,8 @@ public static class Canoniser
             }
             
         } while (swapped);
+
+        NormaliseDigits(puzzle);
     }
 
     private static void NormaliseDigits(Span<int> puzzle)
