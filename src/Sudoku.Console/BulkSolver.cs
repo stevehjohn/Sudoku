@@ -30,11 +30,15 @@ public class BulkSolver
 
     private readonly object _consoleLock = new();
 
-    public BulkSolver((int[] Puzzle, int Clues)[] puzzles)
+    private bool _findUnique;
+
+    public BulkSolver((int[] Puzzle, int Clues)[] puzzles, bool findUnique)
     {
         _puzzles = puzzles;
 
         _puzzleCount = puzzles.Length;
+
+        _findUnique = findUnique;
     }
 
     public void Solve(bool quiet = false, bool noSummary = false)
@@ -63,7 +67,7 @@ public class BulkSolver
             {
                 MaxDegreeOfParallelism = Environment.ProcessorCount - 1
             },
-            () => new Solver(historyType, SolveMethod.FindFirst),
+            () => new Solver(historyType, _findUnique ? SolveMethod.FindUnique : SolveMethod.FindFirst),
             (i, _, solver) =>
             {
                 var solution = solver.Solve(_puzzles[i].Puzzle);

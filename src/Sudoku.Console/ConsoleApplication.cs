@@ -524,7 +524,7 @@ public class ConsoleApplication
 
         puzzles[0].Clues = clues;
 
-        var solver = new BulkSolver(puzzles);
+        var solver = new BulkSolver(puzzles, true);
 
         solver.Solve();
     }
@@ -610,7 +610,7 @@ public class ConsoleApplication
             var canon = Canoniser.CanonisePuzzle(puzzle);
 
             File.AppendAllLines(outputPath, [canon.FlattenPuzzle()]);
-            
+
             Out(canon.FlattenPuzzle());
         }
 
@@ -631,7 +631,7 @@ public class ConsoleApplication
 
         var puzzle = new int[81];
 
-        retry:
+        retry1:
         System.Console.Write(" Puzzle: ");
 
         var line = System.Console.ReadLine();
@@ -655,14 +655,43 @@ public class ConsoleApplication
 
             Out("That appears to be an invalid line. Please try again.\n");
 
-            goto retry;
+            goto retry1;
         }
-
-        var isomorph = IsomorphGenerator.CreateIsomorphs(puzzle, 1, CancellationToken.None);
 
         Out();
 
-        Out($"Isomorph: {isomorph[0].FlattenPuzzle()}");
+        Out("How many isomorphs should be created?");
+
+        Out();
+
+        retry2:
+        System.Console.Write(" Count: ");
+
+        var countString = System.Console.ReadLine();
+
+        var count = 0;
+        
+        try
+        {
+            count = int.Parse(countString!);
+        }
+        catch
+        {
+            Out();
+
+            Out("That appears to be an invalid line. Please try again.\n");
+
+            goto retry2;
+        }
+
+        var isomorph = IsomorphGenerator.CreateIsomorphs(puzzle, count, CancellationToken.None);
+
+        Out();
+
+        for (var i = 0; i < count; i++)
+        {
+            Out(isomorph[i].FlattenPuzzle());
+        }
     }
 
     private void SolvePuzzles(int fileId)
