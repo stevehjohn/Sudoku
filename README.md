@@ -1,6 +1,13 @@
 # Sudoku
 
-A fast Sudoku solver written in C#. Can also act as a Sudoku generator.
+A fast Sudoku library written in C#.
+
+Features:
+
+- Solver
+- Generator
+- Isomorph generator
+- Canoniser
 
 ## Visualisations of Solving Process
 
