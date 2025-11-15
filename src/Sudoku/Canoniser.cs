@@ -55,10 +55,10 @@ public static class Canoniser
 
             for (var pass = 0; pass < 2; pass++)
             {
+                NormaliseDigits(puzzle);
+
                 for (var i = 0; i < 3; i++)
                 {
-                    NormaliseDigits(puzzle);
-
                     swapped |= PermuteBand(puzzle, i);
                 }
 
