@@ -16,11 +16,11 @@ public class ConsoleApplication
     private int _target;
 
     private int _count;
-    
+
     public void Run()
     {
         System.Console.Title = "Sudoku";
-        
+
         while (true)
         {
             Clear();
@@ -45,7 +45,7 @@ public class ConsoleApplication
             }
 
             Out();
-            
+
             Out("   B: Generate tree branch diagram for last most steps");
 
             Out("   V: Visualise last most steps");
@@ -53,9 +53,11 @@ public class ConsoleApplication
             Out("   L: See log of last most steps");
 
             Out("   E: Enter manually");
-            
+
             Out("   C: Canonise puzzle");
-            
+
+            Out("   F: Canonise file");
+
             Out("   I: Create isomorphs");
 
             Out("   T: Test suite");
@@ -80,39 +82,39 @@ public class ConsoleApplication
                 if (response == "b")
                 {
                     TreeMostSteps();
-                    
+
                     Out();
 
                     Out("Press any key to continue.");
 
                     System.Console.ReadKey();
-                    
+
                     break;
                 }
 
                 if (response == "v")
                 {
                     VisualiseMostSteps();
-                    
+
                     Out();
 
                     Out("Press any key to continue.");
 
                     System.Console.ReadKey();
-                    
+
                     break;
                 }
 
                 if (response == "l")
                 {
                     DumpMostStepsLog();
-                    
+
                     Out();
 
                     Out("Press any key to continue.");
 
                     System.Console.ReadKey();
-                    
+
                     break;
                 }
 
@@ -145,6 +147,19 @@ public class ConsoleApplication
                 if (response == "c")
                 {
                     CanonisePuzzle();
+
+                    Out();
+
+                    Out("Press any key to continue.");
+
+                    System.Console.ReadKey();
+
+                    break;
+                }
+
+                if (response == "f")
+                {
+                    CanoniseFile();
 
                     Out();
 
@@ -213,15 +228,15 @@ public class ConsoleApplication
     private static void TreeMostSteps()
     {
         System.Console.Clear();
-        
+
         var puzzle = LoadPuzzles($"{FileHelper.GetPuzzlesPath()}/Most Steps.txt")[0];
 
         var filename = $"Tree {DateTime.UtcNow:yy-MM-dd hh-mm-ss}";
-        
+
         TreeGenerator.Generate(puzzle.Puzzle, filename);
-        
+
         Out($"Tree file saved to {filename}.html");
-        
+
         Process.Start(new ProcessStartInfo
         {
             FileName = $"{filename}.html",
@@ -232,11 +247,11 @@ public class ConsoleApplication
     private static void DumpMostStepsLog()
     {
         System.Console.Clear();
-        
+
         var puzzle = LoadPuzzles($"{FileHelper.GetPuzzlesPath()}/Most Steps.txt")[0];
 
         puzzle.Puzzle.DumpToConsole(1);
-        
+
         var solver = new Solver(HistoryType.AllSteps, SolveMethod.FindFirst);
 
         var result = solver.Solve(puzzle.Puzzle);
@@ -246,9 +261,9 @@ public class ConsoleApplication
         result.LogToConsole();
 
         Out();
-        
+
         Out($"Solved in {result.ElapsedMicroseconds:N0}μs with {result.History.Count:N0} steps taken.\n");
-        
+
         result.DumpToConsole(1);
     }
 
@@ -261,7 +276,7 @@ public class ConsoleApplication
         var result = solver.Solve(puzzle.Puzzle);
 
         var visualiser = new ConsoleSolveVisualiser(puzzle.Puzzle, result);
-        
+
         visualiser.Visualise(1, 1);
     }
 
@@ -327,7 +342,7 @@ public class ConsoleApplication
         _target = puzzleCount;
 
         _count = 0;
-        
+
         using (_writer = new StreamWriter(stream))
         {
             _writer.AutoFlush = true;
@@ -357,17 +372,17 @@ public class ConsoleApplication
         var rateText = rate < 1
             ? $"{stopwatch.Elapsed.TotalSeconds / puzzleCount:N2} second(s)/puzzle"
             : $"{puzzleCount / stopwatch.Elapsed.TotalSeconds:N2} puzzle(s)/second";
-        
+
         Out($"\n {puzzleCount:N0} {clues} clue puzzle(s) generated in {stopwatch.Elapsed:dd\\.hh\\:mm\\:ss\\.fff}, {rateText}.");
 
         if (_lastPuzzle != null)
         {
             System.Console.WriteLine();
-            
+
             System.Console.WriteLine(" Last puzzle:");
-            
+
             System.Console.WriteLine();
-            
+
             _lastPuzzle.DumpToConsole(1);
         }
 
@@ -383,26 +398,26 @@ public class ConsoleApplication
         _count++;
 
         var flattenedPuzzle = puzzle.FlattenPuzzle();
-        
+
         _writer.WriteLine(flattenedPuzzle);
 
         var length = 0;
 
         var i = _target;
-        
+
         while (i > 0)
         {
             i /= 10;
-            
+
             length++;
         }
 
         System.Console.Title = $"Sudoku ({_count}/{_target})";
-        
+
         Out($"{DateTime.Now:ddd d MMM HH:mm:ss} ({_count.ToString().PadLeft(length)}/{_target}):");
-        
+
         System.Console.WriteLine();
-        
+
         Out(flattenedPuzzle);
 
         if (_target > 1)
@@ -512,8 +527,8 @@ public class ConsoleApplication
         var solver = new BulkSolver(puzzles);
 
         solver.Solve();
-    }    
-    
+    }
+
     private static void CanonisePuzzle()
     {
         Out();
@@ -554,12 +569,54 @@ public class ConsoleApplication
         }
 
         var canon = Canoniser.CanonisePuzzle(puzzle);
-        
+
         Out();
-        
+
         Out($"Canon: {canon.ToArray().FlattenPuzzle()}");
-    }    
-    
+    }
+
+    private static void CanoniseFile()
+    {
+        Out();
+
+        Out("Please enter the path to the text file.");
+
+        Out();
+
+        retry:
+        System.Console.Write(" Path: ");
+
+        var path = System.Console.ReadLine();
+
+        if (string.IsNullOrWhiteSpace(path) || ! Path.Exists(path))
+        {
+            Out();
+
+            Out("That appears to be an invalid path. Please try again.\n");
+
+            goto retry;
+        }
+
+        var lines = File.ReadAllLines(path);
+
+        var outputPath = Path.Combine(Path.GetDirectoryName(path)!, $"{Path.GetFileNameWithoutExtension(path)} Canonised.txt");
+
+        File.Delete(outputPath);
+
+        foreach (var line in lines)
+        {
+            var puzzle = line.ParsePuzzle();
+
+            var canon = Canoniser.CanonisePuzzle(puzzle);
+
+            File.AppendAllLines(path, [canon.FlattenPuzzle()]);
+        }
+
+        Out();
+
+        Out($"Canonised file: {Path.GetFileName(outputPath)}");
+    }
+
     private static void CreateIsomorph()
     {
         Out();
@@ -600,9 +657,9 @@ public class ConsoleApplication
         }
 
         var isomorph = IsomorphGenerator.CreateIsomorphs(puzzle, 1, CancellationToken.None);
-        
+
         Out();
-        
+
         Out($"Isomorph: {isomorph[0].FlattenPuzzle()}");
     }
 
@@ -690,7 +747,7 @@ public class ConsoleApplication
                 {
                     continue;
                 }
-                
+
                 puzzles[count].Puzzle[i] = character - '0';
 
                 if (character != '0')
