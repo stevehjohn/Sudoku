@@ -609,7 +609,9 @@ public class ConsoleApplication
 
             var canon = Canoniser.CanonisePuzzle(puzzle);
 
-            File.AppendAllLines(path, [canon.FlattenPuzzle()]);
+            File.AppendAllLines(outputPath, [canon.FlattenPuzzle()]);
+            
+            Out(canon.FlattenPuzzle());
         }
 
         Out();
