@@ -8,10 +8,10 @@ public static class Canoniser
 
         var workingCopy = new int[81];
         
-        puzzle.CopyTo(workingCopy);
-
         for (var i = 0; i < 8; i++)
         {
+            puzzle.CopyTo(workingCopy);
+
             ApplySymmetry(workingCopy, i);
             
             Canonise(workingCopy);
@@ -49,6 +49,8 @@ public static class Canoniser
     {
         bool swapped;
 
+        NormaliseDigits(puzzle);
+
         do
         {
             swapped = false;
@@ -57,12 +59,8 @@ public static class Canoniser
             {
                 for (var i = 0; i < 3; i++)
                 {
-                    NormaliseDigits(puzzle);
-
                     swapped |= PermuteBand(puzzle, i);
                 }
-
-                NormaliseDigits(puzzle);
 
                 swapped |= PermuteBands(puzzle);
 
