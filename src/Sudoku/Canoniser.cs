@@ -10,12 +10,17 @@ public static class Canoniser
 
         NormaliseDigits(workingCopy);
 
-        for (var i = 0; i < 3; i++)
+        for (var pass = 0; pass < 2; pass++)
         {
-            PermuteBand(workingCopy, i);
-        }
+            for (var i = 0; i < 3; i++)
+            {
+                PermuteBand(workingCopy, i);
+            }
 
-        PermuteBands(workingCopy);
+            PermuteBands(workingCopy);
+
+            Transpose(workingCopy);
+        }
 
         return workingCopy;
     }
@@ -60,13 +65,13 @@ public static class Canoniser
         {
             for (var i = 0; i < 2 - pass; i++)
             {
-                var firstRowStart = bandStart + i * 9;
+                var firstBandStart = bandStart + i * 9;
 
-                var secondRowStart = bandStart + (i + 1) * 9;
+                var secondBandStart = bandStart + (i + 1) * 9;
                 
-                if (Compare(puzzle.Slice(secondRowStart, 9), puzzle.Slice(firstRowStart, 9)) < 0)
+                if (Compare(puzzle.Slice(secondBandStart, 9), puzzle.Slice(firstBandStart, 9)) < 0)
                 {
-                    SwapRows(puzzle, band * 3 + i, band * 3 + i + 1);
+                    SwapRows(puzzle, firstBandStart, secondBandStart);
                 }
             }
         }
@@ -84,10 +89,14 @@ public static class Canoniser
                 
                 if (Compare(puzzle.Slice(secondRowStart, 27), puzzle.Slice(firstRowStart, 27)) < 0)
                 {
-                    SwapBands(puzzle, i * 27 + i, (i + 1) * 27);
+                    SwapBands(puzzle, firstRowStart, secondRowStart);
                 }
             }
         }
+    }
+
+    private static void Transpose(Span<int> puzzle)
+    {
     }
 
     private static int Compare(ReadOnlySpan<int> left, ReadOnlySpan<int> right)
