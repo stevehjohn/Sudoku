@@ -603,7 +603,7 @@ public class ConsoleApplication
         
         Out();
         
-        Out($"Canon: {isomorph[0].FlattenPuzzle()}");
+        Out($"Isomorph: {isomorph[0].FlattenPuzzle()}");
     }
 
     private void SolvePuzzles(int fileId)
