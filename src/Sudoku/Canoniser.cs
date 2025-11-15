@@ -21,6 +21,8 @@ public static class Canoniser
                 workingCopy.CopyTo(canon);
             }
         }
+        
+        NormaliseDigits(canon);
 
         return canon;
     }
@@ -47,7 +49,7 @@ public static class Canoniser
     {
         NormaliseDigits(puzzle);
         
-        for (var pass = 0; pass < 2; pass++)
+        for (var pass = 0; pass < 20; pass++)
         {
             for (var i = 0; i < 3; i++)
             {
