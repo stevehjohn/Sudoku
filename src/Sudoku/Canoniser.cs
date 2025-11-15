@@ -4,34 +4,45 @@ public static class Canoniser
 {
     public static int[] CanonisePuzzle(Span<int> puzzle)
     {
-        var firstCanon = new Span<int>(new int[81]);
-        
-        puzzle.CopyTo(firstCanon);
-        
-        Canonise(firstCanon);
+        var canon = new int[81];
 
-        var secondCanon = new Span<int>(new int[81]);
+        var workingCopy = new int[81];
         
-        puzzle.CopyTo(secondCanon);
-        
-        Transpose(secondCanon);
-        
-        Canonise(secondCanon);
-
-        var result = new int[81];
-
-        if (Compare(firstCanon, secondCanon) < 0)
+        for (var i = 0; i < 8; i++)
         {
-            firstCanon.CopyTo(result);
-        }
-        else
-        {
-            secondCanon.CopyTo(result);
+            puzzle.CopyTo(workingCopy);
+            
+            ApplySymmetry(workingCopy, i);
+            
+            Canonise(workingCopy);
+
+            if (i == 0 || Compare(workingCopy, canon) < 0)
+            {
+                workingCopy.CopyTo(canon);
+            }
         }
 
-        return result;
+        return canon;
     }
+    
+    private static void ApplySymmetry(Span<int> puzzle, int symmetry)
+    {
+        if ((symmetry & 4) != 0)
+        {
+            Transpose(puzzle);
+        }
 
+        if ((symmetry & 2) != 0)
+        {
+            FlipHorizontally(puzzle);
+        }
+
+        if ((symmetry & 1) != 0)
+        {
+            FlipVertically(puzzle);
+        }
+    }
+    
     private static void Canonise(Span<int> puzzle)
     {
         NormaliseDigits(puzzle);
@@ -77,6 +88,34 @@ public static class Canoniser
             if (cellValue != 0)
             {
                 puzzle[i] = mappings[cellValue];
+            }
+        }
+    }
+
+    private static void FlipHorizontally(Span<int> puzzle)
+    {
+        for (var row = 0; row < 5; row++)
+        {
+            var sourceY = row * 9;
+
+            var targetY = (8 - row) * 9;
+            
+            for (var x = 0; x < 9; x++)
+            {
+                (puzzle[sourceY + x], puzzle[targetY + x]) = (puzzle[targetY + x], puzzle[sourceY + x]);
+            }
+        }
+    }
+
+    private static void FlipVertically(Span<int> puzzle)
+    {
+        for (var sourceX = 0; sourceX < 5; sourceX++)
+        {
+            var targetX = 8 - sourceX;
+            
+            for (var x = 0; x < 81; x += 9)
+            {
+                (puzzle[sourceX + x], puzzle[targetX + x]) = (puzzle[targetX + x], puzzle[sourceX + x]);
             }
         }
     }
