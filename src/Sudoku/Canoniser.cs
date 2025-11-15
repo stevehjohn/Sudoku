@@ -8,10 +8,10 @@ public static class Canoniser
 
         var workingCopy = new int[81];
         
+        puzzle.CopyTo(workingCopy);
+
         for (var i = 0; i < 8; i++)
         {
-            puzzle.CopyTo(workingCopy);
-
             ApplySymmetry(workingCopy, i);
             
             Canonise(workingCopy);
