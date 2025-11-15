@@ -130,14 +130,12 @@ public static class Canoniser
         }
     }
 
-    private static bool PermuteBand(Span<int> puzzle, int band)
+    private static void PermuteBand(Span<int> puzzle, int band)
     {
         var bandStart = band * 27;
 
         var firstRow = band * 3;
 
-        var swapped = false;
-        
         for (var pass = 0; pass < 2; pass++)
         {
             for (var i = 0; i < 2 - pass; i++)
@@ -149,19 +147,13 @@ public static class Canoniser
                 if (Compare(puzzle.Slice(secondRowStart, 9), puzzle.Slice(firstRowStart, 9)) < 0)
                 {
                     SwapRows(puzzle, firstRow + i, firstRow + i + 1);
-
-                    swapped = true;
                 }
             }
         }
-
-        return swapped;
     }
 
-    private static bool PermuteBands(Span<int> puzzle)
+    private static void PermuteBands(Span<int> puzzle)
     {
-        var swapped = false;
-        
         for (var pass = 0; pass < 2; pass++)
         {
             for (var i = 0; i < 2 - pass; i++)
@@ -173,13 +165,9 @@ public static class Canoniser
                 if (Compare(puzzle.Slice(secondBandStart, 27), puzzle.Slice(firstBandStart, 27)) < 0)
                 {
                     SwapBands(puzzle, i, i + 1);
-
-                    swapped = true;
                 }
             }
         }
-
-        return swapped;
     }
 
     private static void Transpose(Span<int> puzzle)
