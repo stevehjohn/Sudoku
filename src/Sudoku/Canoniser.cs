@@ -49,7 +49,6 @@ public static class Canoniser
     {
         NormaliseDigits(puzzle);
 
-        // Orientation 1: sort rows + bands
         for (var i = 0; i < 3; i++)
         {
             PermuteBand(puzzle, i);
@@ -57,7 +56,6 @@ public static class Canoniser
 
         PermuteBands(puzzle);
 
-        // Orientation 2: sort columns + stacks (via transpose)
         Transpose(puzzle);
 
         for (var i = 0; i < 3; i++)
@@ -67,7 +65,6 @@ public static class Canoniser
 
         PermuteBands(puzzle);
 
-        // Return to original orientation
         Transpose(puzzle);
 
         NormaliseDigits(puzzle);
