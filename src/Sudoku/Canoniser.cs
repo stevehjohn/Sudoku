@@ -47,15 +47,17 @@ public static class Canoniser
     
     private static void Canonise(Span<int> puzzle)
     {
-        NormaliseDigits(puzzle);
-        
         for (var pass = 0; pass < 20; pass++)
         {
             for (var i = 0; i < 3; i++)
             {
+                NormaliseDigits(puzzle);
+        
                 PermuteBand(puzzle, i);
             }
 
+            NormaliseDigits(puzzle);
+        
             PermuteBands(puzzle);
 
             Transpose(puzzle);
