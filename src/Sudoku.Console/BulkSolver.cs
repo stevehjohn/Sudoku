@@ -30,7 +30,7 @@ public class BulkSolver
 
     private readonly object _consoleLock = new();
 
-    private bool _findUnique;
+    private readonly bool _findUnique;
 
     public BulkSolver((int[] Puzzle, int Clues)[] puzzles, bool findUnique = false)
     {
