@@ -22,6 +22,8 @@ public class Generator
 
     private readonly int[] _digitCounts = new int[10];
 
+    private readonly Lock _fileLock = new();
+    
     private int _failedStamp;
 
     public Generator()
@@ -60,7 +62,7 @@ public class Generator
         {
             InitialiseDigitCounts();
             
-            if (RemoveCells(puzzle, 81 - cluesToLeave, cancellationToken) == RemoveResult.Success)
+            if (RemoveCells(puzzle, 81 - cluesToLeave, cluesToLeave, cancellationToken) == RemoveResult.Success)
             {
                 return (true, puzzle);
             }
@@ -128,35 +130,38 @@ public class Generator
         }
     }
 
-    private RemoveResult RemoveCells(int[] puzzle, int cellsToRemove, CancellationToken cancellationToken)
+    private RemoveResult RemoveCells(int[] puzzle, int cellsToRemove, int targetClues, CancellationToken cancellationToken)
     {
         CreateAndShuffleFilledCells();
 
         _failedStamp++;
 
-        return RemoveCell(puzzle, cellsToRemove, 0, cancellationToken);
+        return RemoveCell(puzzle, cellsToRemove, targetClues, 0, cancellationToken);
     }
 
-    private RemoveResult RemoveCell(int[] puzzle, int cellsToRemove, int depth, CancellationToken cancellationToken)
+    private RemoveResult RemoveCell(int[] puzzle, int cellsToRemove, int targetClues, int start, CancellationToken cancellationToken)
     {
         if (cellsToRemove == 0)
         {
-            if (depth > 79)
+            if (targetClues < 20)
             {
-                File.AppendAllLines("~/Sudoku.log", [ $"{DateTime.Now:ddd d MMM HH:mm:ss}: {puzzle.FlattenPuzzle()}" ]);
+                lock (_fileLock)
+                {
+                    File.AppendAllLines(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Sudoku.log"), [$"{DateTime.Now:ddd d MMM HH:mm:ss}: {puzzle.FlattenPuzzle()}"]);
+                }
             }
 
             return RemoveResult.Success;
         }
 
-        if (_filledCells.Count - depth < cellsToRemove)
+        if (_filledCells.Count - start < cellsToRemove)
         {
             return RemoveResult.Failure;
         }
 
         var filledCount = _filledCells.Count;
 
-        for (var i = depth; i < filledCount; i++)
+        for (var i = start; i < filledCount; i++)
         {
             if (cancellationToken.IsCancellationRequested)
             {
@@ -165,7 +170,7 @@ public class Generator
 
             var cellIndex = _filledCells[i];
 
-            if (_failed[cellIndex] == _failedStamp && _failedDepth[cellIndex] >= depth)
+            if (_failed[cellIndex] == _failedStamp && _failedDepth[cellIndex] >= start)
             {
                 continue;
             }
@@ -190,7 +195,7 @@ public class Generator
 
             if (unique)
             {
-                var result = RemoveCell(puzzle, cellsToRemove - 1, i + 1, cancellationToken);
+                var result = RemoveCell(puzzle, cellsToRemove - 1, targetClues, i + 1, cancellationToken);
 
                 if (result != RemoveResult.Failure)
                 {
@@ -204,7 +209,7 @@ public class Generator
 
             _failed[cellIndex] = _failedStamp;
 
-            _failedDepth[cellIndex] = depth;
+            _failedDepth[cellIndex] = start;
         }
 
         return RemoveResult.Failure;
