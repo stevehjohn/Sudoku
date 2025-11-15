@@ -47,7 +47,7 @@ public static class Canoniser
     
     private static void Canonise(Span<int> puzzle)
     {
-        for (var pass = 0; pass < 20; pass++)
+        for (var pass = 0; pass < 4; pass++)
         {
             for (var i = 0; i < 3; i++)
             {
