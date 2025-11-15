@@ -18,6 +18,11 @@ public static class StringExtensions
                 }
 
                 puzzle[i] = character - '0';
+
+                if (puzzle[i] < 1 || puzzle[i] > 9)
+                {
+                    Console.WriteLine($"Bollocks: {character}");
+                }
             }
 
             return puzzle;

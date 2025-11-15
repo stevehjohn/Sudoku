@@ -47,27 +47,28 @@ public static class Canoniser
     
     private static void Canonise(Span<int> puzzle)
     {
-        bool swapped;
-
         NormaliseDigits(puzzle);
 
-        do
+        // Orientation 1: sort rows + bands
+        for (var i = 0; i < 3; i++)
         {
-            swapped = false;
+            PermuteBand(puzzle, i);
+        }
 
-            for (var pass = 0; pass < 2; pass++)
-            {
-                for (var i = 0; i < 3; i++)
-                {
-                    swapped |= PermuteBand(puzzle, i);
-                }
+        PermuteBands(puzzle);
 
-                swapped |= PermuteBands(puzzle);
+        // Orientation 2: sort columns + stacks (via transpose)
+        Transpose(puzzle);
 
-                Transpose(puzzle);
-            }
-            
-        } while (swapped);
+        for (var i = 0; i < 3; i++)
+        {
+            PermuteBand(puzzle, i);
+        }
+
+        PermuteBands(puzzle);
+
+        // Return to original orientation
+        Transpose(puzzle);
 
         NormaliseDigits(puzzle);
     }
