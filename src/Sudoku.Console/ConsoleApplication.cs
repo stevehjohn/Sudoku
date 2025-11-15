@@ -546,7 +546,7 @@ public class ConsoleApplication
         
         Out();
         
-        Out(canon.ToArray().FlattenPuzzle());
+        Out($"Canon: {canon.ToArray().FlattenPuzzle()}");
     }
 
     private void SolvePuzzles(int fileId)
