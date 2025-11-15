@@ -4,37 +4,36 @@ public static class Canoniser
 {
     public static Span<int> CanonisePuzzle(Span<int> puzzle)
     {
-        var workingCopy = new Span<int>(new int[81]);
+        var firstCanon = new Span<int>(new int[81]);
         
-        puzzle.CopyTo(workingCopy);
+        puzzle.CopyTo(firstCanon);
+        
+        Canonise(firstCanon);
 
-        NormaliseDigits(workingCopy);
+        var secondCanon = new Span<int>(new int[81]);
+        
+        puzzle.CopyTo(secondCanon);
+        
+        Canonise(secondCanon);
 
-        var transposed = new Span<int>(new int[81]);
+        return Compare(firstCanon, secondCanon) < 0 ? firstCanon : secondCanon;
+    }
 
+    private static void Canonise(Span<int> puzzle)
+    {
+        NormaliseDigits(puzzle);
+        
         for (var pass = 0; pass < 2; pass++)
         {
             for (var i = 0; i < 3; i++)
             {
-                PermuteBand(workingCopy, i);
+                PermuteBand(puzzle, i);
             }
 
-            PermuteBands(workingCopy);
+            PermuteBands(puzzle);
 
-            if (pass == 0)
-            {
-                Transpose(workingCopy);
-                
-                workingCopy.CopyTo(transposed);
-            }
+            Transpose(puzzle);
         }
-
-        if (Compare(workingCopy, transposed) < 0)
-        {
-            return workingCopy;
-        }
-
-        return transposed;
     }
 
     private static void NormaliseDigits(Span<int> puzzle)
