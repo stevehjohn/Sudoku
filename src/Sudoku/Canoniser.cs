@@ -2,13 +2,15 @@ namespace Sudoku;
 
 public static class Canoniser
 {
-    public static int[] CanonisePuzzle(int[] puzzle)
+    public static Span<int> CanonisePuzzle(Span<int> puzzle)
     {
-        var workingCopy = new int[81];
+        var workingCopy = new Span<int>(new int[81]);
         
-        Array.Copy(puzzle, workingCopy, 81);
+        puzzle.CopyTo(workingCopy);
 
         NormaliseDigits(workingCopy);
+
+        var transposed = new Span<int>(new int[81]);
 
         for (var pass = 0; pass < 2; pass++)
         {
@@ -19,10 +21,20 @@ public static class Canoniser
 
             PermuteBands(workingCopy);
 
-            Transpose(workingCopy);
+            if (pass == 0)
+            {
+                Transpose(workingCopy);
+                
+                workingCopy.CopyTo(transposed);
+            }
         }
 
-        return workingCopy;
+        if (Compare(workingCopy, transposed) < 0)
+        {
+            return workingCopy;
+        }
+
+        return transposed;
     }
 
     private static void NormaliseDigits(Span<int> puzzle)

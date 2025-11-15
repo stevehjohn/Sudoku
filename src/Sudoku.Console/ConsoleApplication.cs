@@ -53,6 +53,8 @@ public class ConsoleApplication
             Out("   L: See log of last most steps");
 
             Out("   E: Enter manually");
+            
+            Out("   C: Canonise puzzle");
 
             Out("   T: Test suite");
 
@@ -128,6 +130,19 @@ public class ConsoleApplication
                 if (response == "e")
                 {
                     SolveUserPuzzle();
+
+                    Out();
+
+                    Out("Press any key to continue.");
+
+                    System.Console.ReadKey();
+
+                    break;
+                }
+
+                if (response == "c")
+                {
+                    CanonisePuzzle();
 
                     Out();
 
@@ -482,6 +497,56 @@ public class ConsoleApplication
         var solver = new BulkSolver(puzzles);
 
         solver.Solve();
+    }    
+    
+    private static void CanonisePuzzle()
+    {
+        Out();
+
+        Out("Please enter the puzzle flattened into one row.");
+
+        Out();
+
+        Out("E.g. ......6....59.....82....8....45........3........6..3.54...325..6..................\n");
+
+        var puzzle = new int[81];
+
+        var clues = 0;
+
+        retry:
+        System.Console.Write(" Puzzle: ");
+
+        var line = System.Console.ReadLine();
+
+        try
+        {
+            for (var i = 0; i < 81; i++)
+            {
+                // ReSharper disable once PossibleNullReferenceException
+                if (line[i] == '.')
+                {
+                    continue;
+                }
+
+                puzzle[i] = line[i] - '0';
+
+                clues++;
+            }
+        }
+        catch
+        {
+            Out();
+
+            Out("That appears to be an invalid line. Please try again.\n");
+
+            goto retry;
+        }
+
+        var canon = Canoniser.CanonisePuzzle(puzzle);
+        
+        Out();
+        
+        Out(canon.ToArray().FlattenPuzzle());
     }
 
     private void SolvePuzzles(int fileId)
