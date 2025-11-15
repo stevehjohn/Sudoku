@@ -14,6 +14,8 @@ public static class Canoniser
         
         puzzle.CopyTo(secondCanon);
         
+        Transpose(secondCanon);
+        
         Canonise(secondCanon);
 
         return Compare(firstCanon, secondCanon) < 0 ? firstCanon : secondCanon;
