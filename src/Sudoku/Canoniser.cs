@@ -18,6 +18,8 @@ public static class Canoniser
 
             ApplyPermutations(workingCopy);
             
+            NormaliseDigits(workingCopy);
+
             if (i == 0 || Compare(workingCopy, canon) < 0)
             {
                 workingCopy.CopyTo(canon);
