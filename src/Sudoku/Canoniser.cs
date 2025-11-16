@@ -14,7 +14,9 @@ public static class Canoniser
 
             ApplySymmetry(workingCopy, i);
             
-            Canonise(workingCopy);
+            NormaliseDigits(canon);
+
+            ApplyPermutations(workingCopy);
 
             if (i == 0 || Compare(workingCopy, canon) < 0)
             {
@@ -22,8 +24,6 @@ public static class Canoniser
             }
         }
         
-        NormaliseDigits(canon);
-
         return canon;
     }
     
@@ -45,7 +45,7 @@ public static class Canoniser
         }
     }
     
-    private static void Canonise(Span<int> puzzle)
+    private static void ApplyPermutations(Span<int> puzzle)
     {
         bool swapped;
 
@@ -55,14 +55,10 @@ public static class Canoniser
 
             for (var pass = 0; pass < 2; pass++)
             {
-                NormaliseDigits(puzzle);
-
                 for (var i = 0; i < 3; i++)
                 {
                     swapped |= PermuteBand(puzzle, i);
                 }
-
-                NormaliseDigits(puzzle);
 
                 swapped |= PermuteBands(puzzle);
 
@@ -70,8 +66,6 @@ public static class Canoniser
             }
             
         } while (swapped);
-
-        NormaliseDigits(puzzle);
     }
 
     private static void NormaliseDigits(Span<int> puzzle)
