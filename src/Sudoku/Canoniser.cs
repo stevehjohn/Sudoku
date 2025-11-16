@@ -14,7 +14,7 @@ public static class Canoniser
 
             ApplySymmetry(workingCopy, i);
             
-            NormaliseDigits(canon);
+            NormaliseDigits(workingCopy);
 
             ApplyPermutations(workingCopy);
             
