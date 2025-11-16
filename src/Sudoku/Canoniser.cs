@@ -17,7 +17,7 @@ public static class Canoniser
             NormaliseDigits(canon);
 
             ApplyPermutations(workingCopy);
-
+            
             if (i == 0 || Compare(workingCopy, canon) < 0)
             {
                 workingCopy.CopyTo(canon);
