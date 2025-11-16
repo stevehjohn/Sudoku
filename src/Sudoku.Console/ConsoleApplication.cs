@@ -524,7 +524,7 @@ public class ConsoleApplication
 
         puzzles[0].Clues = clues;
 
-        var solver = new BulkSolver(puzzles, true);
+        var solver = new BulkSolver(puzzles);
 
         solver.Solve();
     }
