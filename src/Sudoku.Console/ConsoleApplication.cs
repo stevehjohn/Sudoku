@@ -172,7 +172,7 @@ public class ConsoleApplication
 
                 if (response == "i")
                 {
-                    CreateIsomorph();
+                    CreateIsomorphs();
 
                     Out();
 
@@ -524,9 +524,22 @@ public class ConsoleApplication
 
         puzzles[0].Clues = clues;
 
-        var solver = new BulkSolver(puzzles, true);
+        var solver = new Solver();
 
-        solver.Solve();
+        var result = solver.Solve(puzzles[0].Puzzle);
+
+        if (! result.Solved || result.SolutionCount > 1)
+        {
+            Out();
+            
+            Out("The puzzle has more than one solution.");
+            
+            return;
+        }
+
+        var bulkSolver = new BulkSolver(puzzles, true);
+
+        bulkSolver.Solve();
     }
 
     private static void CanonisePuzzle()
@@ -619,7 +632,7 @@ public class ConsoleApplication
         Out($"Canonised file: {Path.GetFileName(outputPath)}");
     }
 
-    private static void CreateIsomorph()
+    private static void CreateIsomorphs()
     {
         Out();
 
@@ -669,7 +682,7 @@ public class ConsoleApplication
 
         var countString = System.Console.ReadLine();
 
-        var count = 0;
+        int count;
         
         try
         {
@@ -684,14 +697,20 @@ public class ConsoleApplication
             goto retry2;
         }
 
-        var isomorph = IsomorphGenerator.CreateIsomorphs(puzzle, count, CancellationToken.None);
+        var isomorphs = IsomorphGenerator.CreateIsomorphs(puzzle, count, CancellationToken.None);
 
         Out();
 
         for (var i = 0; i < count; i++)
         {
-            Out(isomorph[i].FlattenPuzzle());
+            Out(isomorphs[i].FlattenPuzzle());
         }
+        
+        var filename = $"{FileHelper.GetPuzzlesPath()}/Generated.txt";
+
+        File.WriteAllLines(filename, isomorphs.Select(i => i.FlattenPuzzle()));
+        
+        Out($"\n Puzzles have been written to {filename}.");
     }
 
     private void SolvePuzzles(int fileId)
