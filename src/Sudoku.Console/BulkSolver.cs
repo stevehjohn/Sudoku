@@ -436,7 +436,7 @@ public class BulkSolver
 
                 System.Console.ForegroundColor = ConsoleColor.Magenta;
 
-                System.Console.Write(move.Type == MoveType.Backtrack ? " " : move.Value.ToString());
+                System.Console.Write(move.Type  is MoveType.Backtrack or MoveType.NoCandidates ? " " : move.Value.ToString());
 
                 System.Console.ForegroundColor = color;
 
@@ -468,7 +468,7 @@ public class BulkSolver
                         System.Console.CursorLeft += 2;
                     }
 
-                    System.Console.Write(previousMove.Type == MoveType.Backtrack ? " " : previousMove.Value.ToString());
+                    System.Console.Write(previousMove.Type is MoveType.Backtrack or MoveType.NoCandidates ? " " : previousMove.Value.ToString());
                 }
 
                 previousMove = move;
