@@ -483,47 +483,6 @@ public class BulkSolver
 
                 System.Console.Write(stepText);
 
-                var tried = false;
-
-                for (var i = 1; i < 10; i++)
-                {
-                    System.Console.CursorLeft = 54;
-
-                    System.Console.CursorTop = i + 3;
-
-                    if (move.Type == MoveType.Backtrack)
-                    {
-                        System.Console.Write(' ');
-                        
-                        continue;
-                    }
-
-                    if (move.Candidates.Contains(i))
-                    {
-                        if (move.Value == i)
-                        {
-                            System.Console.ForegroundColor = ConsoleColor.Magenta;
-
-                            tried = true;
-                        }
-                        else
-                        {
-                            if (! tried)
-                            {
-                                System.Console.ForegroundColor = ConsoleColor.Blue;
-                            }
-                        }
-
-                        System.Console.Write(i);
-
-                        System.Console.ForegroundColor = color;
-                    }
-                    else
-                    {
-                        System.Console.Write(' ');
-                    }
-                }
-
                 Thread.Sleep(10);
             }
         }
