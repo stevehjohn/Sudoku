@@ -4,6 +4,8 @@ namespace Sudoku;
 
 public static class BulkGenerator
 {
+    private static readonly Lock FileLock = new();
+    
     public static void Generate(int quantity, int cluesToLeave, int isomorphCount, Action<int[]> callback)
     {
         var workers = Math.Max(Environment.ProcessorCount / 2, 1);
@@ -24,6 +26,14 @@ public static class BulkGenerator
             < 25 => 100,
             _ => 1_000
         };
+        
+        if (cluesToLeave < 20)
+        {
+            lock (FileLock)
+            {
+                File.AppendAllLines(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Sudoku.log"), [$"{DateTime.Now:ddd d MMM HH:mm:ss}: Started search for {cluesToLeave} clue puzzle(s)."]);
+            }
+        }
 
         for (var i = 0; i < workers; i++)
         {
