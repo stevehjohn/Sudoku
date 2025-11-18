@@ -537,7 +537,7 @@ public class ConsoleApplication
             return;
         }
 
-        var bulkSolver = new BulkSolver(puzzles, true);
+        var bulkSolver = new BulkSolver(puzzles);
 
         bulkSolver.Solve();
     }
