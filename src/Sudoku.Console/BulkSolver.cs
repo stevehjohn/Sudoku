@@ -122,47 +122,6 @@ public class BulkSolver
                     }
                 }
 
-                if (! quiet)
-                {
-                    lock (_statsLock)
-                    {
-                        var totalMicroseconds = solution.ElapsedMicroseconds;
-
-                        var clues = _puzzles[i].Clues;
-
-                        if (! _timings.TryGetValue(clues, out var value))
-                        {
-                            value = (0, 0);
-
-                            _timings[clues] = value;
-                        }
-
-                        _timings[clues] = (value.Count + 1, value.Elapsed + solution.ElapsedMicroseconds);
-
-                        _elapsed.Total += totalMicroseconds;
-
-                        _elapsed.Minimum = Math.Min(_elapsed.Minimum, totalMicroseconds);
-
-                        if (totalMicroseconds > _elapsed.Maximum)
-                        {
-                            _maxTimePuzzleNumber = i;
-
-                            _elapsed.Maximum = totalMicroseconds;
-                        }
-
-                        _steps.Total += solution.Steps;
-
-                        _steps.Minimum = Math.Min(_steps.Minimum, solution.Steps);
-
-                        if (solution.Steps > _steps.Maximum)
-                        {
-                            _maxStepsPuzzleNumber = i;
-
-                            _steps.Maximum = solution.Steps;
-                        }
-                    }
-                }
-
                 lock (_statsLock)
                 {
                     solved++;
