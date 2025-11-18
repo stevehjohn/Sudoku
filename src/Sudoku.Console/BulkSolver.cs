@@ -432,7 +432,7 @@ public class BulkSolver
 
                 step++;
 
-                var stepText = $"Step: {step:N0}/{solution.Count:N0}";
+                var stepText = $"Move: {step:N0}/{solution.Count:N0}";
 
                 System.Console.CursorLeft = 40 - stepText.Length / 2;
 
@@ -525,7 +525,7 @@ public class BulkSolver
                 $" Timings...\n  Minimum: {_elapsed.Minimum:N0}μs          \n  Mean:    {mean:N0}μs          \n  Maximum: {_elapsed.Maximum:N0}μs (Puzzle #{_maxTimePuzzleNumber:N0})         \n");
 
             _output.AppendLine(
-                $" Combinations...\n  Minimum: {_steps.Minimum:N0}          \n  Mean:    {_steps.Total / solved:N0}          \n  Maximum: {_steps.Maximum:N0} (Puzzle #{_maxStepsPuzzleNumber:N0}, Clues: {_mostStepsClues})           \n");
+                $" Iterations...\n  Minimum: {_steps.Minimum:N0}          \n  Mean:    {_steps.Total / solved:N0}          \n  Maximum: {_steps.Maximum:N0} (Puzzle #{_maxStepsPuzzleNumber:N0}, Clues: {_mostStepsClues})           \n");
 
             var meanTime = _stopwatch.Elapsed.TotalSeconds / solved;
 
