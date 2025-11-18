@@ -287,8 +287,6 @@ public class BulkSolver
             {
                 for (var i = 0; i < 5; i++)
                 {
-                    System.Console.ForegroundColor = ConsoleColor.Magenta;
-
                     yIncrement = 0;
 
                     if (move.Y > 2)
@@ -392,8 +390,6 @@ public class BulkSolver
                 {
                     System.Console.CursorLeft += 2;
                 }
-
-                System.Console.ForegroundColor = ConsoleColor.Magenta;
 
                 System.Console.Write(move.Type  is MoveType.Backtrack or MoveType.NoCandidates ? " " : move.Value.ToString());
 
@@ -532,7 +528,7 @@ public class BulkSolver
                 $" Timings...\n  Minimum: {_elapsed.Minimum:N0}μs          \n  Mean:    {mean:N0}μs          \n  Maximum: {_elapsed.Maximum:N0}μs (Puzzle #{_maxTimePuzzleNumber:N0})         \n");
 
             _output.AppendLine(
-                $" Combinations...\n  Minimum: {_steps.Minimum:N0}          \n  Mean:    {_steps.Total / (solved + 1):N0}          \n  Maximum: {_steps.Maximum:N0} (Puzzle #{_maxStepsPuzzleNumber:N0}, Clues: {_mostStepsClues})           \n");
+                $" Combinations...\n  Minimum: {_steps.Minimum:N0}          \n  Mean:    {_steps.Total / solved:N0}          \n  Maximum: {_steps.Maximum:N0} (Puzzle #{_maxStepsPuzzleNumber:N0}, Clues: {_mostStepsClues})           \n");
 
             var meanTime = _stopwatch.Elapsed.TotalSeconds / solved;
 
