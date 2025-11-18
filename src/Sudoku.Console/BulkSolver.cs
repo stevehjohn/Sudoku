@@ -489,7 +489,7 @@ public class BulkSolver
                 {
                     System.Console.CursorLeft = 54;
 
-                    System.Console.CursorTop = i + 2;
+                    System.Console.CursorTop = i + 3;
 
                     if (move.Type == MoveType.Backtrack)
                     {
