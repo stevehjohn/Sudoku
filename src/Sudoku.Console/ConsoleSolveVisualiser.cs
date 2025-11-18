@@ -99,7 +99,10 @@ public class ConsoleSolveVisualiser
                 Out.ForegroundColor = ConsoleColor.Black;
             }
 
-            Out.Write(move.Value);
+            if (move.Value > 0)
+            {
+                Out.Write(move.Value);
+            }
 
             Out.BackgroundColor = ConsoleColor.Black;
             
