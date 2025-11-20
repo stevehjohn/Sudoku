@@ -23,7 +23,7 @@ public static class SpanIntExtensions
                     continue;
                 }
 
-                var bit = (ushort) (1 << value);
+                var bit = (ushort) (1 << (value - 1));
 
                 var row = UnitTables.CellRow(i);
 
