@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Sudoku Solve Steps</title>
+    <style>
+{css}
+    </style>
+    <script>
+        let zoom = 100;
+        
+        window.onload = () => {
+            document.getElementById('puzzle').scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+        };
+        document.onkeyup = e => {
+            if (e.key === '-' || e.key === '_') {
+                if (zoom > 10) {
+                zoom -= 10;
+                } else if (zoom > 1) {
+                    zoom--;
+                }
+                document.getElementsByTagName('body')[0].style.zoom = zoom + '%';
+                document.getElementById('puzzle').scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+            }
+            if (e.key === '+' || e.key === '=') {
+                if (zoom > 10) {
+                    zoom += 10;
+                } else {
+                    zoom++;
+                }
+                document.getElementsByTagName('body')[0].style.zoom = zoom + '%';
+                document.getElementById('puzzle').scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="tree">
+        <div class="title">
+            Sudoku Solve Steps
+        </div>
+{nodes}
+    </div>
+</body>
+</html>

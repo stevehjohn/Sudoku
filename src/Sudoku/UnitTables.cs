@@ -1,0 +1,142 @@
+using System.Runtime.CompilerServices;
+
+namespace Sudoku;
+
+public static class UnitTables
+{
+    private static readonly byte[] Units;
+
+    static UnitTables()
+    {
+        Units = new byte[27 * 9 * 2 + 81 * 20 + 81 * 3];
+
+        var i = 0;
+
+        for (var y = 0; y < 9; y++)
+        {
+            for (var x = 0; x < 9; x++)
+            {
+                Units[i++] = (byte) (y * 9 + x);
+            }
+        }
+
+        for (var x = 0; x < 9; x++)
+        {
+            for (var y = 0; y < 9; y++)
+            {
+                Units[i++] = (byte) (y * 9 + x);
+            }
+        }
+
+        for (var box = 0; box < 9; box++)
+        {
+            var row = 3 * (box / 3);
+            
+            var column = box % 3 * 3;
+            
+            for (var dy = 0; dy < 3; dy++)
+            {
+                for (var dx = 0; dx < 3; dx++)
+                {
+                    Units[i++] = (byte) ((row + dy) * 9 + column + dx);
+                }
+            }
+        }
+
+        for (i = 0; i < 81; i++)
+        {
+            var y = i / 9;
+            
+            Units[243 + i] = (byte) y;
+
+            var x = i % 9;
+            
+            Units[324 + i] = (byte) x;
+
+            Units[405 + i] = (byte) (y / 3 * 3 + x / 3);
+        }
+
+        var peers = new byte[20];
+            
+        for (i = 0; i < 81; i++)
+        {
+            Array.Fill(peers, (byte) 255);
+            
+            AddPeers(i, peers, RowCells(CellRow(i)));
+            
+            AddPeers(i, peers, ColumnCells(CellColumn(i)));
+            
+            AddPeers(i, peers, BoxCells(CellBox(i)));
+
+            for (var j = 0; j < 20; j++)
+            {
+                Units[486 + i * 20 + j] = peers[j];
+            }
+        }
+
+        for (i = 0; i < 81; i++)
+        {
+            var offset = 2_106 + i * 3;
+            
+            Units[offset + 0] = CellColumn(i);
+
+            Units[offset + 1] = CellRow(i);
+
+            Units[offset + 2] = CellBox(i);
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ReadOnlySpan<byte> BoxCells(int index) => Units.AsSpan(162 + index * 9, 9);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static byte CellRow(int index) => Units[243 + index];
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static byte CellColumn(int index) => Units[324 + index];
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static byte CellBox(int index) => Units[405 + index];
+
+    public static ReadOnlySpan<byte> CellUnits(int index) => Units.AsSpan(2_106 + index * 3, 3);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ReadOnlySpan<byte> Peers(int index) => Units.AsSpan(486 + index * 20, 20);
+
+    private static ReadOnlySpan<byte> RowCells(int index) => Units.AsSpan(index * 9, 9);
+
+    private static ReadOnlySpan<byte> ColumnCells(int index) => Units.AsSpan(81 + index * 9, 9);
+
+    private static void AddPeers(int cell, byte[] peers, ReadOnlySpan<byte> unit)
+    {
+        var peerIndex = 0;
+        
+        for (var i = 0; i < unit.Length; i++)
+        {
+            if (peerIndex == 20)
+            {
+                return;
+            }
+
+            if (peers[peerIndex] != 255)
+            {
+                peerIndex++;
+
+                i--;
+                
+                continue;
+            }
+
+            var unitCell = unit[i];
+
+            if (unitCell == cell || peers.Contains(unitCell))
+            {
+                continue;
+            }
+
+            peers[peerIndex] = unitCell;
+
+            peerIndex++;
+        }
+    }
+}
