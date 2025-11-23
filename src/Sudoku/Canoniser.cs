@@ -109,7 +109,7 @@ public static class Canoniser
                     {
                         bestCanon[cellIndex] = canonicalValue;
                         
-                        WriteRemaining(puzzle, bestCanon, cellIndex + 1, rowMap, columnMap, transpose, digitMap, ref nextDigit);
+                        WriteRemainingCells(puzzle, bestCanon, cellIndex + 1, rowMap, columnMap, transpose, digitMap, ref nextDigit);
                         
                         break;
                     }
@@ -123,7 +123,7 @@ public static class Canoniser
         }
     }
 
-    private static void WriteRemaining(ReadOnlySpan<int> puzzle, Span<int> bestCanon, int startIndex, byte[] rowMap, byte[] colMap, bool transpose, Span<int> digitMap, ref int nextDigit)
+    private static void WriteRemainingCells(ReadOnlySpan<int> puzzle, Span<int> bestCanon, int startIndex, byte[] rowMap, byte[] colMap, bool transpose, Span<int> digitMap, ref int nextDigit)
     {
         for (var cell = startIndex; cell < 81; cell++)
         {
