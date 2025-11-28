@@ -318,17 +318,63 @@ public class Solver
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private int FindNakedSingle()
     {
-        for (var i = 0; i < 81; i++)
+        const int length = 81;
+        int vectorSize = Vector<int>.Count;
+
+        int i = 0;
+
+        var zero = Vector<int>.Zero;
+        var one  = Vector<int>.One;
+
+        // SIMD pass
+        for (; i <= length - vectorSize; i += vectorSize)
+        {
+            // Load workingCopy and candidates
+            var wcVec   = new Vector<int>(_workingCopy,    i);
+            var candVec = new Vector<int>(_cellCandidates, i);
+
+            // Empty cells: workingCopy == 0
+            var emptyMask = Vector.Equals(wcVec, zero);
+
+            // Compute cand & (cand - 1)
+            var candMinusOne = candVec - one;
+            var andResult    = candVec & candMinusOne;
+
+            // (cand & (cand - 1)) == 0  => either 0 or power of two
+            var singleBitOrZeroMask = Vector.Equals(andResult, zero);
+
+            // Non-zero candidates: cand > 0
+            var nonZeroCandMask = Vector.GreaterThan(candVec, zero);
+
+            // Combine: empty AND single-bit AND non-zero
+            var potentialSinglesMask = emptyMask & singleBitOrZeroMask & nonZeroCandMask;
+
+            // Find first true lane
+            for (int lane = 0; lane < vectorSize; lane++)
+            {
+                if (potentialSinglesMask[lane] != 0)
+                {
+                    int cellIndex = i + lane;
+                    _moveType = MoveType.NakedSingle;
+                    return cellIndex;
+                }
+            }
+        }
+
+        // Scalar tail
+        for (; i < length; i++)
         {
             if (_workingCopy[i] != 0)
             {
                 continue;
             }
 
-            if (BitOperations.PopCount((uint) _cellCandidates[i]) == 1)
+            var candidates = _cellCandidates[i];
+
+            // power-of-two check (one bit set)
+            if (candidates != 0 && (candidates & (candidates - 1)) == 0)
             {
                 _moveType = MoveType.NakedSingle;
-                
                 return i;
             }
         }
