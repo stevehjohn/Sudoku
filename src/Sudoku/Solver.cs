@@ -38,6 +38,21 @@ public class Solver
     private readonly ushort[] _columnMask = new ushort[9];
     
     private readonly ushort[] _boxMask = new ushort[9];
+    
+    private static readonly byte[] CandidateBitCounts = CreateCandidateBitCountLut();
+
+    private static byte[] CreateCandidateBitCountLut()
+    {
+        var lut = new byte[512]; // 0..0x1FF (9 bits)
+    
+        for (int i = 0; i < lut.Length; i++)
+        {
+            // Uses BitOperations.PopCount once at startup, not in the hot loop
+            lut[i] = (byte)BitOperations.PopCount((uint)i);
+        }
+
+        return lut;
+    }
 
     public Solver(HistoryType historyType = HistoryType.None, SolveMethod solveMethod = SolveMethod.FindUnique)
     {
@@ -497,10 +512,8 @@ public class Solver
     private ((int X, int Y) Position, int Values, int ValueCount) FindLeastRemainingCandidates()
     {
         var position = (X: -1, Y: -1);
-
         var values = 0;
-
-        var valueCount = 10;
+        var valueCount = 10; // higher than any real candidate count (1..9)
 
         for (var i = 0; i < 81; i++)
         {
@@ -511,7 +524,12 @@ public class Solver
 
             var candidates = _cellCandidates[i];
 
-            var count = BitOperations.PopCount((uint) candidates);
+            // 0x1FF guard is technically redundant if you’re sure of the mask,
+            // but it's cheap and protects against bugs.
+            var masked = candidates & 0x1FF;
+
+            // Use LUT instead of PopCount in the hot loop
+            var count = CandidateBitCounts[masked];
 
             if (count >= valueCount)
             {
@@ -519,10 +537,14 @@ public class Solver
             }
 
             position = (UnitTables.CellColumn(i), UnitTables.CellRow(i));
-
             values = candidates;
-
             valueCount = count;
+
+            // Early exit: can't beat single-candidate cell
+            if (valueCount == 1)
+            {
+                break;
+            }
         }
 
         return (position, values, valueCount);
