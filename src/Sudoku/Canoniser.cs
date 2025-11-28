@@ -63,11 +63,11 @@ public static class Canoniser
     {
         Span<int> digitMap = stackalloc int[10];
 
-        for (var rowIndex = 0; rowIndex < 1296; rowIndex++)
+        for (var rowIndex = 0; rowIndex < 1_296; rowIndex++)
         {
             var rowMap = Permutations[rowIndex];
 
-            for (var columnIndex = 0; columnIndex < 1296; columnIndex++)
+            for (var columnIndex = 0; columnIndex < 1_296; columnIndex++)
             {
                 var columnMap = Permutations[columnIndex];
 
@@ -103,9 +103,9 @@ public static class Canoniser
                         canonicalValue = mappedValue;
                     }
 
-                    var bestVal = bestCanon[cellIndex];
+                    var bestValue = bestCanon[cellIndex];
 
-                    if (canonicalValue < bestVal)
+                    if (canonicalValue < bestValue)
                     {
                         bestCanon[cellIndex] = canonicalValue;
                         
@@ -114,7 +114,7 @@ public static class Canoniser
                         break;
                     }
                     
-                    if (canonicalValue > bestVal)
+                    if (canonicalValue > bestValue)
                     {
                         break;
                     }
