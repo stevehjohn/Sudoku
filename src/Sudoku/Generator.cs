@@ -322,8 +322,11 @@ public class Generator
                 {
                     File.AppendAllLines(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Sudoku.log"), [$"{DateTime.Now:ddd d MMM HH:mm:ss}: BONUS {targetClues}er! {puzzle.FlattenPuzzle()}"]);
                 }
-                
-                ExploreFurther(puzzle, targetClues);
+
+                if (targetClues > 17)
+                {
+                    ExploreFurther(puzzle, targetClues);
+                }
             }
 
             puzzle[i] = value;
