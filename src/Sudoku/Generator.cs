@@ -316,7 +316,7 @@ public class Generator
 
             puzzle[i] = 0;
 
-            if (solver.Solve(puzzle).Solved)
+            if (solver.HasUniqueSolution(puzzle, _originalPuzzle))
             {
                 lock (_fileLock)
                 {
