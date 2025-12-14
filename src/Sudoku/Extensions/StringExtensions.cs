@@ -21,7 +21,7 @@ public static class StringExtensions
 
                 if (puzzle[i] < 1 || puzzle[i] > 9)
                 {
-                    Console.WriteLine($"Bollocks: {character}");
+                    Console.WriteLine($"Invalid character: {character}");
                 }
             }
 
