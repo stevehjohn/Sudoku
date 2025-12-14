@@ -76,12 +76,12 @@ var puzzle = new int[81];
 */
 
 /*
-  This is most performant.
   If you want:
    - the solution steps, select HistoryType.SolutionOnly.
    - all the steps attempted, select HistoryType.AllSteps.
    - to check the puzzle has only 1 solution, specify SolveMethod.FindUnique.
    - a count of the number of solutions, specify SolveMethod.FindAll.
+  The options used below are is most performant.
 */
 
 var solver = new Solver(HistoryType.None, SolveMethod.FindFirst);
