@@ -26,6 +26,8 @@ public class Generator
     
     private int _failedStamp;
 
+    private int _uniqueDigits;
+
     public Generator()
     {
         _random = new Random();
@@ -92,6 +94,8 @@ public class Generator
         {
             _digitCounts[i] = 9;
         }
+
+        _uniqueDigits = 9;
     }
 
     public int[] CreateSolvedPuzzle()
@@ -177,7 +181,7 @@ public class Generator
 
             var cellValue = puzzle[cellIndex];
 
-            if (_digitCounts[cellValue] == 1 && cellsToRemove > 7)
+            if (_digitCounts[cellValue] == 1 && _uniqueDigits < 9)
             {
                 continue;
             }
@@ -185,6 +189,11 @@ public class Generator
             puzzle[cellIndex] = 0;
 
             _digitCounts[cellValue]--;
+
+            if (_digitCounts[cellValue] == 0)
+            {
+                _uniqueDigits--;
+            }
 
             if (cancellationToken.IsCancellationRequested)
             {
@@ -206,6 +215,11 @@ public class Generator
             puzzle[cellIndex] = cellValue;
 
             _digitCounts[cellValue]++;
+            
+            if (_digitCounts[cellValue] == 1)
+            {
+                _uniqueDigits++;
+            }
 
             _failed[cellIndex] = _failedStamp;
 
