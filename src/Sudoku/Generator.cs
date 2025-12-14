@@ -303,8 +303,6 @@ public class Generator
     {
         targetClues--;
         
-        var solver = new Solver();
-        
         for (var i = 0; i < 81; i++)
         {
             if (puzzle[i] == 0)
@@ -316,7 +314,7 @@ public class Generator
 
             puzzle[i] = 0;
 
-            if (solver.HasUniqueSolution(puzzle, _originalPuzzle))
+            if (_solver.HasUniqueSolution(puzzle, _originalPuzzle))
             {
                 lock (_fileLock)
                 {
