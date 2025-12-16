@@ -46,6 +46,8 @@ public class SolverTests
 
         var count = 0;
 
+        var puzzleTimer = Stopwatch.StartNew();
+        
         foreach (var puzzle in puzzles)
         {
             count++;
@@ -61,7 +63,7 @@ public class SolverTests
 
             var solution = solver.Solve(input);
 
-            _testOutputHelper.WriteLine($"Puzzle {count}: {solution.Message}");
+            _testOutputHelper.WriteLine($"Puzzle {count}: {solution.Message} found in {puzzleTimer.Elapsed.TotalMilliseconds:N3}ms.");
 
             Assert.Contains(parts[2], solution.Message.ToLower());
 
@@ -74,6 +76,8 @@ public class SolverTests
             Console.WriteLine($"\n {solution.Message}");
             
             solution.DumpToConsole(1);
+            
+            puzzleTimer.Restart();
         }
 
         stopwatch.Stop();
