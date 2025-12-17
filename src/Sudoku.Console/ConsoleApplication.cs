@@ -58,6 +58,8 @@ public class ConsoleApplication
 
             Out("   F: Canonise file");
 
+            Out("   S: Sort file");
+
             Out("   I: Create isomorphs");
 
             Out("   T: Test suite");
@@ -69,6 +71,28 @@ public class ConsoleApplication
             while (true)
             {
                 var response = In().ToLower().Trim();
+
+                if (int.TryParse(response, out var id))
+                {
+                    if (id > _files.Count)
+                    {
+                        Out();
+
+                        Out("Invalid puzzle set number, please try again.\n");
+
+                        continue;
+                    }
+
+                    SolvePuzzles(id - 1);
+
+                    Out();
+
+                    Out("Press any key to continue.");
+
+                    System.Console.ReadKey();
+
+                    break;
+                }
 
                 if (response == "q")
                 {
@@ -170,6 +194,19 @@ public class ConsoleApplication
                     break;
                 }
 
+                if (response == "s")
+                {
+                    SortFile();
+
+                    Out();
+
+                    Out("Press any key to continue.");
+
+                    System.Console.ReadKey();
+
+                    break;
+                }
+
                 if (response == "i")
                 {
                     CreateIsomorphs();
@@ -186,28 +223,6 @@ public class ConsoleApplication
                 if (response == "g")
                 {
                     GeneratePuzzles();
-
-                    Out();
-
-                    Out("Press any key to continue.");
-
-                    System.Console.ReadKey();
-
-                    break;
-                }
-
-                if (int.TryParse(response, out var id))
-                {
-                    if (id > _files.Count)
-                    {
-                        Out();
-
-                        Out("Invalid puzzle set number, please try again.\n");
-
-                        continue;
-                    }
-
-                    SolvePuzzles(id - 1);
 
                     Out();
 
@@ -531,9 +546,9 @@ public class ConsoleApplication
         if (! result.Solved || result.SolutionCount > 1)
         {
             Out();
-            
+
             Out("The puzzle has more than one solution.");
-            
+
             return;
         }
 
@@ -632,6 +647,54 @@ public class ConsoleApplication
         Out($"Canonised file: {Path.GetFileName(outputPath)}");
     }
 
+    private static void SortFile()
+    {
+        Out();
+
+        Out("Please enter the path to the text file.");
+
+        Out();
+
+        retry:
+        System.Console.Write(" Path: ");
+
+        var path = System.Console.ReadLine();
+
+        if (string.IsNullOrWhiteSpace(path) || ! Path.Exists(path))
+        {
+            Out();
+
+            Out("That appears to be an invalid path. Please try again.\n");
+
+            goto retry;
+        }
+
+        var lines = File.ReadAllLines(path);
+
+        var count = lines.Length;
+        
+        lines = lines.Distinct().ToArray();
+
+        lines.Sort();
+
+        var outputPath = Path.Combine(Path.GetDirectoryName(path)!, $"{Path.GetFileNameWithoutExtension(path)} Sorted.txt");
+
+        File.Delete(outputPath);
+        
+        File.WriteAllLines(outputPath, lines);
+
+        Out();
+        
+        foreach (var line in lines)
+        {
+            Out(line);
+        }
+        
+        Out();
+
+        Out($"Sorted file: {Path.GetFileName(outputPath)}. {count - lines.Length} duplicate(s) removed.");
+    }
+
     private static void CreateIsomorphs()
     {
         Out();
@@ -683,7 +746,7 @@ public class ConsoleApplication
         var countString = System.Console.ReadLine();
 
         int count;
-        
+
         try
         {
             count = int.Parse(countString!);
@@ -705,11 +768,11 @@ public class ConsoleApplication
         {
             Out(isomorphs[i].FlattenPuzzle());
         }
-        
+
         var filename = $"{FileHelper.GetPuzzlesPath()}/Generated.txt";
 
         File.WriteAllLines(filename, isomorphs.Select(i => i.FlattenPuzzle()));
-        
+
         Out($"\n Puzzles have been written to {filename}.");
     }
 
