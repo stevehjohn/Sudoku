@@ -193,7 +193,7 @@ Output:
 
 On my machine:
 
-| Clues | puzzles/s | time/puzzle |
+| Clues | Puzzles/s | Time/puzzle |
 |-------|-----------|-------------|
 | 18    |           | ~2 days     |
 | 19    | -         | ~2 mins     |
