@@ -139,7 +139,7 @@ Output:
 
 ### Solver Timings
 
-| Clues | puzzles/s |
+| Clues | Puzzles/s |
 |-------|-----------|
 | 17    | 100,000   |
 | 25    | 450,000   |
@@ -149,7 +149,7 @@ Output:
 
 ### Category Timings
 
-| Clues             | puzzles/s |
+| Clues             | Puzzles/s |
 |-------------------|-----------|
 | Benchmarks        | 11,000    |
 | Easy              | 550,000   |
