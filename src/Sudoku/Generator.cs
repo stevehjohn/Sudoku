@@ -244,7 +244,7 @@ public class Generator
                         return result;
                     }
                 }
-                else if (solverResult.DifferenceCount >= 4 && solverResult.DifferenceCount <= 8)
+                else
                 {
                     AddUnavoidableSet(solverResult.DifferentCells, solverResult.DifferenceCount);
                 }
@@ -361,7 +361,7 @@ public class Generator
                     ExploreFurther(puzzle, targetClues);
                 }
             }
-            else if (solverResult.DifferenceCount >= 4 && solverResult.DifferenceCount <= 8)
+            else
             {
                 AddUnavoidableSet(solverResult.DifferentCells, solverResult.DifferenceCount);
             }
@@ -372,6 +372,11 @@ public class Generator
 
     private void AddUnavoidableSet(Int128 mask, int count)
     {
+        if (count < 4 || count > 8)
+        {
+            return;
+        }
+
         if (_unavoidableSets.Any(i => i.Mask == mask))
         {
             return;
