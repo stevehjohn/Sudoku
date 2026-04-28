@@ -207,9 +207,9 @@ public class Generator
                 return RemoveResult.Cancelled;
             }
 
-            var unique = _solver.HasUniqueSolution(puzzle, _originalPuzzle);
+            var solverResult = _solver.HasUniqueSolution(puzzle, _originalPuzzle);
 
-            if (unique)
+            if (solverResult.IsUnique)
             {
                 var result = RemoveCell(puzzle, cellsToRemove - 1, targetClues, i + 1, cancellationToken);
 
@@ -314,7 +314,9 @@ public class Generator
 
             puzzle[i] = 0;
 
-            if (_solver.HasUniqueSolution(puzzle, _originalPuzzle))
+            var solverResult = _solver.HasUniqueSolution(puzzle, _originalPuzzle);
+            
+            if (solverResult.IsUnique)
             {
                 lock (_fileLock)
                 {
