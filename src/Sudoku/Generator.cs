@@ -222,7 +222,7 @@ public class Generator
                     return result;
                 }
             }
-            else
+            else if (solverResult.DifferenceCount >= 4 && solverResult.DifferenceCount <= 8)
             {
                 _unavoidableSets.Add(solverResult.DifferentCells);
             }
@@ -336,7 +336,7 @@ public class Generator
                     ExploreFurther(puzzle, targetClues);
                 }
             }
-            else
+            else if (solverResult.DifferenceCount >= 4 && solverResult.DifferenceCount <= 8)
             {
                 _unavoidableSets.Add(solverResult.DifferentCells);
             }
