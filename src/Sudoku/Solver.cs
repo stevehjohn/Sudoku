@@ -116,20 +116,20 @@ public class Solver
             : new SudokuResult(_solution, true, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, 1, "Solved");
     }
 
-    public (bool IsUnique, List<int> DifferentCells) HasUniqueSolution(int[] puzzle, int[] knownSolution)
+    public (bool IsUnique, Int128 DifferentCells) HasUniqueSolution(int[] puzzle, int[] knownSolution)
     {
         _verifyOnly = true;
 
         if (! Initialise(new Span<int>(puzzle)))
         {
-            return (false, null);
+            return (false, 0);
         }
 
         _knownSolution = knownSolution;
 
         if (_candidateCount == 0)
         {
-            return (false, null);
+            return (false, 0);
         }
 
         _solutionCount = 0;
@@ -140,16 +140,16 @@ public class Solver
 
         if (_solutionCount == 1)
         {
-            return (true, null);
+            return (true, 0);
         }
 
-        var differences = new List<int>();
+        Int128 differences = 0;
         
         for (var i = 0; i < 81; i++)
         {
             if (_workingCopy[i] != knownSolution[i])
             {
-                differences.Add(i);
+                differences |= 1 << i;
             }
         }
 

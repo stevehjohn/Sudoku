@@ -28,6 +28,8 @@ public class Generator
 
     private int _uniqueDigits;
 
+    private HashSet<Int128> _UnavoidableSets = new HashSet<Int128>();
+
     public Generator()
     {
         _random = new Random();
@@ -59,6 +61,8 @@ public class Generator
         Array.Copy(solvedPuzzle, _originalPuzzle, 81);
 
         var puzzleUseCount = 0;
+        
+        _UnavoidableSets.Clear();
 
         while (! cancellationToken.IsCancellationRequested)
         {
