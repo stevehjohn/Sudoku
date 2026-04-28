@@ -87,6 +87,8 @@ public class Generator
             }
             else
             {
+                _mask = (Int128.One << 81) - 1;
+                
                 Array.Copy(_originalPuzzle, puzzle, 81);
             }
         }
