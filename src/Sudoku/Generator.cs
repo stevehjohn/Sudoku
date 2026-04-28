@@ -104,6 +104,8 @@ public class Generator
 
     public int[] CreateSolvedPuzzle()
     {
+        _unavoidableSets.Clear();
+        
         var puzzle = new int[81];
 
         var solved = false;
