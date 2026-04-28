@@ -23,12 +23,12 @@ public class Generator
     private readonly int[] _digitCounts = new int[10];
 
     private readonly Lock _fileLock = new();
-    
+
     private int _failedStamp;
 
     private int _uniqueDigits;
 
-    private readonly HashSet<Int128> _unavoidableSets = new HashSet<Int128>();
+    private readonly List<(Int128 Mask, int Count)> _unavoidableSets = [];
 
     private Int128 _mask;
 
@@ -63,13 +63,13 @@ public class Generator
         Array.Copy(solvedPuzzle, _originalPuzzle, 81);
 
         var puzzleUseCount = 0;
-        
+
         _unavoidableSets.Clear();
 
         while (! cancellationToken.IsCancellationRequested)
         {
             InitialiseDigitCounts();
-            
+
             if (RemoveCells(puzzle, 81 - cluesToLeave, cluesToLeave, cancellationToken) == RemoveResult.Success)
             {
                 return (true, puzzle);
@@ -145,7 +145,7 @@ public class Generator
     private RemoveResult RemoveCells(int[] puzzle, int cellsToRemove, int targetClues, CancellationToken cancellationToken)
     {
         _mask = (Int128.One << 81) - 1;
-                
+
         CreateAndShuffleFilledCells();
 
         _failedStamp++;
@@ -208,13 +208,13 @@ public class Generator
             _mask &= ~(Int128.One << cellIndex);
 
             var invalidRemoval = false;
-            
+
             foreach (var set in _unavoidableSets)
             {
-                if ((set & _mask) == 0)
+                if ((set.Mask & _mask) == 0)
                 {
                     invalidRemoval = true;
-                    
+
                     break;
                 }
             }
@@ -246,16 +246,16 @@ public class Generator
                 }
                 else if (solverResult.DifferenceCount >= 4 && solverResult.DifferenceCount <= 8)
                 {
-                    _unavoidableSets.Add(solverResult.DifferentCells);
+                    AddUnavoidableSet(solverResult.DifferentCells, solverResult.DifferenceCount);
                 }
             }
 
             puzzle[cellIndex] = cellValue;
-            
+
             _mask |= Int128.One << cellIndex;
 
             _digitCounts[cellValue]++;
-            
+
             if (_digitCounts[cellValue] == 1)
             {
                 _uniqueDigits++;
@@ -335,7 +335,7 @@ public class Generator
     private void ExploreFurther(int[] puzzle, int targetClues)
     {
         targetClues--;
-        
+
         for (var i = 0; i < 81; i++)
         {
             if (puzzle[i] == 0)
@@ -348,7 +348,7 @@ public class Generator
             puzzle[i] = 0;
 
             var solverResult = _solver.HasUniqueSolution(puzzle, _originalPuzzle);
-            
+
             if (solverResult.IsUnique)
             {
                 lock (_fileLock)
@@ -363,10 +363,29 @@ public class Generator
             }
             else if (solverResult.DifferenceCount >= 4 && solverResult.DifferenceCount <= 8)
             {
-                _unavoidableSets.Add(solverResult.DifferentCells);
+                AddUnavoidableSet(solverResult.DifferentCells, solverResult.DifferenceCount);
             }
 
             puzzle[i] = value;
+        }
+    }
+
+    private void AddUnavoidableSet(Int128 mask, int count)
+    {
+        if (_unavoidableSets.Any(i => i.Mask == mask))
+        {
+            return;
+        }
+
+        var insertAt = _unavoidableSets.FindIndex(i => i.Count > count);
+
+        if (insertAt == -1)
+        {
+            _unavoidableSets.Add((mask, count));
+        }
+        else
+        {
+            _unavoidableSets.Insert(insertAt, (mask, count));
         }
     }
 }
