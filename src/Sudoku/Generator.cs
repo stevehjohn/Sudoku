@@ -30,6 +30,8 @@ public class Generator
 
     private HashSet<Int128> _unavoidableSets = new HashSet<Int128>();
 
+    private Int128 _mask;
+
     public Generator()
     {
         _random = new Random();
@@ -105,6 +107,8 @@ public class Generator
     public int[] CreateSolvedPuzzle()
     {
         _unavoidableSets.Clear();
+
+        _mask = (Int128.One << 81) - 1;
         
         var puzzle = new int[81];
 
@@ -201,6 +205,8 @@ public class Generator
 
             puzzle[cellIndex] = 0;
 
+            _mask &= ~(Int128.One << cellIndex);
+
             _digitCounts[cellValue]--;
 
             if (_digitCounts[cellValue] == 0)
@@ -230,6 +236,8 @@ public class Generator
             }
 
             puzzle[cellIndex] = cellValue;
+            
+            _mask |= Int128.One << cellIndex;
 
             _digitCounts[cellValue]++;
             
