@@ -151,7 +151,7 @@ public class Solver
         {
             if (_workingCopy[i] != knownSolution[i])
             {
-                differences |= 1 << i;
+                differences |= Int128.One << i;
 
                 differenceCount++;
             }
