@@ -246,7 +246,7 @@ public class Generator
                         return result;
                     }
                 }
-                else if (solverResult.DifferenceCount >= 4 && solverResult.DifferenceCount <= 16)
+                else if (solverResult.DifferenceCount >= 4 && solverResult.DifferenceCount <= 8)
                 {
                     _unavoidableSets.Add(solverResult.DifferentCells);
                 }
