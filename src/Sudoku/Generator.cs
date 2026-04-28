@@ -28,7 +28,7 @@ public class Generator
 
     private int _uniqueDigits;
 
-    private HashSet<Int128> _unavoidableSets = new HashSet<Int128>();
+    private readonly HashSet<Int128> _unavoidableSets = new HashSet<Int128>();
 
     private Int128 _mask;
 
@@ -87,8 +87,6 @@ public class Generator
             }
             else
             {
-                _mask = (Int128.One << 81) - 1;
-                
                 Array.Copy(_originalPuzzle, puzzle, 81);
             }
         }
@@ -110,8 +108,6 @@ public class Generator
     {
         _unavoidableSets.Clear();
 
-        _mask = (Int128.One << 81) - 1;
-        
         var puzzle = new int[81];
 
         var solved = false;
@@ -148,6 +144,8 @@ public class Generator
 
     private RemoveResult RemoveCells(int[] puzzle, int cellsToRemove, int targetClues, CancellationToken cancellationToken)
     {
+        _mask = (Int128.One << 81) - 1;
+                
         CreateAndShuffleFilledCells();
 
         _failedStamp++;
