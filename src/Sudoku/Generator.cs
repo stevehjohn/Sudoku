@@ -209,6 +209,18 @@ public class Generator
 
             _mask &= ~(Int128.One << cellIndex);
 
+            var invalidRemoval = false;
+            
+            foreach (var set in _unavoidableSets)
+            {
+                if ((set & _mask) == 0)
+                {
+                    invalidRemoval = true;
+                    
+                    break;
+                }
+            }
+
             _digitCounts[cellValue]--;
 
             if (_digitCounts[cellValue] == 0)
@@ -221,20 +233,23 @@ public class Generator
                 return RemoveResult.Cancelled;
             }
 
-            var solverResult = _solver.HasUniqueSolution(puzzle, _originalPuzzle);
-
-            if (solverResult.IsUnique)
+            if (! invalidRemoval)
             {
-                var result = RemoveCell(puzzle, cellsToRemove - 1, targetClues, i + 1, cancellationToken);
+                var solverResult = _solver.HasUniqueSolution(puzzle, _originalPuzzle);
 
-                if (result != RemoveResult.Failure)
+                if (solverResult.IsUnique)
                 {
-                    return result;
+                    var result = RemoveCell(puzzle, cellsToRemove - 1, targetClues, i + 1, cancellationToken);
+
+                    if (result != RemoveResult.Failure)
+                    {
+                        return result;
+                    }
                 }
-            }
-            else if (solverResult.DifferenceCount >= 4 && solverResult.DifferenceCount <= 8)
-            {
-                _unavoidableSets.Add(solverResult.DifferentCells);
+                else if (solverResult.DifferenceCount >= 4 && solverResult.DifferenceCount <= 16)
+                {
+                    _unavoidableSets.Add(solverResult.DifferentCells);
+                }
             }
 
             puzzle[cellIndex] = cellValue;
