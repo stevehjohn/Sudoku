@@ -28,7 +28,7 @@ public class Generator
 
     private int _uniqueDigits;
 
-    private HashSet<Int128> _UnavoidableSets = new HashSet<Int128>();
+    private HashSet<Int128> _unavoidableSets = new HashSet<Int128>();
 
     public Generator()
     {
@@ -62,7 +62,7 @@ public class Generator
 
         var puzzleUseCount = 0;
         
-        _UnavoidableSets.Clear();
+        _unavoidableSets.Clear();
 
         while (! cancellationToken.IsCancellationRequested)
         {
@@ -222,6 +222,10 @@ public class Generator
                     return result;
                 }
             }
+            else
+            {
+                _unavoidableSets.Add(solverResult.DifferentCells);
+            }
 
             puzzle[cellIndex] = cellValue;
 
@@ -331,6 +335,10 @@ public class Generator
                 {
                     ExploreFurther(puzzle, targetClues);
                 }
+            }
+            else
+            {
+                _unavoidableSets.Add(solverResult.DifferentCells);
             }
 
             puzzle[i] = value;
