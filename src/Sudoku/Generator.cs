@@ -28,6 +28,10 @@ public class Generator
 
     private int _uniqueDigits;
 
+    private readonly HashSet<Int128> _unavoidableSets = new HashSet<Int128>();
+
+    private Int128 _mask;
+
     public Generator()
     {
         _random = new Random();
@@ -59,6 +63,8 @@ public class Generator
         Array.Copy(solvedPuzzle, _originalPuzzle, 81);
 
         var puzzleUseCount = 0;
+        
+        _unavoidableSets.Clear();
 
         while (! cancellationToken.IsCancellationRequested)
         {
@@ -100,6 +106,8 @@ public class Generator
 
     public int[] CreateSolvedPuzzle()
     {
+        _unavoidableSets.Clear();
+
         var puzzle = new int[81];
 
         var solved = false;
@@ -136,6 +144,8 @@ public class Generator
 
     private RemoveResult RemoveCells(int[] puzzle, int cellsToRemove, int targetClues, CancellationToken cancellationToken)
     {
+        _mask = (Int128.One << 81) - 1;
+                
         CreateAndShuffleFilledCells();
 
         _failedStamp++;
@@ -195,6 +205,20 @@ public class Generator
 
             puzzle[cellIndex] = 0;
 
+            _mask &= ~(Int128.One << cellIndex);
+
+            var invalidRemoval = false;
+            
+            foreach (var set in _unavoidableSets)
+            {
+                if ((set & _mask) == 0)
+                {
+                    invalidRemoval = true;
+                    
+                    break;
+                }
+            }
+
             _digitCounts[cellValue]--;
 
             if (_digitCounts[cellValue] == 0)
@@ -207,19 +231,28 @@ public class Generator
                 return RemoveResult.Cancelled;
             }
 
-            var unique = _solver.HasUniqueSolution(puzzle, _originalPuzzle);
-
-            if (unique)
+            if (! invalidRemoval)
             {
-                var result = RemoveCell(puzzle, cellsToRemove - 1, targetClues, i + 1, cancellationToken);
+                var solverResult = _solver.HasUniqueSolution(puzzle, _originalPuzzle);
 
-                if (result != RemoveResult.Failure)
+                if (solverResult.IsUnique)
                 {
-                    return result;
+                    var result = RemoveCell(puzzle, cellsToRemove - 1, targetClues, i + 1, cancellationToken);
+
+                    if (result != RemoveResult.Failure)
+                    {
+                        return result;
+                    }
+                }
+                else if (solverResult.DifferenceCount >= 4 && solverResult.DifferenceCount <= 8)
+                {
+                    _unavoidableSets.Add(solverResult.DifferentCells);
                 }
             }
 
             puzzle[cellIndex] = cellValue;
+            
+            _mask |= Int128.One << cellIndex;
 
             _digitCounts[cellValue]++;
             
@@ -314,7 +347,9 @@ public class Generator
 
             puzzle[i] = 0;
 
-            if (_solver.HasUniqueSolution(puzzle, _originalPuzzle))
+            var solverResult = _solver.HasUniqueSolution(puzzle, _originalPuzzle);
+            
+            if (solverResult.IsUnique)
             {
                 lock (_fileLock)
                 {
@@ -325,6 +360,10 @@ public class Generator
                 {
                     ExploreFurther(puzzle, targetClues);
                 }
+            }
+            else if (solverResult.DifferenceCount >= 4 && solverResult.DifferenceCount <= 8)
+            {
+                _unavoidableSets.Add(solverResult.DifferentCells);
             }
 
             puzzle[i] = value;
