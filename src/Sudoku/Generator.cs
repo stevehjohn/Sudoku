@@ -231,7 +231,18 @@ public class Generator
                 return RemoveResult.Cancelled;
             }
 
-            if (! invalidRemoval)
+            var removedCount = 81 - targetClues - cellsToRemove + 1;
+            
+            if (removedCount < 4)
+            {
+                var result = RemoveCell(puzzle, cellsToRemove - 1, targetClues, i + 1, cancellationToken);
+
+                if (result != RemoveResult.Failure)
+                {
+                    return result;
+                }
+            }
+            else if (! invalidRemoval)
             {
                 var solverResult = _solver.HasUniqueSolution(puzzle, _originalPuzzle);
 
