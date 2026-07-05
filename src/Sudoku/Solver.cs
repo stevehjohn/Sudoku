@@ -164,7 +164,7 @@ public class Solver
     {
         _solutionCount = 0;
 
-        _steps = 0;
+        _steps = 1;
 
         _score = 81;
 
