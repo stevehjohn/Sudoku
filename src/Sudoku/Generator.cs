@@ -28,7 +28,7 @@ public class Generator
 
     private int _uniqueDigits;
 
-    private readonly HashSet<Int128> _unavoidableSets = new HashSet<Int128>();
+    private readonly HashSet<Int128> _unavoidableSets = [];
 
     private Int128 _mask;
 
