@@ -23,7 +23,7 @@ public class Generator
     private readonly int[] _digitCounts = new int[10];
 
     private readonly Lock _fileLock = new();
-    
+
     private int _failedStamp;
 
     private int _uniqueDigits;
@@ -35,11 +35,15 @@ public class Generator
     public Generator()
     {
         _random = new Random();
+        
+        InitialiseArrays();
     }
 
     public Generator(int seed)
     {
         _random = new Random(seed);
+        
+        InitialiseArrays();
     }
 
     public (bool Succeeded, int[] Puzzle) Generate(int cluesToLeave)
@@ -58,18 +62,18 @@ public class Generator
     {
         var puzzle = new int[81];
 
-        Array.Copy(solvedPuzzle, puzzle, 81);
+        solvedPuzzle.AsSpan().CopyTo(puzzle);
 
-        Array.Copy(solvedPuzzle, _originalPuzzle, 81);
+        solvedPuzzle.AsSpan().CopyTo(_originalPuzzle);
 
         var puzzleUseCount = 0;
-        
+
         _unavoidableSets.Clear();
 
         while (! cancellationToken.IsCancellationRequested)
         {
             InitialiseDigitCounts();
-            
+
             if (RemoveCells(puzzle, 81 - cluesToLeave, cluesToLeave, cancellationToken) == RemoveResult.Success)
             {
                 return (true, puzzle);
@@ -81,17 +85,25 @@ public class Generator
             {
                 puzzle = CreateSolvedPuzzle();
 
-                Array.Copy(puzzle, _originalPuzzle, 81);
+                puzzle.AsSpan().CopyTo(_originalPuzzle);
 
                 puzzleUseCount = 0;
             }
             else
             {
-                Array.Copy(_originalPuzzle, puzzle, 81);
+                _originalPuzzle.AsSpan().CopyTo(puzzle);
             }
         }
 
         return (false, puzzle);
+    }
+
+    private void InitialiseArrays()
+    {
+        for (var i = 0; i < 81; i++)
+        {
+            _candidates[i] = new int[9];
+        }
     }
 
     private void InitialiseDigitCounts()
@@ -136,7 +148,10 @@ public class Generator
     {
         for (var i = 0; i < 81; i++)
         {
-            _candidates[i] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+            for (var j = 0; j < 9; j++)
+            {
+                _candidates[i][j] = j + 1;
+            }
 
             _candidateCounts[i] = 9;
         }
