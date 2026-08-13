@@ -4,7 +4,7 @@ namespace Sudoku;
 
 public class Generator
 {
-    private readonly int[][] _candidates = new int[81][];
+    private readonly int[] _candidates = new int[729];
 
     private readonly int[] _candidateCounts = new int[81];
 
@@ -35,15 +35,11 @@ public class Generator
     public Generator()
     {
         _random = new Random();
-        
-        InitialiseArrays();
     }
 
     public Generator(int seed)
     {
         _random = new Random(seed);
-        
-        InitialiseArrays();
     }
 
     public (bool Succeeded, int[] Puzzle) Generate(int cluesToLeave)
@@ -97,15 +93,7 @@ public class Generator
 
         return (false, puzzle);
     }
-
-    private void InitialiseArrays()
-    {
-        for (var i = 0; i < 81; i++)
-        {
-            _candidates[i] = new int[9];
-        }
-    }
-
+    
     private void InitialiseDigitCounts()
     {
         for (var i = 1; i < 10; i++)
@@ -150,7 +138,7 @@ public class Generator
         {
             for (var j = 0; j < 9; j++)
             {
-                _candidates[i][j] = j + 1;
+                _candidates[i * 9 + j] = j + 1;
             }
 
             _candidateCounts[i] = 9;
@@ -332,9 +320,9 @@ public class Generator
         {
             var candidateIndex = _random.Next(_candidateCounts[cell]);
 
-            var candidate = _candidates[cell][candidateIndex];
+            var candidate = _candidates[cell * 9 + candidateIndex];
 
-            _candidates[cell][candidateIndex] = _candidates[cell][_candidateCounts[cell] - 1];
+            _candidates[cell * 9 + candidateIndex] = _candidates[cell * 9 + (_candidateCounts[cell] - 1)];
 
             _candidateCounts[cell]--;
 
@@ -350,7 +338,7 @@ public class Generator
 
         for (var i = 0; i < 9; i++)
         {
-            _candidates[cell][i] = i + 1;
+            _candidates[cell * 9 + i] = i + 1;
         }
 
         _candidateCounts[cell] = 9;
