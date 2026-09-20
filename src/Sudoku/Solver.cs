@@ -227,12 +227,12 @@ public class Solver
         }
 
         var single = FindHiddenSingle();
-
+        
         if (single != -1)
         {
             return CreateNextSteps((Position: (X: UnitTables.CellColumn(single), Y: UnitTables.CellRow(single)), Values: _cellCandidates[single], ValueCount: 1));
         }
-
+        
         if (move.ValueCount == 0)
         {
             return false;
