@@ -217,28 +217,28 @@ public class Solver
             return false;
         }
 
-        var single = FindNakedSingle();
-
-        if (single != -1)
-        {
-            return CreateNextSteps((Position: (X: UnitTables.CellColumn(single), Y: UnitTables.CellRow(single)), Values: _cellCandidates[single], ValueCount: 1));
-        }
-        
-        single = FindHiddenSingle();
-
-        if (single != -1)
-        {
-            return CreateNextSteps((Position: (X: UnitTables.CellColumn(single), Y: UnitTables.CellRow(single)), Values: _cellCandidates[single], ValueCount: 1));
-        }
-
         var move = FindLeastRemainingCandidates();
 
-        return move.ValueCount switch
+        if (move.ValueCount == 1)
         {
-            1 => CreateNextSteps(move),
-            0 => false,
-            _ => CreateNextSteps(move)
-        };
+            _moveType = MoveType.NakedSingle;
+
+            return CreateNextSteps(move);
+        }
+
+        var single = FindHiddenSingle();
+
+        if (single != -1)
+        {
+            return CreateNextSteps((Position: (X: UnitTables.CellColumn(single), Y: UnitTables.CellRow(single)), Values: _cellCandidates[single], ValueCount: 1));
+        }
+
+        if (move.ValueCount == 0)
+        {
+            return false;
+        }
+
+        return CreateNextSteps(move);
     }
 
     private bool GetCellCandidates()
@@ -332,27 +332,6 @@ public class Solver
         {
             _history.Add(new Move(x, y, 0, MoveType.NoCandidates));
         }
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private int FindNakedSingle()
-    {
-        for (var i = 0; i < 81; i++)
-        {
-            if (_workingCopy[i] != 0)
-            {
-                continue;
-            }
-
-            if (BitOperations.PopCount((uint) _cellCandidates[i]) == 1)
-            {
-                _moveType = MoveType.NakedSingle;
-                
-                return i;
-            }
-        }
-
-        return -1;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -496,6 +475,11 @@ public class Solver
             values = candidates;
 
             valueCount = count;
+
+            if (count == 1)
+            {
+                return (position, values, valueCount);
+            }
         }
 
         return (position, values, valueCount);
