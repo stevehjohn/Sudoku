@@ -356,10 +356,12 @@ public class Solver
 
             var once = oneMask & ~twoMask;
 
-            if (BitOperations.PopCount((uint) once) != 1)
+            if (once == 0)
             {
                 continue;
             }
+
+            once &= -once;
 
             for (var cellIndex = 0; cellIndex < 9; cellIndex++)
             {
@@ -405,8 +407,10 @@ public class Solver
 
             var onceColumn = oneMaskColumn & ~twoMaskColumn;
 
-            if (BitOperations.PopCount((uint) onceRow) == 1)
+            if (onceRow != 0)
             {
+                onceRow &= -onceRow;
+                
                 for (var x = 0; x < 9; x++)
                 {
                     if ((_cellCandidates[y9 + x] & onceRow) <= 0)
@@ -422,10 +426,12 @@ public class Solver
                 }
             }
 
-            if (BitOperations.PopCount((uint) onceColumn) != 1)
+            if (onceColumn == 0)
             {
                 continue;
             }
+
+            onceColumn &= -onceColumn;
 
             for (var x = 0; x < 9; x++)
             {
