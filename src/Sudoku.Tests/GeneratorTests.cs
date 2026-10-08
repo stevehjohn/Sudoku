@@ -41,4 +41,22 @@ public class GeneratorTests
 
         Assert.Equal(puzzle1, puzzle2);
     }
+    
+    [Fact]
+    public void ReturnsWhenCancellationRequested()
+    {
+        var generator = new Generator(1234);
+        
+        var cancellationTokenSource = new CancellationTokenSource();
+        
+        var cancellationToken = cancellationTokenSource.Token;
+
+        cancellationTokenSource.Cancel();
+        
+        var result = generator.Generate(25, cancellationToken);
+        
+        Assert.False(result.Succeeded);
+        
+        Assert.DoesNotContain(0, result.Puzzle);
+    }
 }
