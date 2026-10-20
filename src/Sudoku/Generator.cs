@@ -32,6 +32,8 @@ public class Generator
 
     private Int128 _mask;
 
+    private int _uniquenessChecks;
+
     public Generator()
     {
         _random = new Random();
@@ -65,6 +67,8 @@ public class Generator
         var puzzleUseCount = 0;
 
         _unavoidableSets.Clear();
+
+        _uniquenessChecks = 0;
 
         while (! cancellationToken.IsCancellationRequested)
         {
@@ -171,7 +175,7 @@ public class Generator
             {
                 lock (_fileLock)
                 {
-                    File.AppendAllLines(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Sudoku.log"), [$"{DateTime.Now:ddd d MMM HH:mm:ss}: {puzzle.FlattenPuzzle()}"]);
+                    File.AppendAllLines(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Sudoku.log"), [$"{DateTime.Now:ddd d MMM HH:mm:ss}: {puzzle.FlattenPuzzle()}. Uniqueness checks: {_uniquenessChecks:N0}"]);
                 }
             }
 
@@ -248,6 +252,8 @@ public class Generator
             else if (! invalidRemoval)
             {
                 var solverResult = _solver.HasUniqueSolution(puzzle, _originalPuzzle);
+
+                _uniquenessChecks++;
 
                 if (solverResult.IsUnique)
                 {
@@ -363,6 +369,8 @@ public class Generator
 
             var solverResult = _solver.HasUniqueSolution(puzzle, _originalPuzzle);
             
+            _uniquenessChecks++;
+
             if (solverResult.IsUnique)
             {
                 lock (_fileLock)
