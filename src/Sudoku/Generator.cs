@@ -163,11 +163,6 @@ public class Generator
 
         var result = RemoveCell(puzzle, cellsToRemove, targetClues, 0, cancellationToken);
         
-        if (result == RemoveResult.Success && targetClues < 21)
-        {
-            ExploreFurther(puzzle, targetClues);
-        }
-
         return result;
     }
 
@@ -358,45 +353,5 @@ public class Generator
         _candidateCounts[cell] = 9;
 
         return CreateSolvedPuzzle(puzzle, cell - 1, cancellationToken);
-    }
-
-    private void ExploreFurther(int[] puzzle, int targetClues)
-    {
-        targetClues--;
-        
-        for (var i = 0; i < 81; i++)
-        {
-            if (puzzle[i] == 0)
-            {
-                continue;
-            }
-
-            var value = puzzle[i];
-
-            puzzle[i] = 0;
-
-            var solverResult = _solver.HasUniqueSolution(puzzle, _originalPuzzle);
-            
-            _uniquenessChecks++;
-
-            if (solverResult.IsUnique)
-            {
-                lock (_fileLock)
-                {
-                    File.AppendAllLines(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Sudoku.log"), [$"{DateTime.Now:ddd d MMM HH:mm:ss}: BONUS {targetClues}er! {puzzle.FlattenPuzzle()}"]);
-                }
-
-                if (targetClues > 17)
-                {
-                    ExploreFurther(puzzle, targetClues);
-                }
-            }
-            else if (solverResult.DifferenceCount >= 4 && solverResult.DifferenceCount <= 8)
-            {
-                _unavoidableSets.Add(solverResult.DifferentCells);
-            }
-
-            puzzle[i] = value;
-        }
     }
 }
