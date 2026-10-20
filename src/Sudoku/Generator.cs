@@ -162,12 +162,7 @@ public class Generator
         _failedStamp++;
 
         var result = RemoveCell(puzzle, cellsToRemove, targetClues, 0, cancellationToken);
-
-        if (result == RemoveResult.Failure)
-        {
-            _removalFailures++;
-        }
-
+        
         if (result == RemoveResult.Success && targetClues < 21)
         {
             ExploreFurther(puzzle, targetClues);
@@ -193,6 +188,8 @@ public class Generator
 
         if (_filledCells.Count - start < cellsToRemove)
         {
+            _removalFailures++;
+
             return RemoveResult.Failure;
         }
 
@@ -294,6 +291,8 @@ public class Generator
 
             _failedDepth[cellIndex] = start;
         }
+
+        _removalFailures++;
 
         return RemoveResult.Failure;
     }
