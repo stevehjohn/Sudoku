@@ -174,7 +174,7 @@ public class Generator
             {
                 lock (_fileLock)
                 {
-                    File.AppendAllLines(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Sudoku.log"), [$"{DateTime.Now:ddd d MMM HH:mm:ss}, {targetClues}er: {puzzle.FlattenPuzzle()}. Uniqueness checks: {_uniquenessChecks:N0}, removal failures: {_removalFailures:N0}"]);
+                    File.AppendAllLines(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Sudoku.log"), [$"{DateTime.Now:ddd d MMM HH:mm:ss}, {targetClues}er: {puzzle.FlattenPuzzle()} - Uniqueness checks: {_uniquenessChecks:N0}, removal failures: {_removalFailures:N0}"]);
                 }
             }
 
