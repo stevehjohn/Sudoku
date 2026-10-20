@@ -34,6 +34,8 @@ public class Generator
 
     private int _uniquenessChecks;
 
+    private int _removalFailures;
+
     public Generator()
     {
         _random = new Random();
@@ -69,6 +71,8 @@ public class Generator
         _unavoidableSets.Clear();
 
         _uniquenessChecks = 0;
+
+        _removalFailures = 0;
 
         while (! cancellationToken.IsCancellationRequested)
         {
@@ -159,6 +163,11 @@ public class Generator
 
         var result = RemoveCell(puzzle, cellsToRemove, targetClues, 0, cancellationToken);
 
+        if (result == RemoveResult.Failure)
+        {
+            _removalFailures++;
+        }
+
         if (result == RemoveResult.Success && targetClues < 21)
         {
             ExploreFurther(puzzle, targetClues);
@@ -175,7 +184,7 @@ public class Generator
             {
                 lock (_fileLock)
                 {
-                    File.AppendAllLines(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Sudoku.log"), [$"{DateTime.Now:ddd d MMM HH:mm:ss}: {puzzle.FlattenPuzzle()}. Uniqueness checks: {_uniquenessChecks:N0}"]);
+                    File.AppendAllLines(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Sudoku.log"), [$"{DateTime.Now:ddd d MMM HH:mm:ss}: {puzzle.FlattenPuzzle()}. Uniqueness checks: {_uniquenessChecks:N0}, removal failures: {_removalFailures:N0}"]);
                 }
             }
 
