@@ -211,21 +211,27 @@ public class Generator
                 continue;
             }
 
-            puzzle[cellIndex] = 0;
-
-            _mask &= ~(Int128.One << cellIndex);
+            var cellBit = Int128.One << cellIndex;
 
             var invalidRemoval = false;
-            
+
             foreach (var set in _unavoidableSets)
             {
-                if ((set & _mask) == 0)
+                if ((set & _mask) == cellBit)
                 {
                     invalidRemoval = true;
-                    
                     break;
                 }
             }
+
+            if (invalidRemoval)
+            {
+                continue;
+            }
+
+            puzzle[cellIndex] = 0;
+
+            _mask &= ~cellBit;
 
             _digitCounts[cellValue]--;
 
