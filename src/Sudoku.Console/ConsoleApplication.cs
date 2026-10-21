@@ -673,7 +673,7 @@ public class ConsoleApplication
 
         var count = lines.Length;
         
-        lines = lines.Distinct().ToArray();
+        lines = [.. lines.Distinct()];
 
         lines.Sort();
 
@@ -802,7 +802,8 @@ public class ConsoleApplication
 
         puzzles.AddRange(LoadPuzzlesInternal(filename));
 
-        return puzzles.ToArray();
+        
+        return [.. puzzles];
     }
 
     private static (int[] Puzzle, int Clues)[] LoadPuzzlesInternal(string filename)
@@ -837,7 +838,7 @@ public class ConsoleApplication
             }
         }
 
-        return ParseData(lines.ToArray());
+        return ParseData([.. lines]);
     }
 
     private static (int[] Puzzle, int Clues)[] ParseData(string[] data)
@@ -905,7 +906,7 @@ public class ConsoleApplication
 
     private void EnumeratePuzzleFiles()
     {
-        _files = Directory.EnumerateFiles(FileHelper.GetPuzzlesPath(), "*").Order().ToList();
+        _files = [.. Directory.EnumerateFiles(FileHelper.GetPuzzlesPath(), "*").Order()];
 
         _files.RemoveAll(f => f.Contains(".DS_"));
 

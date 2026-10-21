@@ -560,7 +560,7 @@ public class Solver
                     }
                 }
 
-                historyMove.Candidates = historyCandidates.ToArray();
+                historyMove.Candidates = [.. historyCandidates];
 
                 _history?.Add(historyMove);
             }
