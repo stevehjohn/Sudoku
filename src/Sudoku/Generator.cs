@@ -256,7 +256,7 @@ public class Generator
                     return result;
                 }
             }
-            else if (! invalidRemoval)
+            else
             {
                 var solverResult = _solver.HasUniqueSolution(puzzle, _originalPuzzle);
 
