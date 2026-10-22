@@ -30,6 +30,8 @@ public class Generator
 
     private readonly HashSet<Int128> _unavoidableSets = [];
 
+    private readonly List<Int128>[] _setsByCell = [.. Enumerable.Range(0, 81).Select(_ => new List<Int128>())];
+
     private Int128 _mask;
 
     private int _uniquenessChecks;
@@ -68,7 +70,7 @@ public class Generator
 
         var puzzleUseCount = 0;
 
-        _unavoidableSets.Clear();
+        ClearUnavoidableSets();
 
         _uniquenessChecks = 0;
 
@@ -114,8 +116,8 @@ public class Generator
 
     public int[] CreateSolvedPuzzle()
     {
-        _unavoidableSets.Clear();
-
+        ClearUnavoidableSets();
+        
         var puzzle = new int[81];
 
         var solved = false;
@@ -215,11 +217,12 @@ public class Generator
 
             var invalidRemoval = false;
 
-            foreach (var set in _unavoidableSets)
+            foreach (var set in _setsByCell[cellIndex])
             {
                 if ((set & _mask) == cellBit)
                 {
                     invalidRemoval = true;
+                    
                     break;
                 }
             }
@@ -273,7 +276,18 @@ public class Generator
                 }
                 else if (solverResult.DifferenceCount >= 4 && solverResult.DifferenceCount <= 8)
                 {
-                    _unavoidableSets.Add(solverResult.DifferentCells);
+                    var set = solverResult.DifferentCells;
+
+                    if (_unavoidableSets.Add(set))
+                    {
+                        for (var cell = 0; cell < 81; cell++)
+                        {
+                            if ((set & (Int128.One << cell)) != 0)
+                            {
+                                _setsByCell[cell].Add(set);
+                            }
+                        }
+                    }
                 }
             }
 
@@ -337,13 +351,13 @@ public class Generator
         }
 
         var offset = cell * 9;
-        
+
         var count = _candidateCounts[cell];
 
         while (count > 0)
         {
             var candidateIndex = _random.Next(count);
-            
+
             var candidate = _candidates[offset + candidateIndex];
 
             _candidates[offset + candidateIndex] = _candidates[offset + count - 1];
@@ -368,5 +382,15 @@ public class Generator
         _candidateCounts[cell] = 9;
 
         return false;
+    }
+
+    private void ClearUnavoidableSets()
+    {
+        _unavoidableSets.Clear();
+
+        foreach (var sets in _setsByCell)
+        {
+            sets.Clear();
+        }
     }
 }
