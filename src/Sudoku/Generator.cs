@@ -261,11 +261,11 @@ public class Generator
             }
             else
             {
-                var solverResult = _solver.HasUniqueSolution(puzzle, _originalPuzzle);
+                var (isUnique, set, differenceCount) = _solver.HasUniqueSolution(puzzle, _originalPuzzle);
 
                 _uniquenessChecks++;
 
-                if (solverResult.IsUnique)
+                if (isUnique)
                 {
                     var result = RemoveCell(puzzle, cellsToRemove - 1, targetClues, i + 1, cancellationToken);
 
@@ -274,10 +274,8 @@ public class Generator
                         return result;
                     }
                 }
-                else if (solverResult.DifferenceCount >= 4 && solverResult.DifferenceCount <= 8)
+                else if (differenceCount >= 4 && differenceCount <= 8)
                 {
-                    var set = solverResult.DifferentCells;
-
                     if (_unavoidableSets.Add(set))
                     {
                         for (var cell = 0; cell < 81; cell++)
