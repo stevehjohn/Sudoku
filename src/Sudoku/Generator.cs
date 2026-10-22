@@ -101,7 +101,7 @@ public class Generator
 
         return (false, puzzle);
     }
-    
+
     private void InitialiseDigitCounts()
     {
         for (var i = 1; i < 10; i++)
@@ -156,13 +156,13 @@ public class Generator
     private RemoveResult RemoveCells(int[] puzzle, int cellsToRemove, int targetClues, CancellationToken cancellationToken)
     {
         _mask = (Int128.One << 81) - 1;
-                
+
         CreateAndShuffleFilledCells();
 
         _failedStamp++;
 
         var result = RemoveCell(puzzle, cellsToRemove, targetClues, 0, cancellationToken);
-        
+
         return result;
     }
 
@@ -246,7 +246,7 @@ public class Generator
             }
 
             var removedCount = 81 - targetClues - cellsToRemove + 1;
-            
+
             if (removedCount < 4)
             {
                 var result = RemoveCell(puzzle, cellsToRemove - 1, targetClues, i + 1, cancellationToken);
@@ -278,11 +278,11 @@ public class Generator
             }
 
             puzzle[cellIndex] = cellValue;
-            
+
             _mask |= Int128.One << cellIndex;
 
             _digitCounts[cellValue]++;
-            
+
             if (_digitCounts[cellValue] == 1)
             {
                 _uniqueDigits++;
@@ -331,21 +331,30 @@ public class Generator
             return false;
         }
 
-        while (_candidateCounts[cell] > 0)
+        if (cell == 81)
         {
-            var candidateIndex = _random.Next(_candidateCounts[cell]);
+            return true;
+        }
 
-            var candidate = _candidates[cell * 9 + candidateIndex];
+        var offset = cell * 9;
+        
+        var count = _candidateCounts[cell];
 
-            _candidates[cell * 9 + candidateIndex] = _candidates[cell * 9 + (_candidateCounts[cell] - 1)];
+        while (count > 0)
+        {
+            var candidateIndex = _random.Next(count);
+            
+            var candidate = _candidates[offset + candidateIndex];
 
-            _candidateCounts[cell]--;
+            _candidates[offset + candidateIndex] = _candidates[offset + count - 1];
+
+            count--;
 
             puzzle[cell] = candidate;
 
-            if (puzzle.IsValidSudoku(cell))
+            if (puzzle.IsValidSudoku(cell) && CreateSolvedPuzzle(puzzle, cell + 1, cancellationToken))
             {
-                return cell == 80 || CreateSolvedPuzzle(puzzle, cell + 1, cancellationToken);
+                return true;
             }
         }
 
@@ -353,11 +362,11 @@ public class Generator
 
         for (var i = 0; i < 9; i++)
         {
-            _candidates[cell * 9 + i] = i + 1;
+            _candidates[offset + i] = i + 1;
         }
 
         _candidateCounts[cell] = 9;
 
-        return CreateSolvedPuzzle(puzzle, cell - 1, cancellationToken);
+        return false;
     }
 }
