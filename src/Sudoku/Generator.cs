@@ -190,7 +190,7 @@ public class Generator
 
         var filledCount = _filledCells.Count;
 
-        for (var i = start; i < filledCount; i++)
+        for (var i = start; i <= filledCount - cellsToRemove; i++)
         {
             if (cancellationToken.IsCancellationRequested)
             {
