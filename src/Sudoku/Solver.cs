@@ -236,8 +236,7 @@ public class Solver
         {
             return CreateNextSteps((Position: (X: UnitTables.CellColumn(single), Y: UnitTables.CellRow(single)), Values: _cellCandidates[single], ValueCount: 1));
         }
-
-
+        
         return CreateNextSteps(move);
     }
 
