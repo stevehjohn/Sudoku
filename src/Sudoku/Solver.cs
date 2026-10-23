@@ -512,6 +512,8 @@ public class Solver
 
         var knownValue = 0;
 
+        Span<int> oldCandidates = stackalloc int[81];
+
         while (values > 0 || knownValue > 0)
         {
             int value;
@@ -548,6 +550,8 @@ public class Solver
 
             var peers = UnitTables.Peers(cell);
 
+            _cellCandidates.AsSpan().CopyTo(oldCandidates);
+            
             var valid = UpdateCellAndPeerCandidates(cell, peers);
             
             _score--;
@@ -631,7 +635,7 @@ public class Solver
 
             _boxMask[box] &= (ushort) ~bit;
 
-            UpdateCellAndPeerCandidates(cell, peers);
+            oldCandidates.CopyTo(_cellCandidates);
 
             if (_historyType != HistoryType.None)
             {
