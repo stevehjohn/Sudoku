@@ -300,10 +300,15 @@ public class Solver
 
     private void UpdateCellCandidates(int cell)
     {
-        if (_workingCopy[cell] > 0)
+        if (_workingCopy[cell] != 0)
         {
-            _cellCandidates[cell] = 0;
+            if (_cellCandidates[cell] != 0)
+            {
+                _candidateCount--;
+            }
 
+            _cellCandidates[cell] = 0;
+            
             return;
         }
 
@@ -524,7 +529,7 @@ public class Solver
                 values &= values - 1;
             }
 
-            if (_knownSolution != null && _knownSolution[cell] == value && BitOperations.PopCount((uint) values) > 0)
+            if (_knownSolution != null && _knownSolution[cell] == value && values != 0)
             {
                 knownValue = value;
 
