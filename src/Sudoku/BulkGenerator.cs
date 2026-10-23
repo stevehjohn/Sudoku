@@ -27,7 +27,7 @@ public static class BulkGenerator
             _ => 1_000
         };
         
-        if (cluesToLeave < 20)
+        if (cluesToLeave < 21)
         {
             lock (FileLock)
             {
