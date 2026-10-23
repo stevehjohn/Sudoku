@@ -1,3 +1,4 @@
+using System.Numerics;
 using Sudoku.Extensions;
 
 namespace Sudoku;
@@ -117,7 +118,7 @@ public class Generator
     public int[] CreateSolvedPuzzle()
     {
         ClearUnavoidableSets();
-        
+
         var puzzle = new int[81];
 
         var solved = false;
@@ -222,7 +223,7 @@ public class Generator
                 if ((set & _mask) == cellBit)
                 {
                     invalidRemoval = true;
-                    
+
                     break;
                 }
             }
@@ -278,13 +279,7 @@ public class Generator
                 {
                     if (_unavoidableSets.Add(set))
                     {
-                        for (var cell = 0; cell < 81; cell++)
-                        {
-                            if ((set & (Int128.One << cell)) != 0)
-                            {
-                                _setsByCell[cell].Add(set);
-                            }
-                        }
+                        IndexUnavoidableSet(set);
                     }
                 }
             }
@@ -308,6 +303,24 @@ public class Generator
         _removalFailures++;
 
         return RemoveResult.Failure;
+    }
+
+    private void IndexUnavoidableSet(Int128 set)
+    {
+        var bits = (UInt128) set;
+
+        while (bits != 0)
+        {
+            var low = (ulong) bits;
+
+            var cell = low != 0
+                ? BitOperations.TrailingZeroCount(low) 
+                : 64 + BitOperations.TrailingZeroCount((ulong) (bits >> 64));
+
+            _setsByCell[cell].Add(set);
+
+            bits &= bits - 1;
+        }
     }
 
     private void CreateAndShuffleFilledCells()
