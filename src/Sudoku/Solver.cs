@@ -551,6 +551,8 @@ public class Solver
             var peers = UnitTables.Peers(cell);
 
             _cellCandidates.AsSpan().CopyTo(oldCandidates);
+
+            var oldCandidateCount = _candidateCount;
             
             var valid = UpdateCellAndPeerCandidates(cell, peers);
             
@@ -636,6 +638,8 @@ public class Solver
             _boxMask[box] &= (ushort) ~bit;
 
             oldCandidates.CopyTo(_cellCandidates);
+
+            _candidateCount = oldCandidateCount;
 
             if (_historyType != HistoryType.None)
             {
