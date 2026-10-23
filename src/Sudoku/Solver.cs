@@ -34,9 +34,9 @@ public class Solver
     private int[] _knownSolution;
 
     private readonly ushort[] _rowMask = new ushort[9];
-    
+
     private readonly ushort[] _columnMask = new ushort[9];
-    
+
     private readonly ushort[] _boxMask = new ushort[9];
 
     public Solver(HistoryType historyType = HistoryType.None, SolveMethod solveMethod = SolveMethod.FindUnique)
@@ -146,7 +146,7 @@ public class Solver
         Int128 differences = 0;
 
         var differenceCount = 0;
-        
+
         for (var i = 0; i < 81; i++)
         {
             if (_workingCopy[i] != knownSolution[i])
@@ -219,24 +219,24 @@ public class Solver
 
         var move = FindLeastRemainingCandidates();
 
-        if (move.ValueCount == 1)
+        switch (move.ValueCount)
         {
-            _moveType = MoveType.NakedSingle;
+            case 0:
+                return false;
 
-            return CreateNextSteps(move);
+            case 1:
+                _moveType = MoveType.NakedSingle;
+
+                return CreateNextSteps(move);
         }
 
         var single = FindHiddenSingle();
-        
+
         if (single != -1)
         {
             return CreateNextSteps((Position: (X: UnitTables.CellColumn(single), Y: UnitTables.CellRow(single)), Values: _cellCandidates[single], ValueCount: 1));
         }
-        
-        if (move.ValueCount == 0)
-        {
-            return false;
-        }
+
 
         return CreateNextSteps(move);
     }
@@ -258,7 +258,7 @@ public class Solver
                 var box = cellUnits[2];
 
                 _cellCandidates[i] = ~(_rowMask[y] | _columnMask[x] | _boxMask[box]) & 0x1FF;
-                
+
                 if (_cellCandidates[i] != 0)
                 {
                     _candidateCount++;
@@ -280,16 +280,23 @@ public class Solver
         return true;
     }
 
-    private void UpdateCellAndPeerCandidates(int updatedCell, ReadOnlySpan<byte> peers)
+    private bool UpdateCellAndPeerCandidates(int updatedCell, ReadOnlySpan<byte> peers)
     {
         UpdateCellCandidates(updatedCell);
 
-        for (var i = 0; i < peers.Length; i++)
-        {
-            var cell = peers[i];
+        var valid = true;
 
+        foreach (var cell in peers)
+        {
             UpdateCellCandidates(cell);
+
+            if (_workingCopy[cell] == 0 && _cellCandidates[cell] == 0)
+            {
+                valid = false;
+            }
         }
+
+        return valid;
     }
 
     private void UpdateCellCandidates(int cell)
@@ -310,7 +317,7 @@ public class Solver
         var y = cellUnits[1];
 
         var box = cellUnits[2];
-        
+
         _cellCandidates[cell] = ~(_rowMask[y] | _columnMask[x] | _boxMask[box]) & 0x1FF;
 
         if (oldValue > 0)
@@ -348,7 +355,7 @@ public class Solver
             for (var cellIndex = 0; cellIndex < 9; cellIndex++)
             {
                 var cell = cells[cellIndex];
-                
+
                 twoMask |= oneMask & _cellCandidates[cell];
 
                 oneMask |= _cellCandidates[cell];
@@ -366,7 +373,7 @@ public class Solver
             for (var cellIndex = 0; cellIndex < 9; cellIndex++)
             {
                 var cell = cells[cellIndex];
-                
+
                 if ((_cellCandidates[cell] & once) <= 0)
                 {
                     continue;
@@ -410,7 +417,7 @@ public class Solver
             if (onceRow != 0)
             {
                 onceRow &= -onceRow;
-                
+
                 for (var x = 0; x < 9; x++)
                 {
                     if ((_cellCandidates[y9 + x] & onceRow) <= 0)
@@ -450,7 +457,7 @@ public class Solver
 
         return -1;
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private ((int X, int Y) Position, int Values, int ValueCount) FindLeastRemainingCandidates()
     {
@@ -537,8 +544,8 @@ public class Solver
 
             var peers = UnitTables.Peers(cell);
 
-            UpdateCellAndPeerCandidates(cell, peers);
-
+            var valid = UpdateCellAndPeerCandidates(cell, peers);
+            
             _score--;
 
             if (move.ValueCount > 1)
@@ -607,7 +614,7 @@ public class Solver
 
             _steps++;
 
-            if (SolveStep())
+            if (valid && SolveStep())
             {
                 return true;
             }
