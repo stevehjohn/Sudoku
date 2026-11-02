@@ -96,6 +96,15 @@ public class HittingSetGenerator : IGenerator
         {
             BuildPuzzle(puzzle);
 
+            var solver = new Solver();
+
+            var result = solver.Solve(puzzle);
+
+            if (! result.Solved)
+            {
+                return (false, puzzle);
+            }
+
             if (cluesToLeave < 21)
             {
                 File.AppendAllLines(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Sudoku.log"), [$"{DateTime.Now:ddd d MMM HH:mm:ss}, {cluesToLeave}er: {puzzle.FlattenPuzzle()}"]);
@@ -124,7 +133,6 @@ public class HittingSetGenerator : IGenerator
 
         while (true)
         {
-            // Bring in sets learned since this level was last synchronised, keeping the list sorted by size.
             while (_levelSeen[depth] < _sets.Count)
             {
                 var learned = _sets[_levelSeen[depth]++];
@@ -474,7 +482,6 @@ public class HittingSetGenerator : IGenerator
 
         if (index < 6)
         {
-            // Three bands, then three stacks.
             var first = index < 3 ? index * 3 : 9 + (index - 3) * 3;
 
             for (var i = 0; i < 3; i++)
@@ -485,7 +492,6 @@ public class HittingSetGenerator : IGenerator
             return window;
         }
 
-        // Otherwise a union of 2-4 random houses.
         var houses = 2 + _random.Next(3);
 
         for (var i = 0; i < houses; i++)
