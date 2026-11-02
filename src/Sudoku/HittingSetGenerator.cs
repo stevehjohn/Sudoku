@@ -5,13 +5,26 @@ namespace Sudoku;
 
 public class HittingSetGenerator : IGenerator
 {
-    private const int NodeLimit = 10_000;
 
     private readonly int[] _candidates = new int[729];
 
     private readonly int[] _candidateCounts = new int[81];
 
+    private const long NodeLimit = 300_000;
+
+    private const int WindowCount = 400;
+
+    private readonly HashSet<Int128> _setLookup = [];
+
+    private readonly List<Int128>[] _levels = [.. Enumerable.Range(0, 90).Select(_ => new List<Int128>())];
+
+    private readonly int[] _levelSeen = new int[90];
+
+    private readonly int[] _window = new int[81];
+
     private static readonly Int128[] CellBits = [.. Enumerable.Range(0, 81).Select(i => Int128.One << i)];
+
+    private static readonly Int128[] HouseMasks = BuildHouseMasks();
 
     private readonly Solver _solver = new();
 
@@ -64,6 +77,18 @@ public class HittingSetGenerator : IGenerator
 
         _sets.Clear();
 
+        _setLookup.Clear();
+
+        SeedTwoDigitSets();
+
+        SeedWindowSets();
+
+        _sets.Sort((a, b) => Int128.PopCount(a).CompareTo(Int128.PopCount(b)));
+
+        _levels[0].Clear();
+
+        _levelSeen[0] = 0;
+
         SeedTwoDigitSets();
 
         var puzzle = new int[81];
@@ -78,7 +103,7 @@ public class HittingSetGenerator : IGenerator
         return (false, puzzle);
     }
 
-    private bool Search(Int128 chosen, int count, Int128 excluded)
+    private bool Search(int depth, Int128 chosen, Int128 excluded)
     {
         if (++_nodes > _nodeLimit || ((_nodes & 1023) == 0 && _cancellationToken.IsCancellationRequested))
         {
@@ -87,8 +112,34 @@ public class HittingSetGenerator : IGenerator
             return false;
         }
 
+        var unhit = _levels[depth];
+
+        Span<int> order = stackalloc int[81];
+
+        Span<int> score = stackalloc int[81];
+            
         while (true)
         {
+            // Bring in sets learned since this level was last synchronised, keeping the list sorted by size.
+            while (_levelSeen[depth] < _sets.Count)
+            {
+                var learned = _sets[_levelSeen[depth]++];
+
+                if ((learned & chosen) == 0)
+                {
+                    var learnedSize = Int128.PopCount(learned);
+
+                    var position = unhit.Count;
+
+                    while (position > 0 && Int128.PopCount(unhit[position - 1]) > learnedSize)
+                    {
+                        position--;
+                    }
+
+                    unhit.Insert(position, learned);
+                }
+            }
+
             Int128 best = 0;
 
             var bestSize = int.MaxValue;
@@ -97,18 +148,11 @@ public class HittingSetGenerator : IGenerator
 
             var packing = 0;
 
-            var sets = CollectionsMarshal.AsSpan(_sets);
+            var sets = CollectionsMarshal.AsSpan(unhit);
 
             for (var i = 0; i < sets.Length; i++)
             {
-                var set = sets[i];
-
-                if ((set & chosen) != 0)
-                {
-                    continue;
-                }
-
-                var available = set & ~excluded;
+                var available = sets[i] & ~excluded;
 
                 var size = (int) Int128.PopCount(available);
 
@@ -132,7 +176,7 @@ public class HittingSetGenerator : IGenerator
                 }
             }
 
-            if (count + packing > _clues)
+            if (depth + packing > _clues)
             {
                 return false;
             }
@@ -151,22 +195,89 @@ public class HittingSetGenerator : IGenerator
                     return true;
                 }
 
-                _sets.Add(Minimise(differences));
+                AddSet(Minimise(differences));
 
                 continue;
             }
 
-            var cells = best;
+            var orderCount = 0;
+
+            var remainingCells = best;
+
+            while (remainingCells != 0)
+            {
+                order[orderCount++] = (int) Int128.TrailingZeroCount(remainingCells);
+
+                remainingCells &= remainingCells - 1;
+            }
+
+            for (var i = orderCount - 1; i > 0; i--)
+            {
+                var j = _random.Next(i + 1);
+
+                (order[i], order[j]) = (order[j], order[i]);
+            }
+
+            for (var o = 0; o < orderCount; o++)
+            {
+                var cellBit = CellBits[order[o]];
+
+                var covered = 0;
+
+                for (var i = 0; i < unhit.Count; i++)
+                {
+                    if ((unhit[i] & cellBit) != 0)
+                    {
+                        covered++;
+                    }
+                }
+
+                score[o] = covered;
+            }
+
+            for (var i = 1; i < orderCount; i++)
+            {
+                var cellValue = order[i];
+
+                var scoreValue = score[i];
+
+                var j = i - 1;
+
+                while (j >= 0 && score[j] < scoreValue)
+                {
+                    order[j + 1] = order[j];
+
+                    score[j + 1] = score[j];
+
+                    j--;
+                }
+
+                order[j + 1] = cellValue;
+
+                score[j + 1] = scoreValue;
+            }
 
             var excludedHere = excluded;
 
-            while (cells != 0)
+            var child = _levels[depth + 1];
+
+            for (var o = 0; o < orderCount; o++)
             {
-                var cell = (int) Int128.TrailingZeroCount(cells);
+                var bit = CellBits[order[o]];
 
-                cells &= cells - 1;
+                child.Clear();
 
-                if (Search(chosen | CellBits[cell], count + 1, excludedHere))
+                for (var i = 0; i < unhit.Count; i++)
+                {
+                    if ((unhit[i] & bit) == 0)
+                    {
+                        child.Add(unhit[i]);
+                    }
+                }
+
+                _levelSeen[depth + 1] = _levelSeen[depth];
+
+                if (Search(depth + 1, chosen | bit, excludedHere))
                 {
                     return true;
                 }
@@ -176,7 +287,7 @@ public class HittingSetGenerator : IGenerator
                     return false;
                 }
 
-                excludedHere |= CellBits[cell];
+                excludedHere |= bit;
             }
 
             return false;
@@ -326,6 +437,99 @@ public class HittingSetGenerator : IGenerator
             puzzle[cell] = _solution[cell];
 
             count++;
+        }
+    }
+
+    private void AddSet(Int128 set)
+    {
+        if (_setLookup.Add(set))
+        {
+            _sets.Add(set);
+        }
+    }
+
+    private static Int128[] BuildHouseMasks()
+    {
+        var masks = new Int128[27];
+
+        for (var cell = 0; cell < 81; cell++)
+        {
+            masks[UnitTables.CellRow(cell)] |= CellBits[cell];
+
+            masks[9 + UnitTables.CellColumn(cell)] |= CellBits[cell];
+
+            masks[18 + UnitTables.CellBox(cell)] |= CellBits[cell];
+        }
+
+        return masks;
+    }
+
+    private Int128 CreateWindow(int index)
+    {
+        Int128 window = 0;
+
+        if (index < 6)
+        {
+            // Three bands, then three stacks.
+            var first = index < 3 ? index * 3 : 9 + (index - 3) * 3;
+
+            for (var i = 0; i < 3; i++)
+            {
+                window |= HouseMasks[first + i];
+            }
+
+            return window;
+        }
+
+        // Otherwise a union of 2-4 random houses.
+        var houses = 2 + _random.Next(3);
+
+        for (var i = 0; i < houses; i++)
+        {
+            window |= HouseMasks[_random.Next(27)];
+        }
+
+        return window;
+    }
+
+    private void SeedWindowSets()
+    {
+        for (var w = 0; w < WindowCount; w++)
+        {
+            var window = CreateWindow(w);
+
+            Int128 fixedCells = 0;
+
+            while (true)
+            {
+                for (var i = 0; i < 81; i++)
+                {
+                    _window[i] = (window & CellBits[i]) != 0 && (fixedCells & CellBits[i]) == 0 ? 0 : _solution[i];
+                }
+
+                if (! _solver.TryFindAlternative(_window, _solution, out var differences))
+                {
+                    break;
+                }
+
+                var set = Minimise(differences);
+
+                if (Int128.PopCount(set) <= 12)
+                {
+                    AddSet(set);
+                }
+
+                var skip = _random.Next((int) Int128.PopCount(set));
+
+                var bits = set;
+
+                for (var i = 0; i < skip; i++)
+                {
+                    bits &= bits - 1;
+                }
+
+                fixedCells |= CellBits[(int) Int128.TrailingZeroCount(bits)];
+            }
         }
     }
 
