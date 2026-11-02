@@ -5,7 +5,6 @@ namespace Sudoku;
 
 public class HittingSetGenerator : IGenerator
 {
-
     private readonly int[] _candidates = new int[729];
 
     private readonly int[] _candidateCounts = new int[81];
@@ -97,6 +96,11 @@ public class HittingSetGenerator : IGenerator
         {
             BuildPuzzle(puzzle);
 
+            if (cluesToLeave < 21)
+            {
+                File.AppendAllLines(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Sudoku.log"), [$"{DateTime.Now:ddd d MMM HH:mm:ss}, {cluesToLeave}er: {puzzle.FlattenPuzzle()}"]);
+            }
+
             return (true, puzzle);
         }
 
@@ -117,7 +121,7 @@ public class HittingSetGenerator : IGenerator
         Span<int> order = stackalloc int[81];
 
         Span<int> score = stackalloc int[81];
-            
+
         while (true)
         {
             // Bring in sets learned since this level was last synchronised, keeping the list sorted by size.
