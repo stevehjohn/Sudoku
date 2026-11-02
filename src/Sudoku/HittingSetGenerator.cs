@@ -9,7 +9,7 @@ public class HittingSetGenerator : IGenerator
 
     private readonly int[] _candidateCounts = new int[81];
 
-    private const long NodeLimit = 300_000;
+    private const long NodeLimit = 3_000_000;
 
     private const int WindowCount = 400;
 
@@ -87,7 +87,7 @@ public class HittingSetGenerator : IGenerator
         _levels[0].Clear();
 
         _levelSeen[0] = 0;
-        
+
         var puzzle = new int[81];
 
         if (Search(0, 0, 0))
@@ -110,7 +110,7 @@ public class HittingSetGenerator : IGenerator
 
             return (true, puzzle);
         }
-
+        
         return (false, puzzle);
     }
 
