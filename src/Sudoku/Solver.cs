@@ -116,21 +116,67 @@ public class Solver
             : new SudokuResult(_solution, true, _steps, stopwatch.Elapsed.TotalMicroseconds, _history, initialCandidates, 1, "Solved");
     }
 
-    public (bool IsUnique, Int128 DifferentCells, int DifferenceCount) HasUniqueSolution(int[] puzzle, int[] knownSolution)
+    public (bool IsUnique, Int128 DifferentCells, int DifferenceCount) HasUniqueSolution(int[] puzzle, int[] knownSolution, int removedCell)
+    {
+        var used = 0;
+
+        foreach (var peer in UnitTables.Peers(removedCell))
+        {
+            if (puzzle[peer] != 0)
+            {
+                used |= 1 << (puzzle[peer] - 1);
+            }
+        }
+
+        var alternatives = ~used & 0x1FF & ~(1 << (knownSolution[removedCell] - 1));
+
+        while (alternatives != 0)
+        {
+            var value = BitOperations.TrailingZeroCount(alternatives) + 1;
+
+            alternatives &= alternatives - 1;
+
+            puzzle[removedCell] = value;
+
+            var found = FindAlternative(puzzle, knownSolution);
+
+            puzzle[removedCell] = 0;
+
+            if (! found)
+            {
+                continue;
+            }
+
+            Int128 differences = 0;
+
+            var differenceCount = 0;
+
+            for (var i = 0; i < 81; i++)
+            {
+                if (_workingCopy[i] != knownSolution[i])
+                {
+                    differences |= Int128.One << i;
+
+                    differenceCount++;
+                }
+            }
+
+            return (false, differences, differenceCount);
+        }
+
+        return (true, 0, 0);
+    }
+
+    private bool FindAlternative(int[] puzzle, int[] knownSolution)
     {
         _verifyOnly = true;
 
-        if (! Initialise(new Span<int>(puzzle)))
+        if (! Initialise(new Span<int>(puzzle)) || _candidateCount == 0)
         {
-            return (false, 0, 0);
+            return false;
         }
 
         _knownSolution = knownSolution;
-
-        if (_candidateCount == 0)
-        {
-            return (false, 0, 0);
-        }
 
         _solutionCount = 0;
 
@@ -138,26 +184,7 @@ public class Solver
 
         _knownSolution = null;
 
-        if (_solutionCount == 1)
-        {
-            return (true, 0, 0);
-        }
-
-        Int128 differences = 0;
-
-        var differenceCount = 0;
-
-        for (var i = 0; i < 81; i++)
-        {
-            if (_workingCopy[i] != knownSolution[i])
-            {
-                differences |= Int128.One << i;
-
-                differenceCount++;
-            }
-        }
-
-        return (false, differences, differenceCount);
+        return _solutionCount == 2;
     }
 
     private bool Initialise(Span<int> puzzle)

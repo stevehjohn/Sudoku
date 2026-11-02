@@ -262,7 +262,7 @@ public class Generator
             }
             else
             {
-                var (isUnique, set, differenceCount) = _solver.HasUniqueSolution(puzzle, _originalPuzzle);
+                var (isUnique, set, differenceCount) = _solver.HasUniqueSolution(puzzle, _originalPuzzle, cellIndex);
 
                 _uniquenessChecks++;
 
