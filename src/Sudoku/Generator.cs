@@ -3,7 +3,7 @@ using Sudoku.Extensions;
 
 namespace Sudoku;
 
-public class Generator
+public class Generator : IGenerator
 {
     private readonly int[] _candidates = new int[729];
 
