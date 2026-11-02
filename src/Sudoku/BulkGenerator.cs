@@ -37,7 +37,7 @@ public static class BulkGenerator
 
         for (var i = 0; i < workers; i++)
         {
-            var generator = new Generator();
+            IGenerator generator = cluesToLeave < 21 ? new HittingSetGenerator() : new Generator();
 
             tasks[i] = Task.Run(() =>
             {

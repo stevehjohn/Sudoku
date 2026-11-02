@@ -1,9 +1,16 @@
 using System.Runtime.InteropServices;
+using Sudoku.Extensions;
 
 namespace Sudoku;
 
-public class HittingSetGenerator
+public class HittingSetGenerator : IGenerator
 {
+    private const int NodeLimit = 10_000;
+
+    private readonly int[] _candidates = new int[729];
+
+    private readonly int[] _candidateCounts = new int[81];
+
     private static readonly Int128[] CellBits = [.. Enumerable.Range(0, 81).Select(i => Int128.One << i)];
 
     private readonly Solver _solver = new();
@@ -34,22 +41,22 @@ public class HittingSetGenerator
 
     private Int128 _found;
 
-    public (HittingSetResult Result, int[] Puzzle) Generate(int clues, long nodeLimit, CancellationToken cancellationToken)
+    public (bool Succeeded, int[] Puzzle) Generate(int cluesToLeave, CancellationToken cancellationToken)
     {
         var grid = _gridGenerator.CreateSolvedPuzzle();
 
-        return Generate(grid, clues, nodeLimit, cancellationToken);
+        return Generate(grid, cluesToLeave, cancellationToken);
     }
 
-    public (HittingSetResult Result, int[] Puzzle) Generate(int[] solvedPuzzle, int clues, long nodeLimit, CancellationToken cancellationToken)
+    public (bool Succeeded, int[] Puzzle) Generate(int[] solvedPuzzle, int cluesToLeave, CancellationToken cancellationToken)
     {
         _solution = solvedPuzzle;
 
-        _clues = clues;
+        _clues = cluesToLeave;
 
         _nodes = 0;
 
-        _nodeLimit = nodeLimit;
+        _nodeLimit = NodeLimit;
 
         _stopped = false;
 
@@ -65,15 +72,10 @@ public class HittingSetGenerator
         {
             BuildPuzzle(puzzle);
 
-            return (HittingSetResult.Found, puzzle);
+            return (true, puzzle);
         }
 
-        if (cancellationToken.IsCancellationRequested)
-        {
-            return (HittingSetResult.Cancelled, puzzle);
-        }
-
-        return (_stopped ? HittingSetResult.Abandoned : HittingSetResult.None, puzzle);
+        return (false, puzzle);
     }
 
     private bool Search(Int128 chosen, int count, Int128 excluded)
@@ -324,6 +326,77 @@ public class HittingSetGenerator
             puzzle[cell] = _solution[cell];
 
             count++;
+        }
+    }
+
+    public bool CreateSolvedPuzzle(Span<int> puzzle, CancellationToken cancellationToken)
+    {
+        for (var i = 0; i < 81; i++)
+        {
+            puzzle[i] = 0;
+        }
+
+        InitialiseCandidates();
+
+        return CreateSolvedPuzzle(puzzle, 0, cancellationToken);
+    }
+
+    private bool CreateSolvedPuzzle(Span<int> puzzle, int cell, CancellationToken cancellationToken)
+    {
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return false;
+        }
+
+        if (cell == 81)
+        {
+            return true;
+        }
+
+        var offset = cell * 9;
+
+        var count = _candidateCounts[cell];
+
+        while (count > 0)
+        {
+            var candidateIndex = _random.Next(count);
+
+            var candidate = _candidates[offset + candidateIndex];
+
+            _candidates[offset + candidateIndex] = _candidates[offset + count - 1];
+
+            count--;
+
+            puzzle[cell] = candidate;
+
+            if (puzzle.IsValidSudoku(cell) && CreateSolvedPuzzle(puzzle, cell + 1, cancellationToken))
+            {
+                return true;
+            }
+        }
+
+        puzzle[cell] = 0;
+
+        for (var i = 0; i < 9; i++)
+        {
+            _candidates[offset + i] = i + 1;
+        }
+
+        _candidateCounts[cell] = 9;
+
+        return false;
+    }
+
+    private void InitialiseCandidates()
+    {
+        for (var i = 0; i < 81; i++)
+        {
+            for (var j = 0; j < 9; j++)
+            {
+                _candidates[i * 9 + j] = j + 1;
+            }
+
+            _candidateCounts[i] = 9;
         }
     }
 }
