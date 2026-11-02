@@ -23,7 +23,7 @@ public class Generator
 
     private readonly int[] _digitCounts = new int[10];
 
-    private readonly Lock _fileLock = new();
+    private static readonly Lock FileLock = new();
 
     private int _failedStamp;
 
@@ -175,7 +175,7 @@ public class Generator
         {
             if (targetClues < 21)
             {
-                lock (_fileLock)
+                lock (FileLock)
                 {
                     File.AppendAllLines(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Sudoku.log"), [$"{DateTime.Now:ddd d MMM HH:mm:ss}, {targetClues}er: {puzzle.FlattenPuzzle()} - Uniqueness checks: {_uniquenessChecks:N0}, removal failures: {_removalFailures:N0}"]);
                 }
