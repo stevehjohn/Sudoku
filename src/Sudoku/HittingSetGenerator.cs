@@ -87,9 +87,7 @@ public class HittingSetGenerator : IGenerator
         _levels[0].Clear();
 
         _levelSeen[0] = 0;
-
-        SeedTwoDigitSets();
-
+        
         var puzzle = new int[81];
 
         if (Search(0, 0, 0))
