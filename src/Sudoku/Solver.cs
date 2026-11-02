@@ -186,7 +186,27 @@ public class Solver
 
         return _solutionCount == 2;
     }
+    
+    public bool TryFindAlternative(int[] puzzle, int[] knownSolution, out Int128 differences)
+    {
+        differences = 0;
 
+        if (! FindAlternative(puzzle, knownSolution))
+        {
+            return false;
+        }
+
+        for (var i = 0; i < 81; i++)
+        {
+            if (_workingCopy[i] != knownSolution[i])
+            {
+                differences |= Int128.One << i;
+            }
+        }
+
+        return true;
+    }
+    
     private bool Initialise(Span<int> puzzle)
     {
         _solutionCount = 0;
