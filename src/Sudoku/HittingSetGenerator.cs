@@ -9,7 +9,7 @@ public class HittingSetGenerator : IGenerator
 
     private readonly int[] _candidateCounts = new int[81];
 
-    private const long NodeLimit = 300_000;
+    private const long NodeLimit = 3_000_000;
 
     private const int WindowCount = 400;
 
@@ -534,7 +534,7 @@ public class HittingSetGenerator : IGenerator
 
     public bool CreateSolvedPuzzle(Span<int> puzzle, CancellationToken cancellationToken)
     {
-        // var grid = "573681294468592371912734685349267158156843729287159436831425967624978513795316842"
+        // var grid = "497251638835697421162834795648912357213576849759483216921748563574369182386125974"
         //     .Select(c => c - '0')
         //     .ToArray();
         //
@@ -549,7 +549,7 @@ public class HittingSetGenerator : IGenerator
         {
             puzzle[i] = 0;
         }
-
+        
         InitialiseCandidates();
 
         return CreateSolvedPuzzle(puzzle, 0, cancellationToken);
