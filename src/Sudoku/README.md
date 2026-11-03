@@ -1,6 +1,13 @@
 # Sudoku
 
-A fast Sudoku solver written in C#. Can also act as a Sudoku generator.
+A fast Sudoku library written in C#.
+
+Features:
+
+- Solver
+- Generator
+- Isomorph generator
+- Canoniser
 
 ## Visualisations of Solving Process
 
@@ -11,9 +18,52 @@ Use + and - to zoom in and out. [Screenshot](screenshot.png).
 - [Random 2](https://html-preview.github.io/?url=https://github.com/stevehjohn/Sudoku/blob/master/Visualisations/vis-2.html)
 - [Random 3](https://html-preview.github.io/?url=https://github.com/stevehjohn/Sudoku/blob/master/Visualisations/vis-3.html)
 
+## Quick Usage
+
+There are scripts in the root of the repo that will run the console app for you.
+
+Windows: `run.bat` macOS/Linux `./run.sh`.
+
+The console app looks like this:
+
+```
+ Please select the puzzle set to solve or an option below:
+
+    1: 19 Clues
+    2: 2 Million
+    3: 20 Clues
+    4: 21 Clues
+    5: 22 Clues
+    6: Benchmarks
+    7: Diabolical
+    8: Easy
+    9: Euler
+   10: Generated 2m x 25
+   11: Generated 2m x 30
+   12: Generated 2m x 37
+   13: Generated 2m x 40
+   14: Generated 2m x 50
+   15: Generated
+   16: Hard
+   17: Least Steps
+   18: Medium
+   19: Minimum Clues
+   20: Most Steps
+   21: Top 50K Toughest
+   22: World Hardest
+
+    B: Generate tree branch diagram for last most steps
+    V: Visualise last most steps
+    L: See log of last most steps
+    E: Enter manually
+    T: Test suite
+    G: Generate puzzles
+    Q: Exit application
+```
+
 ## Usage in Code
 
-### Solving Sudokus
+### Solving Puzzles
 
 ```csharp
 var puzzle = new int[81];
@@ -26,12 +76,12 @@ var puzzle = new int[81];
 */
 
 /*
-  This is most performant.
   If you want:
    - the solution steps, select HistoryType.SolutionOnly.
    - all the steps attempted, select HistoryType.AllSteps.
    - to check the puzzle has only 1 solution, specify SolveMethod.FindUnique.
    - a count of the number of solutions, specify SolveMethod.FindAll.
+  The options used below are is most performant.
 */
 
 var solver = new Solver(HistoryType.None, SolveMethod.FindFirst);
@@ -87,45 +137,40 @@ Output:
  Solved
 ```
 
-### Generating Sudokus
+### Solver Timings
+
+| Clues | Puzzles/s |
+|-------|-----------|
+| 17    | 100,000   |
+| 25    | 450,000   |
+| 30    | 600,000   |
+| 37    | 850,000   |
+| 40    | 900,000   |
+
+### Category Timings
+
+| Clues             | Puzzles/s |
+|-------------------|-----------|
+| Benchmarks        | 11,000    |
+| Easy              | 550,000   |
+| Medium            | 600,000   |
+| Hard              | 400,000   |
+| Diabolical        | 300,000   |
+| Top 50k Hardest   | 100,000   |
+| Minimum Clues     | 60,000    |
+| Sample 2 million  | 15,000    |
+
+World's hardest solved in 1,278μs.
+
+### Generating Puzzles
 
 ```csharp
 var generator = new Generator();
 
-var puzzle = generator.Generate(30); // Will generate a puzzle with 30 clues. Can get quite slow below 22.
+var puzzle = generator.Generate(30); // Will generate a puzzle with 30 clues. Can get quite slow below 20.
 
 puzzle.DumpToConsole(1);
 ```
-
-### Timings
-
-On my machine:
-
-| Clues | puzzles/s | s/puzzle |
-|-------|-----------|----------|
-| 19    |           | 18,000   |
-| 20    |           | 300      |
-| 21    |           | 4        |
-| 22    | 2         |          |
-| 23    | 100       |          |
-| 24    | 230       |          |
-| 25    | 1,600     |          |
-| 26    | 3,800     |          |
-| 27    | 4,300     |          |
-| 28    | 4,500     |          |
-| 29    | 4,500     |          |
-| 30    | 4,500     |          |
-| 31    | 4,600     |          |
-| 32    | 4,700     |          |
-| 33    | 4,700     |          |
-| 34    | 4,700     |          |
-| 35    | 4,700     |          |
-| 36    | 4,800     |          |
-| 37    | 4,900     |          |
-| 38    | 4,900     |          |
-| 39    | 4,900     |          |
-| 40    | 5,000     |          |
-
 Output:
 
 ```
@@ -143,3 +188,35 @@ Output:
  │       │       │       │
  └───────┴───────┴───────┘
 ```
+
+### Generator Timings
+
+On my machine:
+
+| Clues | Puzzles/s | Time/puzzle |
+|-------|-----------|-------------|
+| 18    |           | ~2 days     |
+| 19    |           | ~1 mins     |
+| 20    | 1         |             |
+| 21    | 60        |             |
+| 22    | 800       |             |
+| 23    | 2,800     |             |
+| 24    | 9,000     |             |
+| 25    | 14,500    |             |
+| 26    | 20,000    |             |
+| 27    | 24,500    |             |
+| 28    | 27,000    |             |
+| 29    | 29,500    |             |
+| 30    | 32,000    |             |
+| 31    | 34,500    |             |
+| 32    | 36,500    |             |
+| 33    | 37,500    |             |
+| 34    | 39,000    |             |
+| 35    | 41,500    |             |
+| 36    | 42,500    |             |
+| 37    | 44.500    |             |
+| 38    | 45,000    |             |
+| 39    | 48,000    |             |
+| 40    | 50,000    |             |
+
+Note these can be massively increased by generating isomorphs.
