@@ -55,7 +55,7 @@ public static class BulkGenerator
                         break;
                     }
 
-                    if (puzzleUsages < 0 || puzzleUsages > solvedPuzzleReuseCount)
+                    if (puzzleUsages < 0 || puzzleUsages >= solvedPuzzleReuseCount)
                     {
                         var solved = false;
 
