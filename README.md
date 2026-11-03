@@ -11,12 +11,12 @@ Features:
 
 ## Visualisations of Solving Process
 
-Use + and - to zoom in and out. [Screenshot](screenshot.png).
+Use + and - to zoom in and out.
 
-- ["World's Hardest"](https://html-preview.github.io/?url=https://github.com/stevehjohn/Sudoku/blob/master/Visualisations/World%20Hardest.html)
-- [Random 1](https://html-preview.github.io/?url=https://github.com/stevehjohn/Sudoku/blob/master/Visualisations/vis-1.html)
-- [Random 2](https://html-preview.github.io/?url=https://github.com/stevehjohn/Sudoku/blob/master/Visualisations/vis-2.html)
-- [Random 3](https://html-preview.github.io/?url=https://github.com/stevehjohn/Sudoku/blob/master/Visualisations/vis-3.html)
+- ["World's Hardest"](https://stevehjohn.github.io/Sudoku/Visualisations/World%20Hardest.html)
+- [Random 1](https://stevehjohn.github.io/Sudoku/Visualisations/vis-1.html)
+- [Random 2](https://stevehjohn.github.io/Sudoku/Visualisations/vis-2.html)
+- [Random 3](https://stevehjohn.github.io/Sudoku/Visualisations/vis-3.html)
 
 ## Quick Usage
 
