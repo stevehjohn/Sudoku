@@ -22,6 +22,7 @@ public static class BulkGenerator
 
         var solvedPuzzleReuseCount = cluesToLeave switch
         {
+            < 18 => 1,
             < 22 => 10,
             < 25 => 100,
             _ => 1_000
