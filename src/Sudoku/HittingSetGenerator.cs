@@ -96,7 +96,7 @@ public class HittingSetGenerator : IGenerator
 
             if (cluesToLeave < 21)
             {
-                File.AppendAllLines(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Sudoku.log"), [$"{DateTime.Now:ddd d MMM HH:mm:ss}, {cluesToLeave}er: {puzzle.FlattenPuzzle()}"]);
+                File.AppendAllLines(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Sudoku.log"), [$"{DateTime.Now:ddd d MMM HH:mm:ss}, {cluesToLeave}er: {puzzle.FlattenPuzzle()} - Nodes: {_nodes}"]);
             }
 
             return (true, puzzle);
@@ -534,23 +534,23 @@ public class HittingSetGenerator : IGenerator
 
     public bool CreateSolvedPuzzle(Span<int> puzzle, CancellationToken cancellationToken)
     {
-        // var grid = "497251638835697421162834795648912357213576849759483216921748563574369182386125974"
-        //     .Select(c => c - '0')
-        //     .ToArray();
-        //
-        // for (var i = 0; i < 81; i++)
-        // {
-        //     puzzle[i] = grid[i];
-        // }
-        //
-        // return true;
-
+        var grid = "497251638835697421162834795648912357213576849759483216921748563574369182386125974"
+            .Select(c => c - '0')
+            .ToArray();
+        
         for (var i = 0; i < 81; i++)
         {
-            puzzle[i] = 0;
+            puzzle[i] = grid[i];
         }
         
-        InitialiseCandidates();
+        return true;
+
+        // for (var i = 0; i < 81; i++)
+        // {
+        //     puzzle[i] = 0;
+        // }
+        //
+        // InitialiseCandidates();
 
         return CreateSolvedPuzzle(puzzle, 0, cancellationToken);
     }
