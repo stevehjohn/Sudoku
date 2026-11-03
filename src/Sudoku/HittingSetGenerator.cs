@@ -9,7 +9,7 @@ public class HittingSetGenerator : IGenerator
 
     private readonly int[] _candidateCounts = new int[81];
 
-    private const long NodeLimit = 3_000_000;
+    private const long NodeLimit = 2_000_000;
 
     private const int WindowCount = 400;
 
