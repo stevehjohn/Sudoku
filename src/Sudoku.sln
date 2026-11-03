@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\README.md = ..\README.md
 		..\Notes.md = ..\Notes.md
 		..\Example Log.md = ..\Example Log.md
+		..\_config.yml = ..\_config.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Puzzles", "Puzzles", "{72316191-5E40-4936-A5D5-EBB6E9FCF6D7}"
