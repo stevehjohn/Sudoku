@@ -534,17 +534,6 @@ public class HittingSetGenerator : IGenerator
 
     public bool CreateSolvedPuzzle(Span<int> puzzle, CancellationToken cancellationToken)
     {
-        // var grid = "829463751561897423734215689495726318672381594318549276957638142146952837283174965"
-        //     .Select(c => c - '0')
-        //     .ToArray();
-        //
-        // for (var i = 0; i < 81; i++)
-        // {
-        //     puzzle[i] = grid[i];
-        // }
-        //
-        // return true;
-
         for (var i = 0; i < 81; i++)
         {
             puzzle[i] = 0;
