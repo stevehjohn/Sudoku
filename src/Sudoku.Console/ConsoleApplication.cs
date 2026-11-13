@@ -70,7 +70,7 @@ public class ConsoleApplication
 
             while (true)
             {
-                var response = In().ToLower().Trim();
+                var response = In().ToLowerInvariant().Trim();
 
                 if (int.TryParse(response, out var id))
                 {
@@ -794,9 +794,10 @@ public class ConsoleApplication
             return LoadPuzzlesInternal(filename);
         }
 
-        var puzzles = new List<(int[] Puzzle, int Clues)>();
-
-        puzzles.AddRange(LoadPuzzlesInternal(filename));
+        List<(int[] Puzzle, int Clues)> puzzles =
+        [
+            .. LoadPuzzlesInternal(filename)
+        ];
 
         filename = $"{filename[..^1]}2";
 

@@ -65,11 +65,11 @@ public class SolverTests
 
             _testOutputHelper.WriteLine($"Puzzle {count}: {solution.Message} found in {puzzleTimer.Elapsed.TotalMilliseconds:N3}ms.");
 
-            Assert.Contains(parts[2], solution.Message.ToLower());
+            Assert.Contains(parts[2], solution.Message.ToLowerInvariant());
 
             if (parts[1] != "0")
             {
-                Assert.Contains(parts[1], solution.Message.ToLower());
+                Assert.Contains(parts[1], solution.Message.ToLowerInvariant());
             }
             
             // ReSharper disable once Xunit.XunitTestWithConsoleOutput

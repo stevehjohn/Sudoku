@@ -1,3 +1,4 @@
+using System.Globalization;
 using Out = System.Console;
 
 namespace Sudoku.Console;
@@ -45,7 +46,7 @@ public class ConsoleSolveVisualiser
 
         ShowText("Press S to start");
 
-        while (char.ToLower(Out.ReadKey(true).KeyChar) != 's')
+        while (char.ToLower(Out.ReadKey(true).KeyChar, CultureInfo.InvariantCulture) != 's')
         {
         }
         

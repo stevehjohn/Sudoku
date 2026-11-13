@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime;
 using System.Text;
 
@@ -517,26 +518,23 @@ public class BulkSolver
 
         if (solved > 0)
         {
-            _output.AppendLine($"\n Solved: {solved:N0}/{_puzzleCount:N0} puzzles ({solved / _stopwatch.Elapsed.TotalSeconds:N0} puzzles/sec).       \n");
+            _output.AppendLine(CultureInfo.InvariantCulture, $"\n Solved: {solved:N0}/{_puzzleCount:N0} puzzles ({solved / _stopwatch.Elapsed.TotalSeconds:N0} puzzles/sec).       \n");
 
             var mean = _elapsed.Total / solved;
 
-            _output.AppendLine(
-                $" Timings...\n  Minimum: {_elapsed.Minimum:N0}μs          \n  Mean:    {mean:N0}μs          \n  Maximum: {_elapsed.Maximum:N0}μs (Puzzle #{_maxTimePuzzleNumber:N0})         \n");
+            _output.AppendLine(CultureInfo.InvariantCulture, $" Timings...\n  Minimum: {_elapsed.Minimum:N0}μs          \n  Mean:    {mean:N0}μs          \n  Maximum: {_elapsed.Maximum:N0}μs (Puzzle #{_maxTimePuzzleNumber:N0})         \n");
 
-            _output.AppendLine(
-                $" Iterations...\n  Minimum: {_steps.Minimum:N0}          \n  Mean:    {_steps.Total / solved:N0}          \n  Maximum: {_steps.Maximum:N0} (Puzzle #{_maxStepsPuzzleNumber:N0}, Clues: {_mostStepsClues})           \n");
+            _output.AppendLine($" Iterations...\n  Minimum: {_steps.Minimum:N0}          \n  Mean:    {_steps.Total / solved:N0}          \n  Maximum: {_steps.Maximum:N0} (Puzzle #{_maxStepsPuzzleNumber:N0}, Clues: {_mostStepsClues})           \n");
 
             var meanTime = _stopwatch.Elapsed.TotalSeconds / solved;
 
             var eta = TimeSpan.FromSeconds((_puzzles.Length - solved) * meanTime);
 
-            _output.AppendLine(
-                $" Elapsed time: {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}    Estimated remaining: {eta.Hours:N0}:{eta.Minutes:D2}:{eta.Seconds:D2}          \n");
+            _output.AppendLine($" Elapsed time: {_stopwatch.Elapsed.Minutes:N0}:{_stopwatch.Elapsed.Seconds:D2}    Estimated remaining: {eta.Hours:N0}:{eta.Minutes:D2}:{eta.Seconds:D2}          \n");
 
             var percent = 100 - (_puzzleCount - solved) * 100d / _puzzleCount;
 
-            _output.AppendLine($" Solved: {Math.Floor(percent):N0}%\n");
+            _output.AppendLine(CultureInfo.InvariantCulture, $" Solved: {Math.Floor(percent):N0}%\n");
 
             var line = (int) Math.Floor(percent / 2);
 

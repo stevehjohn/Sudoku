@@ -193,7 +193,7 @@ public class Generator : IGenerator
 
         var filledCount = _filledCells.Count;
 
-        for (var i = start; i <= filledCount - cellsToRemove; i++)
+        outer: for (var i = start; i <= filledCount - cellsToRemove; i++)
         {
             if (cancellationToken.IsCancellationRequested)
             {
@@ -216,21 +216,12 @@ public class Generator : IGenerator
 
             var cellBit = Int128.One << cellIndex;
 
-            var invalidRemoval = false;
-
             foreach (var set in _setsByCell[cellIndex])
             {
                 if ((set & _mask) == cellBit)
                 {
-                    invalidRemoval = true;
-
-                    break;
+                    continue outer;
                 }
-            }
-
-            if (invalidRemoval)
-            {
-                continue;
             }
 
             puzzle[cellIndex] = 0;

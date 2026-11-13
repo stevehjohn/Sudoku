@@ -29,7 +29,7 @@ public static class TreeGenerator
     {
         var content = NodeTemplate;
 
-        content = content.Replace("{onSolutionPath}", node.OnSolvedPath.ToString().ToLower());
+        content = content.Replace("{onSolutionPath}", node.OnSolvedPath.ToString().ToLowerInvariant());
 
         var puzzle = new StringBuilder();
 
