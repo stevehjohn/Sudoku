@@ -76,6 +76,8 @@ public static class BulkGenerator
                         continue;
                     }
 
+                    puzzleUsages = solvedPuzzleReuseCount;
+
                     if (Interlocked.Increment(ref count) > quantity)
                     {
                         cancellationTokenSource.Cancel();
