@@ -70,6 +70,11 @@ public static class BulkGenerator
                     var result = generator.Generate(puzzle, cluesToLeave, cancellationToken);
 
                     puzzleUsages++;
+                    
+                    if (! result.Succeeded && generator.LastSearchExhausted)
+                    {
+                        puzzleUsages = solvedPuzzleReuseCount;
+                    }
 
                     if (! result.Succeeded || cancellationToken.IsCancellationRequested)
                     {

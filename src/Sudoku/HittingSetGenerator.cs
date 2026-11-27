@@ -5,6 +5,8 @@ namespace Sudoku;
 
 public class HittingSetGenerator : IGenerator
 {
+    public bool LastSearchExhausted { get; private set; }
+
     private readonly int[] _candidates = new int[729];
 
     private readonly int[] _candidateCounts = new int[81];
@@ -53,6 +55,8 @@ public class HittingSetGenerator : IGenerator
 
     public (bool Succeeded, int[] Puzzle) Generate(int[] solvedPuzzle, int cluesToLeave, CancellationToken cancellationToken)
     {
+        LastSearchExhausted = false;
+
         _solution = solvedPuzzle;
 
         _clues = cluesToLeave;
@@ -101,6 +105,8 @@ public class HittingSetGenerator : IGenerator
 
             return (true, puzzle);
         }
+
+        LastSearchExhausted = ! _stopped;
 
         return (false, puzzle);
     }
