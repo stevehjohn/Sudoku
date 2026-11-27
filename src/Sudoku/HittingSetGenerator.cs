@@ -101,7 +101,7 @@ public class HittingSetGenerator : IGenerator
 
             return (true, puzzle);
         }
-        
+
         return (false, puzzle);
     }
 
@@ -297,36 +297,38 @@ public class HittingSetGenerator : IGenerator
 
     private Int128 Minimise(Int128 set)
     {
-        var improved = true;
-
-        while (improved)
+        for (var i = 0; i < 81; i++)
         {
-            improved = false;
+            _scratch[i] = (set & CellBits[i]) == 0 ? _solution[i] : 0;
+        }
 
-            for (var i = 0; i < 81; i++)
+        for (var i = 0; i < 81; i++)
+        {
+            if ((set & CellBits[i]) == 0)
             {
-                _scratch[i] = (set & CellBits[i]) == 0 ? _solution[i] : 0;
+                continue;
             }
 
-            for (var i = 0; i < 81 && ! improved; i++)
+            _scratch[i] = _solution[i];
+
+            if (_solver.TryFindAlternative(_scratch, _solution, out var smaller))
             {
-                if ((set & CellBits[i]) == 0)
+                var dropped = set & ~smaller;
+
+                while (dropped != 0)
                 {
-                    continue;
+                    var cell = (int) Int128.TrailingZeroCount(dropped);
+
+                    _scratch[cell] = _solution[cell];
+
+                    dropped &= dropped - 1;
                 }
 
-                _scratch[i] = _solution[i];
-
-                if (_solver.TryFindAlternative(_scratch, _solution, out var smaller))
-                {
-                    set = smaller;
-
-                    improved = true;
-                }
-                else
-                {
-                    _scratch[i] = 0;
-                }
+                set = smaller;
+            }
+            else
+            {
+                _scratch[i] = 0;
             }
         }
 
@@ -538,7 +540,7 @@ public class HittingSetGenerator : IGenerator
         {
             puzzle[i] = 0;
         }
-        
+
         InitialiseCandidates();
 
         return CreateSolvedPuzzle(puzzle, 0, cancellationToken);
